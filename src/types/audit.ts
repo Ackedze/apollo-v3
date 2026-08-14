@@ -47,6 +47,11 @@ export interface AuditItem {
   reference?: LibraryComponent | null;
   componentKey: string | null;
   diffs: DiffEntry[];
+  /**
+   * Наблюдаемые отклонения actual от effective baseline до применения
+   * allowlist, suppressions и правил допустимости кастомизаций.
+   */
+  baselineDiffs?: DiffEntry[];
   comparisonIssues?: string[];
   updateReasons?: UpdateReason[];
   libraryFreshness?: LibraryComponentFreshness | null;

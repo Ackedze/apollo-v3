@@ -47,6 +47,7 @@ function dependencies(overrides = {}) {
 
 async function main() {
   const {
+    buildBaselineCustomizationFacts,
     collectExperimentalContractV2StructureKeys,
     classifyComponentNode,
     contractRequiresNativeVisualOverrideEvidence,
@@ -815,6 +816,146 @@ async function main() {
     directIconSwapDiffs.length,
     1,
     'A mainComponent override must confirm a direct nested instance swap.',
+  );
+
+  const titleViewActual = [
+    {
+      id: 100,
+      parentId: null,
+      nodeId: 'title-view',
+      path: 'TitleView',
+      type: 'INSTANCE',
+      name: '[D] TitleView',
+      visible: true,
+      componentInstance: {
+        componentKey: 'title-view-key',
+        directOverrides: [
+          {
+            nodeId: 'button',
+            fields: [
+              'componentProperties',
+              'paddingTop',
+              'paddingRight',
+              'paddingBottom',
+              'paddingLeft',
+              'cornerRadius',
+              'effects',
+            ],
+          },
+          { nodeId: 'button-label', fields: ['textStyleId', 'textCase'] },
+          { nodeId: 'left-addon-paint', fields: ['fills'] },
+          { nodeId: 'status-label', fields: ['componentProperties'] },
+        ],
+      },
+    },
+    {
+      id: 101,
+      parentId: 100,
+      nodeId: 'button',
+      path: 'TitleView / Button',
+      type: 'INSTANCE',
+      name: '[D] Button',
+      visible: true,
+      componentInstance: { componentKey: 'button-text-key' },
+    },
+    {
+      id: 102,
+      parentId: 101,
+      nodeId: 'button-label',
+      path: 'TitleView / Button / Label',
+      type: 'TEXT',
+      name: 'Label',
+      visible: true,
+    },
+    {
+      id: 103,
+      parentId: 101,
+      nodeId: 'left-addon',
+      path: 'TitleView / Button / LeftAddon',
+      type: 'FRAME',
+      name: 'LeftAddon',
+      visible: false,
+    },
+    {
+      id: 104,
+      parentId: 103,
+      nodeId: 'left-addon-paint',
+      path: 'TitleView / Button / LeftAddon / PaintMe',
+      type: 'VECTOR',
+      name: 'PaintMe',
+      visible: true,
+    },
+    {
+      id: 105,
+      parentId: 100,
+      nodeId: 'status-label',
+      path: 'TitleView / Status / Label',
+      type: 'INSTANCE',
+      name: '🔩 Label',
+      visible: true,
+      componentInstance: { componentKey: 'label-key' },
+    },
+    {
+      id: 106,
+      parentId: 105,
+      nodeId: 'status-label-text',
+      path: 'TitleView / Status / Label / Label',
+      type: 'TEXT',
+      name: 'Label',
+      visible: true,
+    },
+  ];
+  const baselineDiff = (nodeId, property, reference, actual) => ({
+    message: `${property}: ${reference} → ${actual}`,
+    nodeId,
+    nodeName: nodeId,
+    nodePath: titleViewActual.find((entry) => entry.nodeId === nodeId)?.path ?? nodeId,
+    visible: true,
+    context: { referenceOrigin: 'host' },
+    details: {
+      property,
+      reference: { value: reference },
+      actual: { value: actual },
+    },
+  });
+  const titleViewBaselineFacts = buildBaselineCustomizationFacts(
+    titleViewActual[0],
+    titleViewActual,
+    [
+      baselineDiff('button', 'layout.padding.top', 4, 0),
+      baselineDiff('button', 'radius', 12, 0),
+      baselineDiff('button', 'effects', 'BACKGROUND_BLUR · blur 80', 'Нет'),
+      Object.assign(
+        baselineDiff(
+          'button-label',
+          'styles.text',
+          'Action/16–20 Component Primary',
+          'Action/13–16 Secondary Large',
+        ),
+        { assessment: { verdict: 'violation' } },
+      ),
+      baselineDiff('button-label', 'text.case', 'ORIGINAL', 'UPPER'),
+      baselineDiff('left-addon-paint', 'fill', 'Button/Primary/text', 'text/primary'),
+      baselineDiff(
+        'status-label-text',
+        'fill',
+        'text/info',
+        'static_text_inverted/primary',
+      ),
+      baselineDiff('status-label', 'component.identity', '🔩 Label', '🔩 Label'),
+    ],
+    [baselineDiff('button', 'variant.View', 'Secondary', 'Text')],
+    (diff) => diff.nodeId === 'button',
+  );
+  assert.deepEqual(
+    titleViewBaselineFacts.map((diff) => diff.details.property),
+    ['styles.text', 'text.case', 'variant.View'],
+    'WIP facts must keep direct mutations while dropping derived variant visuals, hidden descendants, unproven nested baselines and no-op identity diffs.',
+  );
+  assert.equal(
+    titleViewBaselineFacts[0].assessment,
+    undefined,
+    'WIP facts must not inherit policy verdicts from the deterministic customization category.',
   );
   assert.equal(
     shouldMaterializeComponentDiff({

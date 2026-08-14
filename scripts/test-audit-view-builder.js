@@ -46,7 +46,11 @@ function makeAuditItem(nodeType, name, diffs, visible = true) {
 }
 
 async function main() {
-  const { computeChangesResults, describeCustomStyleReasons } =
+  const {
+    computeBaselineChangeResults,
+    computeChangesResults,
+    describeCustomStyleReasons,
+  } =
     loadAuditViewBuilder();
 
   const componentItem = makeAuditItem('COMPONENT', '[D] BackgroundPlate', [
@@ -87,6 +91,37 @@ async function main() {
     results.map((item) => item.nodeType),
     ['COMPONENT', 'INSTANCE'],
     'FRAME nodes must stay excluded from customization results',
+  );
+
+  const allowedBaselineDiff = {
+    message: 'заливка: neutral/100 → accent/secondary',
+    nodePath: '[D] Card',
+    nodeName: '[D] Card',
+    visible: true,
+    assessment: { verdict: 'allowed' },
+  };
+  const hiddenBaselineDiff = {
+    message: 'скрытый слой: baseline → actual',
+    nodePath: '[D] Card / Hidden',
+    nodeName: 'Hidden',
+    visible: false,
+  };
+  instanceItem.baselineDiffs = [allowedBaselineDiff, allowedBaselineDiff, hiddenBaselineDiff];
+  const baselineResults = computeBaselineChangeResults([
+    componentItem,
+    instanceItem,
+    frameItem,
+  ]);
+  assert.equal(baselineResults.length, 1);
+  assert.equal(
+    baselineResults[0].diffs.length,
+    2,
+    'WIP baseline facts must keep allowed and duplicate deviations without policy filtering',
+  );
+  assert.equal(
+    baselineResults[0].diffs[0].assessment.verdict,
+    'allowed',
+    'View construction must not manufacture or reinterpret a verdict',
   );
 
   globalThis.figma = { mixed: Symbol('mixed') };

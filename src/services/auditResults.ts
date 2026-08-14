@@ -1,13 +1,21 @@
 import type { CheckState } from '../create-check-state';
 import { filterIgnoredLocalLibraryItems } from '../filters/ignoredComponentFilters';
-import { buildApolloAgentReport, buildApolloStatsReport } from '../stats/report';
+import {
+  buildApolloAgentReport,
+  buildApolloBaselineCustomizationReport,
+  buildApolloStatsReport,
+} from '../stats/report';
 import type {
   ApolloAgentReport,
+  ApolloBaselineCustomizationReport,
   ApolloStatsReport,
   ApolloStatsViews,
   StatsResource,
 } from '../stats/types';
-import { computeChangesResults } from './auditViewBuilder';
+import {
+  computeBaselineChangeResults,
+  computeChangesResults,
+} from './auditViewBuilder';
 
 export interface AuditResultViews {
   visibleViews: {
@@ -19,6 +27,7 @@ export interface AuditResultViews {
     customStyles: CheckState['customStyleEntries'];
     detached: CheckState['detachedEntries'];
     presets: CheckState['presetItems'];
+    changesWip: ApolloStatsViews['customizations'];
     changes: ApolloStatsViews['customizations'];
   };
   statsViews: ApolloStatsViews;
@@ -66,9 +75,12 @@ export interface PrepareAuditReportInput<TNode extends AuditReportSelectionNode>
 export interface AuditReportBundle {
   report: ApolloStatsReport;
   agentReport: ApolloAgentReport;
+  baselineCustomizationReport: ApolloBaselineCustomizationReport;
 }
 
 export function buildAuditResultViews(checkState: CheckState): AuditResultViews {
+  const baselineChangeCandidates = Object.values(checkState.relevanceBuckets).flat();
+  const changesWip = computeBaselineChangeResults(baselineChangeCandidates);
   const changeCandidates = checkState.relevanceBuckets.current.concat(
     checkState.contractCustomizationItems ?? [],
   );
@@ -108,6 +120,7 @@ export function buildAuditResultViews(checkState: CheckState): AuditResultViews 
       customStyles: checkState.customStyleEntries,
       detached: checkState.detachedEntries,
       presets: checkState.presetItems,
+      changesWip,
       changes,
     },
     statsViews: {
@@ -162,8 +175,34 @@ export async function prepareAuditReport<TNode extends AuditReportSelectionNode>
     resolveTokenResource: input.resolveTokenResource,
   });
 
+  const agentReport = buildApolloAgentReport(report);
+  const baselineCustomizationReport = buildApolloBaselineCustomizationReport(
+    report,
+    input.views.visibleViews.changesWip,
+    {
+      pluginVersion: input.pluginVersion,
+      user: input.user,
+      figma: input.figma,
+      scan: {
+        channel: input.scan.channel,
+        startedAt: input.scan.startedAt,
+        finishedAt: input.scan.finishedAt,
+        selection,
+        settings: {
+          shellAuditEnabled: input.scan.shellAuditEnabled,
+          experimentalContractV2Enabled: input.scan.experimentalContractV2Enabled,
+        },
+        scannedComponents: input.checkState.totalItems,
+      },
+      views: input.views.statsViews,
+      resolveStyleResource: input.resolveStyleResource,
+      resolveTokenResource: input.resolveTokenResource,
+    },
+  );
+
   return {
     report,
-    agentReport: buildApolloAgentReport(report),
+    agentReport,
+    baselineCustomizationReport,
   };
 }

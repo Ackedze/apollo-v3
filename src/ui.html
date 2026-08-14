@@ -887,6 +887,8 @@
               return () => resolveViewArray(['detached']);
             case 'changes':
               return () => getVisibleCustomizationItems();
+            case 'changesWip':
+              return () => resolveViewArray(['changesWip']);
             case 'technical':
               return () => resolveViewArray(['relevance', 'technical']);
             case 'deprecated':
@@ -1107,7 +1109,12 @@
             return;
           }
 
-          if (tab.id === 'changes' && renderCustomizationReactResults(items)) {
+          if (
+            (tab.id === 'changes' || tab.id === 'changesWip') &&
+            renderCustomizationReactResults(items, {
+              rawBaseline: tab.id === 'changesWip',
+            })
+          ) {
             return;
           }
 
@@ -1689,14 +1696,18 @@
           }));
         }
 
-        function renderCustomizationReactResults(items) {
+        function renderCustomizationReactResults(items, options = {}) {
           if (!resultsBridge || !resultsBridgeMounted || !items.length) {
             return false;
           }
 
+          const rawBaseline = options.rawBaseline === true;
+
           const reactItems = items
             .map((item) => {
-              const diffs = prepareChangeDiffs(item);
+              const diffs = rawBaseline
+                ? prepareBaselineChangeDiffs(item)
+                : prepareChangeDiffs(item);
               if (!diffs.length) {
                 return null;
               }
@@ -1717,12 +1728,16 @@
                 const isBindingDiff =
                   typeof diff.details?.bindingStatus === 'string' ||
                   Boolean(diff.details?.variableMode);
-                const marker =
+                const marker = rawBaseline
+                  ? undefined
+                  :
                   (diff.assessment?.verdict === 'expected' ||
                     diff.assessment?.verdict === 'allowed')
                     ? 'Expected'
                     : undefined;
-                const ruleText =
+                const ruleText = rawBaseline
+                  ? undefined
+                  :
                   diff.assessment?.verdict === 'violation' &&
                   typeof diff.assessment?.message === 'string' &&
                   diff.assessment.message.trim()
@@ -1742,12 +1757,15 @@
                       marker,
                       ruleText,
                     };
-                let remediation = diff.assessment?.remediation;
+                let remediation = rawBaseline
+                  ? undefined
+                  : diff.assessment?.remediation;
                 let remediationChoices = [];
                 const isStructuralCompositionDiff =
                   typeof diff.details?.property === 'string' &&
                   diff.details.property.indexOf('composition.') === 0;
                 const canReset =
+                  !rawBaseline &&
                   diff.assessment?.verdict !== 'expected' &&
                   diff.assessment?.verdict !== 'allowed' &&
                   (!isStructuralCompositionDiff || Boolean(remediation));
@@ -2026,6 +2044,11 @@
               );
 
           return dedupeDiffs(visibleDiffs);
+        }
+
+        function prepareBaselineChangeDiffs(item) {
+          const rawDiffs = Array.isArray(item.diffs) ? item.diffs : [];
+          return rawDiffs.filter((diff) => diff?.visible !== false);
         }
 
         function getVisibleCustomizationItems() {
@@ -3376,6 +3399,7 @@
 
           if (
             tabId === 'update' ||
+            tabId === 'changesWip' ||
             tabId === 'changes' ||
             tabId === 'local' ||
             tabId === 'detached'

@@ -47,7 +47,33 @@ function auditItem(overrides = {}) {
 
 async function main() {
   const { buildAuditResultViews, prepareAuditReport } = loadModule();
-  const current = auditItem();
+  const current = auditItem({
+    baselineDiffs: [{
+      message: 'Заливка: neutral/100 → accent/secondary',
+      nodePath: 'Page/[D] Button/Background',
+      nodeName: 'Background',
+      nodeId: '1:1;2:1',
+      visible: true,
+      diffKind: 'paint',
+      context: {
+        actualComponentKey: 'button-key',
+        referenceComponentKey: 'button-key',
+        referenceOrigin: 'host',
+        actualNestedOwnerComponentKey: null,
+        actualNestedOwnerPath: null,
+        actualNestedOwnerRelativePath: null,
+        nestedOwnerComponentKey: null,
+        nestedOwnerComponentRole: null,
+        nestedOwnerPath: null,
+        nestedOwnerRelativePath: null,
+      },
+      details: {
+        property: 'fill',
+        reference: { value: 'neutral/100', resourceType: 'token' },
+        actual: { value: 'accent/secondary', resourceType: 'token' },
+      },
+    }],
+  });
   const update = auditItem({
     id: '1:2',
     relevance: 'update',
@@ -117,13 +143,22 @@ async function main() {
     ['1:5'],
   );
   assert.deepEqual(
+    views.visibleViews.changesWip.map((item) => item.id),
+    ['1:1'],
+    'WIP customizations must only contain direct baseline evidence',
+  );
+  assert.deepEqual(
     views.statsViews.currentComponents.map((item) => item.id),
     ['1:1'],
     'Detached contract findings must not pollute current components',
   );
 
   let componentKeyReads = 0;
-  const { report, agentReport } = await prepareAuditReport({
+  const {
+    report,
+    agentReport,
+    baselineCustomizationReport,
+  } = await prepareAuditReport({
     pluginVersion: 'test',
     user: { id: 'user-1', name: 'Test User' },
     figma: {
@@ -162,6 +197,32 @@ async function main() {
   assert.equal(report.categories.localComponents.count, 1);
   assert.equal(report.categories.updates.count, 1);
   assert.equal(agentReport.reportId, `${report.reportId}:agent`);
+  assert.equal(
+    baselineCustomizationReport.reportId,
+    `${report.reportId}:customizations-wip`,
+  );
+  assert.equal(
+    baselineCustomizationReport.reportKind,
+    'apollo-customizations-wip-report',
+  );
+  assert.equal(baselineCustomizationReport.category.count, 1);
+  assert.equal(baselineCustomizationReport.category.changeCount, 1);
+  assert.equal(
+    baselineCustomizationReport.category.items[0].changes[0].assessment,
+    null,
+  );
+  assert.deepEqual(
+    baselineCustomizationReport.category.items[0].changes[0].componentRules,
+    [],
+  );
+  assert.equal(
+    baselineCustomizationReport.category.items[0].changes[0].presentation,
+    null,
+  );
+  assert.match(
+    baselineCustomizationReport.suggestedFileName,
+    /_customizations-wip\.json$/,
+  );
 
   console.log('Audit result orchestration regression checks passed');
 }

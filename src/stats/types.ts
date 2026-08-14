@@ -297,3 +297,28 @@ export type ApolloAgentReport = {
   findings: ApolloAgentFinding[];
   componentContexts: RuntimeComponentAgentContext[];
 };
+
+export type ApolloBaselineCustomizationReport = {
+  schemaVersion: 1;
+  reportKind: 'apollo-customizations-wip-report';
+  reportId: string;
+  sourceReportId: string;
+  generatedAt: string;
+  suggestedFileName: string;
+  user: ApolloStatsReport['user'];
+  plugin: ApolloStatsReport['plugin'];
+  figma: ApolloStatsReport['figma'];
+  scan: ApolloStatsReport['scan'];
+  summary: {
+    scannedComponents: number;
+    componentCount: number;
+    changeCount: number;
+  };
+  category: {
+    id: 'customizationsWip';
+    title: 'Кастомизации [WIP]';
+    count: number;
+    changeCount: number;
+    items: StatsCustomizationItem[];
+  };
+};

@@ -1,6 +1,6 @@
 {
-  "name": "Apollo",
-  "id": "1616850453760090547",
+  "name": "Apollo v3",
+  "id": "1786840000000000003",
   "api": "1.0.0",
   "main": "dist/code.js",
   "ui": "dist/ui.html",

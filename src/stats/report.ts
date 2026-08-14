@@ -17,6 +17,7 @@ import type {
   ThemeAuditEntry,
 } from '../types/audit';
 import type {
+  ApolloBaselineCustomizationReport,
   ApolloStatsReport,
   ApolloStatsViews,
   StatsCategory,
@@ -160,6 +161,47 @@ export function buildApolloStatsReport(
   };
 }
 
+export function buildApolloBaselineCustomizationReport(
+  sourceReport: ApolloStatsReport,
+  items: AuditItem[],
+  input: BuildApolloStatsReportInput,
+): ApolloBaselineCustomizationReport {
+  const serializedItems = items.map((item) =>
+    customizationItem(item, input, false),
+  );
+  const changeCount = serializedItems.reduce(
+    (sum, item) => sum + item.changes.length,
+    0,
+  );
+
+  return {
+    schemaVersion: 1,
+    reportKind: 'apollo-customizations-wip-report',
+    reportId: `${sourceReport.reportId}:customizations-wip`,
+    sourceReportId: sourceReport.reportId,
+    generatedAt: sourceReport.generatedAt,
+    suggestedFileName: toBaselineCustomizationFileName(
+      sourceReport.suggestedFileName,
+    ),
+    user: sourceReport.user,
+    plugin: sourceReport.plugin,
+    figma: sourceReport.figma,
+    scan: sourceReport.scan,
+    summary: {
+      scannedComponents: sourceReport.summary.scannedComponents,
+      componentCount: serializedItems.length,
+      changeCount,
+    },
+    category: {
+      id: 'customizationsWip',
+      title: 'Кастомизации [WIP]',
+      count: serializedItems.length,
+      changeCount,
+      items: serializedItems,
+    },
+  };
+}
+
 export function slugifyUserName(value: string): string {
   const slug = value
     .trim()
@@ -219,6 +261,7 @@ function componentItem(item: AuditItem): StatsComponentItem {
 function customizationItem(
   item: AuditItem,
   input: BuildApolloStatsReportInput,
+  includeInterpretation = true,
 ): StatsCustomizationItem {
   const component = componentItem(item);
   return {
@@ -230,7 +273,7 @@ function customizationItem(
     libraryFreshness: component.libraryFreshness,
     localComponentOwner: component.localComponentOwner,
     changes: (item.diffs ?? []).map((diff) =>
-      customizationChange(diff, item, input),
+      customizationChange(diff, item, input, includeInterpretation),
     ),
   };
 }
@@ -239,6 +282,7 @@ function customizationChange(
   diff: DiffEntry,
   item: AuditItem,
   input: BuildApolloStatsReportInput,
+  includeInterpretation: boolean,
 ): StatsCustomizationChange {
   const property = diff.details?.property ?? inferProperty(diff.message);
   const reference = diff.details?.reference ?? { value: null };
@@ -247,11 +291,11 @@ function customizationChange(
   const actualResource = resolveDiffResource(actual, input);
   const referenceBinding = resolveStatsBinding(reference, referenceResource);
   const actualBinding = resolveStatsBinding(actual, actualResource);
-  const componentRules = findComponentContractRulesForDiff(diff).map(
-    statsComponentRule,
-  );
+  const componentRules = includeInterpretation
+    ? findComponentContractRulesForDiff(diff).map(statsComponentRule)
+    : [];
   const componentContractViolation =
-    findComponentContractViolationForDiff(diff);
+    includeInterpretation ? findComponentContractViolationForDiff(diff) : null;
   const runtimeAssessmentIsAuthoritative =
     diff.assessment && diff.assessment.verdict !== 'unknown';
   const componentKey = item.componentKey ?? 'local';
@@ -281,7 +325,9 @@ function customizationChange(
         }
       : null;
   const assessment: StatsCustomizationChange['assessment'] =
-    runtimeAssessmentIsAuthoritative || !componentContractViolation
+    !includeInterpretation
+      ? null
+      : runtimeAssessmentIsAuthoritative || !componentContractViolation
       ? runtimeAssessment
       : {
           verdict: 'violation',
@@ -335,16 +381,24 @@ function customizationChange(
       surfaceContext: diff.context.surfaceContext ?? null,
     },
     componentRules,
-    presentation: getAuditPresentationForComponent(
-      diff.context.actualComponentKey ??
-        diff.context.actualNestedOwnerComponentKey ??
-        diff.context.nestedOwnerComponentKey ??
-        diff.context.referenceComponentKey ??
-        item.componentKey,
-      property,
-    ),
+    presentation: includeInterpretation
+      ? getAuditPresentationForComponent(
+          diff.context.actualComponentKey ??
+            diff.context.actualNestedOwnerComponentKey ??
+            diff.context.nestedOwnerComponentKey ??
+            diff.context.referenceComponentKey ??
+            item.componentKey,
+          property,
+        )
+      : null,
     assessment,
   };
+}
+
+function toBaselineCustomizationFileName(fileName: string): string {
+  return fileName.endsWith('.json')
+    ? `${fileName.slice(0, -5)}_customizations-wip.json`
+    : `${fileName}_customizations-wip.json`;
 }
 
 function resolveStatsBinding(

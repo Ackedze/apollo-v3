@@ -302,6 +302,27 @@ export function computeChangesResults(
   });
 }
 
+/**
+ * Возвращает слой фактов для WIP-таба: только baseline -> actual, без
+ * policy-фильтров, дедупликации и интерпретации допустимости.
+ * Скрытые узлы по-прежнему исключаются из пользовательского отчёта.
+ */
+export function computeBaselineChangeResults(
+  items: AuditItem[],
+): AuditItem[] {
+  const results: AuditItem[] = [];
+  for (const item of items) {
+    if (!item || !isEntryVisible(item)) continue;
+    if (item.nodeType !== 'INSTANCE' && item.nodeType !== 'COMPONENT') continue;
+    const baselineDiffs = Array.isArray(item.baselineDiffs)
+      ? item.baselineDiffs.filter((diff) => diff.visible !== false)
+      : [];
+    if (!baselineDiffs.length) continue;
+    results.push(Object.assign({}, item, { diffs: baselineDiffs }));
+  }
+  return results;
+}
+
 export async function describeCustomStyleReasons(
   node: SceneNode,
   options: CustomStyleCollectionOptions,

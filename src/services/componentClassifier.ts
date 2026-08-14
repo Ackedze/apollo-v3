@@ -562,6 +562,9 @@ function directOverrideFieldsMatchDiff(
   if (property === 'text.align.horizontal') {
     return hasAnyOverrideField(fields, ['textAlignHorizontal']);
   }
+  if (property === 'text.case') {
+    return hasAnyOverrideField(fields, ['textCase']);
+  }
   if (property === 'text.characters') {
     return hasAnyOverrideField(fields, ['characters', 'componentProperties']);
   }
@@ -619,6 +622,122 @@ function hasAnyOverrideField(
   candidates: readonly string[],
 ): boolean {
   return candidates.some((candidate) => fields.has(candidate));
+}
+
+function toBaselineDiffFact(diff: DiffEntry): DiffEntry {
+  const fact = Object.assign({}, diff);
+  delete fact.assessment;
+  delete fact.suppressAsHostControlledNestedProperty;
+  delete fact.suppressionReason;
+  delete fact.contractEvidenceOnly;
+  return fact;
+}
+
+function hasSameBaselineAndActualValue(diff: DiffEntry): boolean {
+  const referenceValue = diff.details?.reference.value;
+  const actualValue = diff.details?.actual.value;
+  if (referenceValue === actualValue) return true;
+  if (referenceValue === null || actualValue === null) return false;
+  return String(referenceValue) === String(actualValue);
+}
+
+function isComponentSelectionDiff(diff: DiffEntry): boolean {
+  const property = diff.details?.property ?? '';
+  return property === 'component.identity' || property.startsWith('variant.');
+}
+
+function isEffectivelyVisible(
+  diff: DiffEntry,
+  actualStructure: readonly DSStructureNode[],
+): boolean {
+  if (diff.visible === false) return false;
+  if (!diff.nodeId) return true;
+
+  const byNodeId = new Map(
+    actualStructure
+      .filter((node) => Boolean(node.nodeId))
+      .map((node) => [node.nodeId!, node]),
+  );
+  const byId = new Map(actualStructure.map((node) => [node.id, node]));
+  let current = byNodeId.get(diff.nodeId);
+  while (current) {
+    if (current.visible === false) return false;
+    current = current.parentId === null ? undefined : byId.get(current.parentId);
+  }
+  return true;
+}
+
+function isInsideChangedComponentSelection(
+  diff: DiffEntry,
+  actualStructure: readonly DSStructureNode[],
+  changedSelectionNodeIds: ReadonlySet<string>,
+): boolean {
+  if (!diff.nodeId || !changedSelectionNodeIds.size) return false;
+  const byNodeId = new Map(
+    actualStructure
+      .filter((node) => Boolean(node.nodeId))
+      .map((node) => [node.nodeId!, node]),
+  );
+  const byId = new Map(actualStructure.map((node) => [node.id, node]));
+  let current = byNodeId.get(diff.nodeId);
+  while (current) {
+    if (current.nodeId && changedSelectionNodeIds.has(current.nodeId)) return true;
+    current = current.parentId === null ? undefined : byId.get(current.parentId);
+  }
+  return false;
+}
+
+/**
+ * Builds the uninterpreted customization facts consumed by the WIP report.
+ *
+ * The comparison deliberately uses the authored host variant instead of the
+ * recursively expanded standalone reference. Figma's native override records
+ * distinguish a direct user mutation from visual values derived from a public
+ * component-property change. This is evidence normalization, not a policy
+ * decision: allowed and forbidden direct mutations remain indistinguishable
+ * here and are classified later.
+ */
+export function buildBaselineCustomizationFacts(
+  host: DSStructureNode | null,
+  actualStructure: readonly DSStructureNode[],
+  hostDiffs: readonly DiffEntry[],
+  explicitVariantStateDiffs: readonly DiffEntry[],
+  isExplainedBySelectedVariant: (diff: DiffEntry) => boolean = () => false,
+): DiffEntry[] {
+  if (!host) return [];
+
+  const candidates = markDirectHostVariantDiffs(
+    host,
+    Array.from(hostDiffs).concat(explicitVariantStateDiffs),
+  );
+  const changedSelectionNodeIds = new Set(
+    candidates
+      .filter((diff) =>
+        isComponentSelectionDiff(diff) &&
+        !hasSameBaselineAndActualValue(diff) &&
+        Boolean(diff.nodeId),
+      )
+      .map((diff) => diff.nodeId!),
+  );
+  const requiresDirectOverrideEvidence = host.type === 'INSTANCE';
+
+  return candidates
+    .filter((diff) =>
+      !requiresDirectOverrideEvidence ||
+      diff.context?.directHostVariantOverride === true,
+    )
+    .filter((diff) =>
+      isComponentSelectionDiff(diff) ||
+      !isInsideChangedComponentSelection(
+        diff,
+        actualStructure,
+        changedSelectionNodeIds,
+      ) ||
+      !isExplainedBySelectedVariant(diff),
+    )
+    .filter((diff) => !hasSameBaselineAndActualValue(diff))
+    .filter((diff) => isEffectivelyVisible(diff, actualStructure))
+    .map(toBaselineDiffFact);
 }
 
 function markNestedContractReferenceOwnership(
@@ -1101,6 +1220,40 @@ export async function classifyComponentNode(
           resolveVariableMetadata: resolveVariableMetadata,
         }).diffs
       : [];
+  const baselineSelectedVariantEvidence = alignedActualStructure
+    ? createNestedContextEvidence(
+        alignedActualStructure,
+        (instance) => {
+          const nestedReference = findComponent(
+            instance.componentInstance?.componentKey ?? '',
+          );
+          return resolveStructureForInstance(
+            nestedReference,
+            instance.componentInstance ?? null,
+          );
+        },
+        hostDiffs.concat(explicitVariantStateDiffs),
+        (nestedComponentKey) =>
+          findComponent(nestedComponentKey)?.key ?? nestedComponentKey,
+        {
+          resolveTokenLabel: resolveTokenLabel,
+          resolveStyleLabel: resolveStyleLabelForDiff,
+          isPaintToken: isPaintToken,
+          resolveVariableMetadata: resolveVariableMetadata,
+        },
+      )
+    : null;
+  // WIP fact layer: compare against the selected host variant and keep only
+  // deviations backed by Figma's direct override evidence. This removes
+  // standalone-materialization noise and visual consequences of variant
+  // switches without applying any design-system allow/deny policy.
+  const baselineDiffs = buildBaselineCustomizationFacts(
+    alignedActualStructure?.[0] ?? null,
+    alignedActualStructure ?? [],
+    hostDiffs,
+    explicitVariantStateDiffs,
+    (diff) => baselineSelectedVariantEvidence?.explains(diff) ?? false,
+  );
   const markedHostVariantDiffs = alignedActualStructure?.[0]
     ? markDirectHostVariantDiffs(alignedActualStructure[0], hostDiffs)
     : hostDiffs;
@@ -1432,6 +1585,7 @@ export async function classifyComponentNode(
     reference: ref,
     componentKey,
     diffs,
+    baselineDiffs,
     comparisonIssues,
     updateReasons,
     libraryFreshness,

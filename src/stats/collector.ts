@@ -1,4 +1,7 @@
-import type { ApolloStatsReport } from './types';
+import type {
+  ApolloBaselineCustomizationReport,
+  ApolloStatsReport,
+} from './types';
 import { buildApolloAgentReport } from './agentReport';
 
 const DEFAULT_COLLECTOR_URL =
@@ -6,6 +9,7 @@ const DEFAULT_COLLECTOR_URL =
 
 export async function submitApolloStatsReport(
   report: ApolloStatsReport,
+  baselineCustomizationReport?: ApolloBaselineCustomizationReport,
   collectorUrl = DEFAULT_COLLECTOR_URL,
 ): Promise<void> {
   await submitSingleStatsReport(report, collectorUrl, 'full');
@@ -14,12 +18,22 @@ export async function submitApolloStatsReport(
     collectorUrl,
     'agent',
   );
+  if (baselineCustomizationReport) {
+    await submitSingleStatsReport(
+      baselineCustomizationReport,
+      collectorUrl,
+      'customizations-wip',
+    );
+  }
 }
 
 async function submitSingleStatsReport(
-  report: ApolloStatsReport | ReturnType<typeof buildApolloAgentReport>,
+  report:
+    | ApolloStatsReport
+    | ReturnType<typeof buildApolloAgentReport>
+    | ApolloBaselineCustomizationReport,
   collectorUrl: string,
-  reportKind: 'full' | 'agent',
+  reportKind: 'full' | 'agent' | 'customizations-wip',
 ): Promise<void> {
   try {
     const response = await fetch(collectorUrl, {

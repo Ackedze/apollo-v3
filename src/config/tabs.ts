@@ -1,6 +1,7 @@
 export type TabId =
   | 'current'
   | 'detached'
+  | 'changesWip'
   | 'changes'
   | 'technical'
   | 'deprecated'
@@ -33,6 +34,13 @@ export const tabDefinitions: TabDefinition[] = [
     id: 'update',
     title: 'Пора обновить',
     emptyMessage: 'Все компоненты обновлены',
+  },
+  {
+    id: 'changesWip',
+    title: 'Кастомизации [WIP]',
+    emptyMessage: 'Отклонений от baseline не найдено',
+    requiresScan: true,
+    ignoreComponentFilter: true,
   },
   {
     id: 'changes',
@@ -93,6 +101,7 @@ export const LEFT_SECTION_ORDER: LeftSectionOrderItem[] = [
   'customStyles',
   '__divider_after_customStyles__',
   'update',
+  'changesWip',
   'changes',
   'local',
   'detached',

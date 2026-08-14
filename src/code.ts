@@ -484,7 +484,11 @@ async function runAudit(
 
     try {
       const currentUser = figma.currentUser;
-      const { report, agentReport } = await prepareAuditReport({
+      const {
+        report,
+        agentReport,
+        baselineCustomizationReport,
+      } = await prepareAuditReport({
         pluginVersion: APOLLO_VERSION,
         user: {
           id: currentUser?.id ?? null,
@@ -527,7 +531,7 @@ async function runAudit(
           findingCount: agentReport.findings.length,
         },
       });
-      void submitApolloStatsReport(report);
+      void submitApolloStatsReport(report, baselineCustomizationReport);
     } catch (error) {
       console.warn('[Apollo] failed to prepare stats report', error);
     }
