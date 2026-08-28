@@ -599,6 +599,17 @@ plugin.
 
 ## P2: maintenance
 
+- [ ] Introduce a cross-repository knowledge-link contract for every
+  authoritative rule: stable `ruleId` -> executable `rules.json` source ->
+  human-readable instructions -> cookbook/recipe -> PASS/FAIL fixtures.
+  Store links as typed references with repository, path, anchor, revision and
+  checksum; validate reciprocal links and semantic drift in CI. Apollo must
+  use the executable source for verdicts, while agents and documentation UIs
+  may follow the same identity to explanations and examples. First acceptance
+  package: `web-corp.title-view`, including the TitleStatus/Status rule whose
+  current human-readable mirrors have already demonstrated drift from the
+  executable contract.
+
 - [ ] Generate runtime/publisher schema fixtures from the shared executable-rule definition and verify backward-compatible migrations.
 - [ ] Add bundle-size and module-size budgets to CI.
 - [ ] Remove schema-v1 composition compilation, compatibility fields and obsolete registries after all required packages publish Contract v2 and the migration dashboard reports zero legacy dependencies.
