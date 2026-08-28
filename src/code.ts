@@ -65,8 +65,25 @@ import {
   extractVariableCollectionKey,
   getVariableCollectionLookupKeys,
 } from './utils/variableCollectionId';
-import { submitApolloStatsReport } from './stats/collector';
-import type { ApolloAgentReport, StatsResource } from './stats/types';
+import { createApolloStatsDelivery } from './stats/delivery';
+import type {
+  ApolloAgentReport,
+  ApolloBaselineCustomizationReport,
+  ApolloPatternAuditReport,
+  ApolloTextAuditReport,
+  StatsResource,
+} from './stats/types';
+import {
+  buildApolloTextAuditReport,
+  collectApolloTextFacts,
+} from './stats/textReport';
+import { collectApolloLayoutRelations } from './stats/layoutRelations';
+import { buildApolloAuditEvidenceBundle } from './stats/evidenceBundle';
+import {
+  buildApolloPredicateStatsReport,
+  buildApolloPredicateUiValidation,
+  type ApolloPredicatePilotValidation,
+} from './predicate/pilotValidation';
 import {
   ensureContractPackageIndexLoaded,
   ensureContractArtifactsForHints,
@@ -122,20 +139,97 @@ import {
   findColorTokenValueCandidates,
 } from './services/colorTokenValueIndex';
 import { getDetachedLibraryComponentKey } from './services/detachedComponentSource';
+import {
+  normalizeApolloPageType,
+  type ApolloPageType,
+} from './types/pageContext';
 
 declare const __APOLLO_VERSION__: string;
 
 const APOLLO_VERSION = __APOLLO_VERSION__;
 const APOLLO_PROXY_URL = 'http://localhost:3001/analyze';
+const APOLLO_CODEX_REPORT_RUNS_URL =
+  'http://localhost:3001/v1/analyze/codex/runs';
+const APOLLO_PREDICATE_VALIDATION_URL =
+  'http://localhost:3001/v1/validate/predicates';
+const APOLLO_AGENT_SOURCE_STORAGE_KEY = 'apollo-agent-source';
+
+type ApolloAgentSource = 'langflow' | 'codex';
+type ApolloDialogueEntry = {
+  role: 'user' | 'assistant';
+  text: string;
+};
 
 figma.showUI(__html__, { width: 800, height: 860 });
 console.log('[Apollo] plugin version', { version: APOLLO_VERSION });
+const statsDelivery = createApolloStatsDelivery({
+  storage: {
+    getAsync: (key) => figma.clientStorage.getAsync(key),
+    setAsync: (key, value) => figma.clientStorage.setAsync(key, value),
+  },
+  onStatus: (status) => {
+    figma.ui.postMessage({
+      type: 'apollo-stats-delivery-status',
+      payload: status,
+    });
+  },
+});
 const EXPANDED_UI_SIZE = { width: 800, height: 860 };
 const COMPACT_UI_SIZE = { width: 400, height: 860 };
 let lastApolloAgentReport: ApolloAgentReport | null = null;
+let lastApolloBaselineCustomizationReport:
+  | ApolloBaselineCustomizationReport
+  | null = null;
+let lastApolloPatternReport: ApolloPatternAuditReport | null = null;
+let lastApolloTextReport: ApolloTextAuditReport | null = null;
 let lastContractArtifactHints: ContractArtifactHint[] = [];
 let activeApolloAgentRequestId: string | null = null;
 const apolloDialogueSessionNonce = Date.now().toString(36);
+
+function normalizeApolloAgentSource(value: unknown): ApolloAgentSource {
+  return value === 'codex' ? 'codex' : 'langflow';
+}
+
+function normalizeApolloDialogue(value: unknown): ApolloDialogueEntry[] {
+  if (!Array.isArray(value)) return [];
+  const normalized: ApolloDialogueEntry[] = [];
+  for (const entry of value.slice(-12)) {
+    if (!entry || typeof entry !== 'object') continue;
+    const candidate = entry as { role?: unknown; text?: unknown };
+    const text =
+      typeof candidate.text === 'string' ? candidate.text.trim() : '';
+    if (!text) continue;
+    normalized.push({
+      role: candidate.role === 'assistant' ? 'assistant' : 'user',
+      text: text.slice(0, 8000),
+    });
+  }
+  return normalized;
+}
+
+async function loadApolloAgentSourcePreference(): Promise<void> {
+  const storedValue = await figma.clientStorage.getAsync(
+    APOLLO_AGENT_SOURCE_STORAGE_KEY,
+  );
+  figma.ui.postMessage({
+    type: 'apollo-agent-source',
+    payload: { source: normalizeApolloAgentSource(storedValue) },
+  });
+}
+
+async function saveApolloAgentSourcePreference(
+  source: string | null | undefined,
+): Promise<void> {
+  const normalizedSource = normalizeApolloAgentSource(source);
+  await figma.clientStorage.setAsync(
+    APOLLO_AGENT_SOURCE_STORAGE_KEY,
+    normalizedSource,
+  );
+  figma.ui.postMessage({
+    type: 'apollo-agent-source',
+    payload: { source: normalizedSource },
+  });
+}
 let lastGenerationExampleAuditEvidence: GenerationExampleAuditEvidence | null =
   null;
 let generationExampleCaptureInProgress = false;
@@ -153,9 +247,18 @@ figma.ui.postMessage({
 figma.ui.onmessage = createApolloPluginMessageRouter({
   postMessage: (message) => figma.ui.postMessage(message),
   notify: (message) => figma.notify(message),
-  uiReady: startCatalogPreload,
+  uiReady: () => {
+    startCatalogPreload();
+    void loadApolloAgentSourcePreference().catch((error) => {
+      console.warn('[Apollo] failed to load agent source', error);
+    });
+    void statsDelivery.flush().catch((error) => {
+      console.warn('[Apollo] failed to flush stats outbox on startup', error);
+    });
+  },
   scanSelection: (payload) => {
     void runAudit(undefined, parseAuditChannel(payload?.pickerLabel), {
+      pageType: normalizeApolloPageType(payload?.pageType),
       shellAuditEnabled: payload?.shellAuditEnabled === true,
       experimentalContractV2Enabled:
         payload?.experimentalContractV2Enabled === true,
@@ -168,6 +271,7 @@ figma.ui.onmessage = createApolloPluginMessageRouter({
     auditLifecycle.requestCancel();
   },
   sendAgentReport: sendApolloAgentReport,
+  setAgentSource: saveApolloAgentSourcePreference,
   cancelAgentReport: (requestId) => {
     if (!requestId || requestId === activeApolloAgentRequestId) {
       activeApolloAgentRequestId = null;
@@ -175,6 +279,7 @@ figma.ui.onmessage = createApolloPluginMessageRouter({
     }
     return false;
   },
+  retryStatsUpload: () => statsDelivery.flush(),
   resizeUi: (compact) => {
     const targetSize = compact ? COMPACT_UI_SIZE : EXPANDED_UI_SIZE;
     figma.ui.resize(targetSize.width, targetSize.height);
@@ -203,6 +308,7 @@ let catalogPreparationRevision = 0;
 let lastAuditSelectionIds: string[] = [];
 let lastAuditChannel: AuditChannel = 'Desktop';
 let lastAuditOptions = {
+  pageType: null as ApolloPageType | null,
   shellAuditEnabled: false,
   experimentalContractV2Enabled: false,
 };
@@ -238,6 +344,7 @@ const customizationResetAction = createCustomizationResetAction({
   getSceneNodeById,
   resolveReferenceNode: resolveCustomizationResetReferenceNode,
   rerunAudit: rerunLastAuditWithFallback,
+  resolveNumericVariableToken: resolveNumericVariableTokenForBinding,
   mutations: customizationResetMutations,
   notify: (message) => figma.notify(message),
   log: (message, payload) => console.log(message, payload),
@@ -251,6 +358,7 @@ async function runAudit(
   selectionOverride?: readonly SceneNode[],
   selectedChannel: AuditChannel = 'Desktop',
   options?: {
+    pageType?: ApolloPageType | null;
     shellAuditEnabled?: boolean;
     experimentalContractV2Enabled?: boolean;
   },
@@ -264,11 +372,14 @@ async function runAudit(
     return;
   }
   lastApolloAgentReport = null;
+  lastApolloBaselineCustomizationReport = null;
+  lastApolloPatternReport = null;
   lastGenerationExampleAuditEvidence = null;
   lastContractArtifactHints = [];
   activeApolloAgentRequestId = null;
   findingActionRegistry.reset();
   lastAuditOptions = {
+    pageType: options?.pageType ?? null,
     shellAuditEnabled: Boolean(options?.shellAuditEnabled),
     experimentalContractV2Enabled: Boolean(
       options?.experimentalContractV2Enabled,
@@ -484,10 +595,15 @@ async function runAudit(
 
     try {
       const currentUser = figma.currentUser;
+      const layoutRelations = collectApolloLayoutRelations(
+        selection,
+        buildNodePath,
+      );
       const {
         report,
         agentReport,
         baselineCustomizationReport,
+        patternReport,
       } = await prepareAuditReport({
         pluginVersion: APOLLO_VERSION,
         user: {
@@ -501,6 +617,7 @@ async function runAudit(
         },
         scan: {
           channel: selectedChannel,
+          pageType: options?.pageType ?? null,
           startedAt: auditStartedAt,
           finishedAt: new Date(),
           shellAuditEnabled: Boolean(options?.shellAuditEnabled),
@@ -509,6 +626,7 @@ async function runAudit(
           ),
         },
         selection,
+        layoutRelations,
         checkState,
         views: auditResultViews,
         resolveNodePath: buildNodePath,
@@ -523,15 +641,72 @@ async function runAudit(
       lastGenerationExampleAuditEvidence =
         createGenerationExampleAuditEvidence(report);
       lastApolloAgentReport = agentReport;
+      lastApolloBaselineCustomizationReport = baselineCustomizationReport;
+      patternReport.evidenceBundle = await buildApolloAuditEvidenceBundle({
+        report,
+        baselineCustomizationReport,
+        pageId: figma.currentPage.id,
+        roots: selection,
+        resolveNodePath: buildNodePath,
+        resolveComponentKey: (node) =>
+          getComponentKeyCached(
+            node,
+            traversalContext.componentKeyCache,
+          ),
+        resolveVariableMetadata: resolveVariableMetadataForDiff,
+      });
+      lastApolloPatternReport = patternReport;
+      const textFacts = await collectApolloTextFacts(
+        selection,
+        buildNodePath,
+        (node) =>
+          getComponentKeyCached(
+            node,
+            traversalContext.componentKeyCache,
+          ),
+      );
+      const textReport = buildApolloTextAuditReport(report, textFacts);
+      lastApolloTextReport = textReport;
       figma.ui.postMessage({
         type: 'apollo-agent-report-ready',
         payload: {
-          reportId: agentReport.reportId,
-          suggestedFileName: agentReport.suggestedFileName,
-          findingCount: agentReport.findings.length,
+          reportId: baselineCustomizationReport.reportId,
+          suggestedFileName: baselineCustomizationReport.suggestedFileName,
+          findingCount: baselineCustomizationReport.summary.changeCount,
         },
       });
-      void submitApolloStatsReport(report, baselineCustomizationReport);
+      figma.ui.postMessage({
+        type: 'apollo-pattern-report-ready',
+        payload: {
+          reportId: patternReport.reportId,
+          suggestedFileName: patternReport.suggestedFileName,
+          findingCount: patternReport.summary.occurrenceCount,
+        },
+      });
+      figma.ui.postMessage({
+        type: 'apollo-text-report-ready',
+        payload: {
+          reportId: textReport.reportId,
+          suggestedFileName: textReport.suggestedFileName,
+          findingCount: textReport.summary.scannedTextNodes,
+        },
+      });
+      void statsDelivery
+        .enqueueAuditReports(report, baselineCustomizationReport)
+        .catch((error) => {
+          console.warn('[Apollo] failed to enqueue stats reports', error);
+          figma.ui.postMessage({
+            type: 'apollo-stats-delivery-status',
+            payload: {
+              phase: 'failed',
+              pendingCount: 0,
+              uploadedCount: 0,
+              message: 'Не удалось сохранить отчёт для отправки',
+              lastError:
+                error instanceof Error ? error.message : String(error),
+            },
+          });
+        });
     } catch (error) {
       console.warn('[Apollo] failed to prepare stats report', error);
     }
@@ -804,15 +979,32 @@ async function resolveLiveVariableCollectionMetadata(
 async function sendApolloAgentReport(
   requestId?: string,
   userMessage?: string,
+  reportType?: string,
+  agentSource?: string,
+  dialogue?: unknown,
 ): Promise<void> {
   const report = lastApolloAgentReport;
+  const customizationReport = lastApolloBaselineCustomizationReport;
+  const patternReport = lastApolloPatternReport;
+  const textReport = lastApolloTextReport;
   const currentRequestId = requestId || `${Date.now()}`;
   const agentInputText = buildApolloAgentInputText(userMessage);
   const isDirectUserQuestion = agentInputText !== null;
-  const requestKind = isDirectUserQuestion ? 'question' : 'report';
+  const isPatternReport = !isDirectUserQuestion && reportType === 'patterns';
+  const isTextReport = !isDirectUserQuestion && reportType === 'texts';
+  const selectedReport = isPatternReport
+    ? patternReport
+    : isTextReport
+      ? textReport
+      : customizationReport;
+  const requestKind = isDirectUserQuestion
+    ? 'question'
+    : isTextReport
+      ? 'texts'
+      : 'report';
   activeApolloAgentRequestId = currentRequestId;
 
-  if (!report && !isDirectUserQuestion) {
+  if (!selectedReport && !isDirectUserQuestion) {
     figma.ui.postMessage({
       type: 'apollo-agent-result',
       payload: {
@@ -830,34 +1022,104 @@ async function sendApolloAgentReport(
     payload: {
       requestId: currentRequestId,
       requestKind,
-      reportId: report?.reportId ?? null,
-      suggestedFileName: report?.suggestedFileName ?? '',
+      reportId: isDirectUserQuestion
+        ? report?.reportId ?? null
+        : selectedReport?.reportId ?? null,
+      suggestedFileName: isDirectUserQuestion
+        ? report?.suggestedFileName ?? ''
+        : selectedReport?.suggestedFileName ?? '',
     },
   });
 
   try {
+    if (!isDirectUserQuestion) {
+      const onProgress = (run: ApolloCodexReportRun) => {
+        if (activeApolloAgentRequestId !== currentRequestId) return;
+        figma.ui.postMessage({
+          type: 'apollo-agent-progress',
+          payload: {
+            requestId: currentRequestId,
+            requestKind,
+            runId: run.id,
+            stage: run.stage,
+            progress: run.progress,
+            message: run.message,
+            events: run.events,
+          },
+        });
+      };
+      const shouldContinue = () =>
+        activeApolloAgentRequestId === currentRequestId;
+      const validation = isPatternReport
+        ? await requestPredicatePatternReport(
+            patternReport!,
+            shouldContinue,
+          )
+        : isTextReport
+          ? await requestCodexTextReport(
+              textReport!,
+              onProgress,
+              shouldContinue,
+            )
+        : await requestCodexCustomizationReport(
+            customizationReport!,
+            onProgress,
+            shouldContinue,
+          );
+      if (activeApolloAgentRequestId !== currentRequestId) return;
+      figma.ui.postMessage({
+        type: 'apollo-agent-result',
+        payload: {
+          requestId: currentRequestId,
+          requestKind,
+          reportId: selectedReport!.reportId,
+          suggestedFileName: selectedReport!.suggestedFileName,
+          text:
+            typeof validation.responseMarkdown === 'string'
+              ? validation.responseMarkdown
+              : '',
+          findings: Array.isArray(validation.findings)
+            ? [
+                ...validation.findings,
+                ...(Array.isArray(validation.allowedCustomizations)
+                  ? validation.allowedCustomizations.map((entry, index) => ({
+                      id: `allowed-${index}-${entry.nodeId ?? 'node'}`,
+                      nodeId: entry.nodeId,
+                      priority: 'allowed' as const,
+                      verdict: 'confirmed' as const,
+                      title: entry.title,
+                      observed: entry.observed,
+                      factPath: entry.factPath,
+                      patternScope: entry.patternScope ?? 'general',
+                    }))
+                  : []),
+              ]
+            : [],
+        },
+      });
+      return;
+    }
+
     const dialogueAgentInputText = agentInputText
       ? buildDialogueApolloAgentInput(agentInputText)
       : null;
     const requestBody = {
       component: 'apollo-agent-report',
-      action: isDirectUserQuestion ? 'user-question' : 'audit-report',
-      session_id: isDirectUserQuestion
-        ? createApolloAgentDialogueSessionId()
-        : createApolloAgentSessionId(report!),
+      action: 'user-question',
+      session_id: createApolloAgentDialogueSessionId(),
+      source: normalizeApolloAgentSource(agentSource),
+      dialogue: normalizeApolloDialogue(dialogue),
     } as {
       component: string;
       action: string;
       session_id: string;
+      source: ApolloAgentSource;
+      dialogue: ApolloDialogueEntry[];
       report?: ApolloAgentReport;
       text?: string;
     };
 
-    if (dialogueAgentInputText) {
-      requestBody.text = dialogueAgentInputText;
-    } else if (report) {
-      requestBody.report = report;
-    }
+    requestBody.text = dialogueAgentInputText!;
 
     const response = await fetch(APOLLO_PROXY_URL, {
       method: 'POST',
@@ -889,8 +1151,12 @@ async function sendApolloAgentReport(
       payload: {
         requestId: currentRequestId,
         requestKind,
-        reportId: report?.reportId ?? null,
-        suggestedFileName: report?.suggestedFileName ?? '',
+        reportId: isDirectUserQuestion
+          ? report?.reportId ?? null
+          : customizationReport?.reportId ?? null,
+        suggestedFileName: isDirectUserQuestion
+          ? report?.suggestedFileName ?? ''
+          : customizationReport?.suggestedFileName ?? '',
         text: typeof data.result === 'string' ? data.result : '',
       },
     });
@@ -916,6 +1182,188 @@ async function sendApolloAgentReport(
       activeApolloAgentRequestId = null;
     }
   }
+}
+
+type ApolloCodexFinding = {
+  id?: string;
+  nodeId?: string;
+  priority?: 'error' | 'warning' | 'human_review' | 'allowed';
+  verdict?: 'confirmed' | 'assumption';
+  title?: string;
+  observed?: string;
+  factPath?: string;
+  patternScope?: 'general' | 'page-specific' | null;
+};
+
+type ApolloCodexAllowedCustomization = {
+  nodeId?: string;
+  factPath?: string;
+  title?: string;
+  observed?: string;
+  patternScope?: 'general' | null;
+};
+
+type ApolloCodexValidation = {
+  responseMarkdown?: string;
+  findings?: ApolloCodexFinding[];
+  allowedCustomizations?: ApolloCodexAllowedCustomization[];
+};
+
+type ApolloCodexReportRun = {
+  id: string;
+  status: 'queued' | 'running' | 'completed' | 'failed';
+  stage: string;
+  progress: number;
+  message: string;
+  updatedAt: string;
+  events: Array<{
+    sequence: number;
+    stage: string;
+    progress: number;
+    message: string;
+    at: string;
+  }>;
+  validation: ApolloCodexValidation | null;
+  error: { message?: string; code?: string | null } | null;
+};
+
+async function requestCodexCustomizationReport(
+  report: ApolloBaselineCustomizationReport,
+  onProgress?: (run: ApolloCodexReportRun) => void,
+  shouldContinue?: () => boolean,
+): Promise<ApolloCodexValidation> {
+  return requestCodexReport(report, onProgress, shouldContinue);
+}
+
+async function requestPredicatePatternReport(
+  report: ApolloPatternAuditReport,
+  shouldContinue?: () => boolean,
+): Promise<ApolloCodexValidation> {
+  if (!report.evidenceBundle) {
+    throw new Error('Apollo Predicate Engine requires an evidence bundle.');
+  }
+  if (shouldContinue && !shouldContinue()) {
+    throw new Error('Apollo Predicate Engine request cancelled.');
+  }
+  const response = await fetch(APOLLO_PREDICATE_VALIDATION_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      ruleSet: 'buttons-group-pilot',
+      auditId: report.sourceReportId,
+      pageType: report.scan.pageType,
+      evidenceBundle: report.evidenceBundle,
+    }),
+  });
+  const data = await response.json().catch(() => null) as {
+    success?: boolean;
+    error?: string;
+    validation?: ApolloPredicatePilotValidation;
+  } | null;
+  if (!response.ok || !data?.success || !data.validation) {
+    throw new Error(
+      data?.error || `Apollo Predicate Engine error ${response.status}`,
+    );
+  }
+  if (shouldContinue && !shouldContinue()) {
+    throw new Error('Apollo Predicate Engine request cancelled.');
+  }
+  const uiValidation = buildApolloPredicateUiValidation(data.validation);
+  void statsDelivery
+    .enqueuePredicateReport(
+      buildApolloPredicateStatsReport(report, data.validation, uiValidation),
+    )
+    .catch((error) => {
+      console.warn('[Apollo] failed to enqueue predicate stats report', error);
+      figma.ui.postMessage({
+        type: 'apollo-stats-delivery-status',
+        payload: {
+          phase: 'failed',
+          pendingCount: 0,
+          uploadedCount: 0,
+          message: 'Не удалось сохранить predicate-отчёт',
+          lastError: error instanceof Error ? error.message : String(error),
+        },
+      });
+    });
+  return uiValidation;
+}
+
+async function requestCodexTextReport(
+  report: ApolloTextAuditReport,
+  onProgress?: (run: ApolloCodexReportRun) => void,
+  shouldContinue?: () => boolean,
+): Promise<ApolloCodexValidation> {
+  return requestCodexReport(report, onProgress, shouldContinue);
+}
+
+async function requestCodexReport(
+  report:
+    | ApolloBaselineCustomizationReport
+    | ApolloPatternAuditReport
+    | ApolloTextAuditReport,
+  onProgress?: (run: ApolloCodexReportRun) => void,
+  shouldContinue?: () => boolean,
+): Promise<ApolloCodexValidation> {
+  const response = await fetch(APOLLO_CODEX_REPORT_RUNS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ report }),
+  });
+  const data = await response.json().catch(() => null) as {
+    success?: boolean;
+    error?: string;
+    run?: ApolloCodexReportRun;
+  } | null;
+  if (!response.ok || !data?.success || !data.run) {
+    throw new Error(data?.error || `Apollo proxy error ${response.status}`);
+  }
+
+  let run = data.run;
+  let progressSignature = '';
+  while (true) {
+    if (shouldContinue && !shouldContinue()) {
+      throw new Error('Apollo Codex request cancelled.');
+    }
+    const nextSignature = [
+      run.status,
+      run.stage,
+      run.progress,
+      run.updatedAt,
+    ].join(':');
+    if (nextSignature !== progressSignature) {
+      progressSignature = nextSignature;
+      onProgress?.(run);
+    }
+    if (run.status === 'completed' && run.validation) {
+      return run.validation;
+    }
+    if (run.status === 'failed') {
+      const code = run.error?.code ? ` [${run.error.code}]` : '';
+      throw new Error(`${run.error?.message || 'Codex analysis failed.'}${code}`);
+    }
+
+    await waitForAgentPoll(700);
+    const statusResponse = await fetch(
+      `${APOLLO_CODEX_REPORT_RUNS_URL}/${encodeURIComponent(run.id)}`,
+    );
+    const statusData = await statusResponse.json().catch(() => null) as {
+      success?: boolean;
+      error?: string;
+      run?: ApolloCodexReportRun;
+    } | null;
+    if (!statusResponse.ok || !statusData?.success || !statusData.run) {
+      throw new Error(
+        statusData?.error ||
+          `Apollo proxy progress error ${statusResponse.status}`,
+      );
+    }
+    run = statusData.run;
+  }
+}
+
+function waitForAgentPoll(delayMs: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, delayMs));
 }
 
 function buildDialogueApolloAgentInput(question: string): string {
@@ -1760,6 +2208,79 @@ function buildTokenLabel(
     segments.push(tokenName);
   }
   return segments.join('/');
+}
+
+function resolveNumericVariableTokenForBinding(
+  collectionName: string,
+  value: number,
+): { key: string; name: string } | null {
+  const normalizedCollection = collectionName.trim().toLowerCase();
+  const candidates: Array<{ key: string; name: string }> = [];
+  for (const catalog of getTokenCatalogs()) {
+    for (const collection of catalog.collections ?? []) {
+      if (
+        !collection ||
+        String(collection.name ?? '').trim().toLowerCase() !==
+          normalizedCollection
+      ) {
+        continue;
+      }
+      for (const variable of collection.variables ?? []) {
+        if (
+          !variable?.key ||
+          variable.resolvedType !== 'FLOAT' ||
+          variable.hiddenFromPublishing === true ||
+          !numericVariableContainsValue(variable, value)
+        ) {
+          continue;
+        }
+        candidates.push({
+          key: variable.key,
+          name: buildTokenLabel(
+            variable.groupName ?? '',
+            variable.tokenName ?? variable.name ?? String(value),
+          ),
+        });
+      }
+    }
+  }
+  const unique = Array.from(
+    new Map(candidates.map((candidate) => [candidate.key, candidate])).values(),
+  );
+  if (unique.length === 1) return unique[0];
+  const exactName = unique.filter((candidate) => {
+    const tokenName = candidate.name.split('/').pop() ?? '';
+    return Number(tokenName) === value;
+  });
+  return exactName.length === 1 ? exactName[0] : null;
+}
+
+function numericVariableContainsValue(
+  variable: {
+    valuesByMode?: Record<string, any>;
+    actualValuesByMode?: Record<string, any[]>;
+  },
+  expected: number,
+): boolean {
+  if (variable.actualValuesByMode) {
+    for (const values of Object.values(variable.actualValuesByMode)) {
+      if (
+        Array.isArray(values) &&
+        values.some(
+          (value) =>
+            typeof value === 'number' && Math.abs(value - expected) < 0.0001,
+        )
+      ) {
+        return true;
+      }
+    }
+  }
+  for (const value of Object.values(variable.valuesByMode ?? {})) {
+    if (typeof value === 'number' && Math.abs(value - expected) < 0.0001) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function registerTokenLabelKey(

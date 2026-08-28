@@ -31,6 +31,7 @@ import type {
   StatsThemeItem,
 } from './types';
 import { getAuditPresentationForComponent } from '../contracts/runtimeContractRegistry';
+import type { ApolloPageType } from '../types/pageContext';
 
 export { buildApolloAgentReport } from './agentReport';
 
@@ -52,6 +53,7 @@ export type BuildApolloStatsReportInput = {
   };
   scan: {
     channel: string;
+    pageType?: ApolloPageType | null;
     startedAt: Date;
     finishedAt: Date;
     selection: Array<{
@@ -143,6 +145,7 @@ export function buildApolloStatsReport(
     figma: input.figma,
     scan: {
       channel: input.scan.channel,
+      pageType: input.scan.pageType ?? null,
       startedAt: input.scan.startedAt.toISOString(),
       finishedAt: finishedAt.toISOString(),
       durationMs: Math.max(
@@ -166,9 +169,15 @@ export function buildApolloBaselineCustomizationReport(
   items: AuditItem[],
   input: BuildApolloStatsReportInput,
 ): ApolloBaselineCustomizationReport {
-  const serializedItems = items.map((item) =>
-    customizationItem(item, input, false),
-  );
+  const interpretedChanges = indexInterpretedCustomizationChanges(sourceReport);
+  const serializedItems = items.map((item) => {
+    const serialized = customizationItem(item, input, true);
+    return Object.assign({}, serialized, {
+      changes: serialized.changes.map((change) =>
+        mergeInterpretedCustomizationChange(change, interpretedChanges),
+      ),
+    });
+  });
   const changeCount = serializedItems.reduce(
     (sum, item) => sum + item.changes.length,
     0,
@@ -200,6 +209,60 @@ export function buildApolloBaselineCustomizationReport(
       items: serializedItems,
     },
   };
+}
+
+function indexInterpretedCustomizationChanges(
+  sourceReport: ApolloStatsReport,
+): Map<string, StatsCustomizationChange[]> {
+  const result = new Map<string, StatsCustomizationChange[]>();
+  for (const item of sourceReport.categories.customizations.items) {
+    for (const change of item.changes) {
+      const key = statsCustomizationChangeKey(change);
+      const matches = result.get(key) ?? [];
+      matches.push(change);
+      result.set(key, matches);
+    }
+  }
+  return result;
+}
+
+function mergeInterpretedCustomizationChange(
+  baselineChange: StatsCustomizationChange,
+  interpretedChanges: Map<string, StatsCustomizationChange[]>,
+): StatsCustomizationChange {
+  const matches = interpretedChanges.get(
+    statsCustomizationChangeKey(baselineChange),
+  );
+  const interpreted = matches?.shift();
+  if (!interpreted) return baselineChange;
+
+  return Object.assign({}, baselineChange, {
+    componentRules: interpreted.componentRules.length
+      ? interpreted.componentRules
+      : baselineChange.componentRules,
+    presentation:
+      interpreted.presentation ?? baselineChange.presentation,
+    assessment:
+      interpreted.assessment ?? baselineChange.assessment,
+  });
+}
+
+function statsCustomizationChangeKey(
+  change: StatsCustomizationChange,
+): string {
+  return [
+    change.node.id,
+    change.kind,
+    change.property,
+    stableStatsCustomizationValue(change.reference.value),
+    stableStatsCustomizationValue(change.actual.value),
+  ].join('|');
+}
+
+function stableStatsCustomizationValue(
+  value: string | number | null,
+): string {
+  return value === null ? 'null' : `${typeof value}:${String(value)}`;
 }
 
 export function slugifyUserName(value: string): string {
@@ -437,6 +500,13 @@ function statsComponentRule(
     severity: rule.severity,
     source: rule.source,
     ruleKind: rule.ruleKind ?? null,
+    authority: rule.authority
+      ? {
+          status: rule.authority.status ?? null,
+          provenance: rule.authority.provenance ?? null,
+          revision: rule.authority.revision ?? null,
+        }
+      : null,
     severityScope: rule.severityScope ?? null,
     appliesTo: rule.appliesTo,
     checkType: rule.checkType ?? null,
@@ -445,6 +515,7 @@ function statsComponentRule(
     ruleText: rule.ruleText,
     remediation: rule.remediation ?? null,
     numericConstraint: rule.numericConstraint ?? null,
+    requiredTokenSource: rule.requiredTokenSource ?? null,
   };
 }
 
@@ -563,6 +634,9 @@ function auditNode(item: AuditItem) {
     pageName: item.pageName,
     path: item.fullPath,
     visible: item.pathSegments.every((segment) => segment.visible !== false),
+    ancestorNodeIds: item.pathSegments
+      .slice(0, -1)
+      .map((segment) => segment.id),
   };
 }
 

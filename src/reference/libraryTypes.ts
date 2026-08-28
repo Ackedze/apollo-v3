@@ -92,6 +92,12 @@ export type NormalizedElement = {
     color?: string | null;
     token?: string | null;
     weight?: number | null;
+    weights?: {
+      top: number | null;
+      right: number | null;
+      bottom: number | null;
+      left: number | null;
+    } | null;
     align?: string | null;
   };
   layout?: {

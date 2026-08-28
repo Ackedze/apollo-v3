@@ -28,6 +28,15 @@
   background: rgba(0, 0, 0, 0.08);
 }
 
+.button:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
 .button:disabled {
   cursor: default;
   color: rgba(5, 8, 29, 0.38);

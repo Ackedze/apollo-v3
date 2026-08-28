@@ -170,6 +170,7 @@ export function ResultSubCard({
             {actions.map((action, index) => (
               <div
                 key={`${action.label ?? 'icon'}:${index}`}
+                className={styles.actionItem}
                 onClick={(event) => event.stopPropagation()}
                 onKeyDown={(event) => event.stopPropagation()}
               >

@@ -444,11 +444,7 @@ async function ensureCatalogSourceList(): Promise<ReferenceCatalogSource[]> {
   }
 
   try {
-    const referenceListRequestUrl = appendCacheBustingQuery(
-      apolloReferenceCatalogListUrl,
-      'apolloReferenceSources',
-    );
-    const response = await requestCatalogSource(referenceListRequestUrl);
+    const response = await fetchDirect(apolloReferenceCatalogListUrl);
     const payload = JSON.parse(response);
     const patternRulesUrl = resolvePatternRulesUrl(payload);
     configureRemoteContractIndexSource(
@@ -1276,6 +1272,14 @@ function buildStructure(elements: NormalizedElement[]): DSStructureNode[] {
           typeof element.stroke.weight === 'number'
             ? element.stroke.weight
             : null,
+        weights: element.stroke.weights
+          ? {
+              top: element.stroke.weights.top ?? null,
+              right: element.stroke.weights.right ?? null,
+              bottom: element.stroke.weights.bottom ?? null,
+              left: element.stroke.weights.left ?? null,
+            }
+          : null,
         align: element.stroke.align ?? null,
       };
     }

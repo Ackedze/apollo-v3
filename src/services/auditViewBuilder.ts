@@ -304,7 +304,8 @@ export function computeChangesResults(
 
 /**
  * Возвращает слой фактов для WIP-таба: только baseline -> actual, без
- * policy-фильтров, дедупликации и интерпретации допустимости.
+ * policy-фильтров и интерпретации допустимости. Технически идентичные факты
+ * объединяются, чтобы разные этапы evidence pipeline не дублировали строку.
  * Скрытые узлы по-прежнему исключаются из пользовательского отчёта.
  */
 export function computeBaselineChangeResults(
@@ -314,13 +315,82 @@ export function computeBaselineChangeResults(
   for (const item of items) {
     if (!item || !isEntryVisible(item)) continue;
     if (item.nodeType !== 'INSTANCE' && item.nodeType !== 'COMPONENT') continue;
-    const baselineDiffs = Array.isArray(item.baselineDiffs)
-      ? item.baselineDiffs.filter((diff) => diff.visible !== false)
+    const baselineFacts = Array.isArray(item.baselineDiffs)
+      ? item.baselineDiffs
       : [];
+    const requiredPaintStateFacts = Array.isArray(item.diffs)
+      ? item.diffs.filter(isRequiredPaintStateBaselineFact)
+      : [];
+    const baselineDiffs = dedupeBaselineDiffs(
+      baselineFacts
+        .concat(requiredPaintStateFacts)
+        .filter((diff) => diff.visible !== false),
+    );
     if (!baselineDiffs.length) continue;
     results.push(Object.assign({}, item, { diffs: baselineDiffs }));
   }
   return results;
+}
+
+function isRequiredPaintStateBaselineFact(diff: DiffEntry): boolean {
+  return (
+    diff.assessment?.verdict === 'violation' &&
+    diff.assessment.source === 'component-contract' &&
+    diff.assessment.reasonCode ===
+      'component-contract-required-paint-state' &&
+    Boolean(diff.details?.property)
+  );
+}
+
+function dedupeBaselineDiffs(diffs: DiffEntry[]): DiffEntry[] {
+  const result: DiffEntry[] = [];
+  const indexByKey = new Map<string, number>();
+
+  for (const diff of diffs) {
+    const key = getBaselineDiffKey(diff);
+    const existingIndex = indexByKey.get(key);
+    if (existingIndex === undefined) {
+      indexByKey.set(key, result.length);
+      result.push(diff);
+      continue;
+    }
+
+    if (
+      baselineEvidenceScore(diff) >
+      baselineEvidenceScore(result[existingIndex])
+    ) {
+      result[existingIndex] = diff;
+    }
+  }
+
+  return result;
+}
+
+function getBaselineDiffKey(diff: DiffEntry): string {
+  const target = diff.nodeId ?? diff.nodePath ?? diff.nodeName ?? '';
+  const property = diff.details?.property ?? diff.message ?? '';
+  const reference = stableDiffValue(diff.details?.reference?.value);
+  const actual = stableDiffValue(diff.details?.actual?.value);
+  return [target, diff.diffKind ?? 'other', property, reference, actual].join('|');
+}
+
+function stableDiffValue(value: unknown): string {
+  if (value === null || value === undefined) return String(value);
+  if (typeof value !== 'object') return String(value);
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return String(value);
+  }
+}
+
+function baselineEvidenceScore(diff: DiffEntry): number {
+  let score = 0;
+  if (diff.context?.directHostVariantOverride === true) score += 4;
+  if (diff.context?.surfaceContext) score += 2;
+  if (diff.context?.actualVariantProperties) score += 1;
+  if (diff.context?.referenceVariantProperties) score += 1;
+  return score;
 }
 
 export async function describeCustomStyleReasons(

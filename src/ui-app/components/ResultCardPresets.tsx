@@ -35,6 +35,7 @@ type ChangeGroup = {
   onReset?: () => void;
   actions?: Array<{
     label: string;
+    targetName?: string;
     onPress: () => void;
     singleIcon?: boolean;
   }>;
@@ -109,16 +110,20 @@ function FindingActionPicker({
       if (!rect) return;
       const menuWidth = 320;
       const estimatedHeight = Math.min(actions.length * 44 + 8, 320);
-      const availableBelow = window.innerHeight - rect.bottom - 8;
+      const safeMargin = 24;
+      const availableBelow = window.innerHeight - rect.bottom - safeMargin;
       const top =
         availableBelow >= estimatedHeight
           ? rect.bottom + 4
-          : Math.max(8, rect.top - estimatedHeight - 4);
+          : Math.max(safeMargin, rect.top - estimatedHeight - 4);
       setPosition({
         top,
         left: Math.max(
-          8,
-          Math.min(rect.right - menuWidth, window.innerWidth - menuWidth - 8),
+          safeMargin,
+          Math.min(
+            rect.right - menuWidth,
+            window.innerWidth - menuWidth - safeMargin,
+          ),
         ),
       });
     };
@@ -239,7 +244,7 @@ export function CustomizationResultCard({
                     actions={(group.actions ?? []).map((action, actionIndex) => ({
                       id: `${group.name}:${action.label}:${actionIndex}`,
                       label: group.actionPickerLabel ?? 'Выбрать',
-                      targetName: action.label,
+                      targetName: action.targetName ?? action.label,
                       onPress: action.onPress,
                     }))}
                   />

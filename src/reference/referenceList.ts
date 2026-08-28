@@ -112,11 +112,16 @@ export function resolveAuditPolicyConfigUrl(
 export function getReferenceCatalogBaseUrl(
   payload: RemoteReferenceCatalogList,
 ): string {
-  return (payload.baseUrl ?? '').trim();
+  return normalizeCatalogDeliveryBaseUrl((payload.baseUrl ?? '').trim());
 }
 
 export const apolloReferenceCatalogListUrl =
-  'https://raw.githubusercontent.com/Ackedze/design-system_ab/main/JSONS/referenceSourcesMVP.json';
+  'https://ackedze.github.io/design-system_ab/JSONS/referenceSourcesMVP.json';
+
+const legacyDesignSystemRawBaseUrl =
+  'https://raw.githubusercontent.com/Ackedze/design-system_ab/main/JSONS/';
+const designSystemPagesBaseUrl =
+  'https://ackedze.github.io/design-system_ab/JSONS/';
 
 export function buildReferenceCatalogSources(
   payload: RemoteReferenceCatalogList,
@@ -321,16 +326,30 @@ function isKnownNonCatalogArtifactPath(value: string): boolean {
 }
 
 export function resolveCatalogUrl(baseUrl: string, path: string): string {
-  if (!path) return baseUrl;
+  const deliveryBaseUrl = normalizeCatalogDeliveryBaseUrl(baseUrl);
+  if (!path) return deliveryBaseUrl;
   if (/^https?:\/\//i.test(path)) {
     return path;
   }
-  if (!baseUrl) {
+  if (!deliveryBaseUrl) {
     return encodePath(path);
   }
-  const normalizedBase = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+  const normalizedBase = deliveryBaseUrl.endsWith('/')
+    ? deliveryBaseUrl
+    : `${deliveryBaseUrl}/`;
   const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
   return `${normalizedBase}${encodePath(normalizedPath)}`;
+}
+
+function normalizeCatalogDeliveryBaseUrl(baseUrl: string): string {
+  const normalized = baseUrl.trim();
+  if (
+    normalized === legacyDesignSystemRawBaseUrl ||
+    normalized === legacyDesignSystemRawBaseUrl.slice(0, -1)
+  ) {
+    return designSystemPagesBaseUrl;
+  }
+  return normalized;
 }
 
 function encodePath(value: string): string {

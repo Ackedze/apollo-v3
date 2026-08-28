@@ -100,9 +100,23 @@ function main() {
   );
 
   const resized = [
-    sizingNode({ id: 1, path: 'Slot', name: 'Slot', width: 144 }),
+    sizingNode({
+      id: 1,
+      path: 'Slot',
+      name: 'Slot',
+      horizontal: 'FIXED',
+      width: 144,
+    }),
   ];
-  const widthDiff = diffStructures(resized, reference).diffs.find(
+  const fixedReference = [
+    sizingNode({
+      id: 1,
+      path: 'Slot',
+      name: 'Slot',
+      horizontal: 'FIXED',
+    }),
+  ];
+  const widthDiff = diffStructures(resized, fixedReference).diffs.find(
     (diff) => diff.details?.property === 'layout.width',
   );
   assert.ok(widthDiff, 'A changed fixed width must produce contract evidence');
@@ -110,11 +124,63 @@ function main() {
   assert.equal(widthDiff.details.actual.value, 144);
   assert.equal(widthDiff.contractEvidenceOnly, true);
   assert.equal(
-    diffStructures(reference, reference).diffs.some(
+    diffStructures(fixedReference, fixedReference).diffs.some(
       (diff) => diff.details?.property === 'layout.width',
     ),
     false,
     'An unchanged numeric width must not produce contract evidence',
+  );
+
+  for (const horizontal of ['HUG', 'FILL']) {
+    const derivedReference = [
+      sizingNode({ id: 1, path: 'Slot', name: 'Slot', horizontal, width: 560 }),
+    ];
+    const derivedActual = [
+      sizingNode({ id: 1, path: 'Slot', name: 'Slot', horizontal, width: 128 }),
+    ];
+    assert.equal(
+      diffStructures(derivedActual, derivedReference).diffs.some(
+        (diff) => diff.details?.property === 'layout.width',
+      ),
+      false,
+      `${horizontal} width must remain a derived layout value, not a customization`,
+    );
+  }
+
+  const catalogWithoutSizing = [
+    sizingNode({ id: 1, path: 'ButtonsGroup', name: 'ButtonsGroup', width: 560 }),
+  ];
+  delete catalogWithoutSizing[0].layout.sizing;
+  const hugInstance = [
+    sizingNode({
+      id: 1,
+      path: 'ButtonsGroup',
+      name: 'ButtonsGroup',
+      horizontal: 'HUG',
+      width: 128,
+    }),
+  ];
+  assert.equal(
+    diffStructures(hugInstance, catalogWithoutSizing).diffs.some(
+      (diff) => diff.details?.property === 'layout.width',
+    ),
+    false,
+    'A Hug instance must ignore physical catalog width even when the REST baseline has no sizing mode',
+  );
+
+  const constrainedReference = [
+    sizingNode({ id: 1, path: 'Slot', name: 'Slot', horizontal: 'HUG' }),
+  ];
+  constrainedReference[0].layout.minWidth = 120;
+  const constrainedActual = [
+    sizingNode({ id: 1, path: 'Slot', name: 'Slot', horizontal: 'HUG' }),
+  ];
+  constrainedActual[0].layout.minWidth = 144;
+  assert.ok(
+    diffStructures(constrainedActual, constrainedReference).diffs.some(
+      (diff) => diff.details?.property === 'layout.minWidth',
+    ),
+    'Explicit min/max constraints must remain comparable for derived layouts',
   );
 
   globalThis.__APOLLO_TEST_REMOTE_COMPONENT_RULE_REGISTRY__ = [
@@ -130,6 +196,7 @@ function main() {
               'component:web-corp.background-plate.slot-sizing-fill-width-hug-height',
             severity: 'error',
             ruleKind: 'design-rule',
+            authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
             severityScope: 'design',
             source: 'pattern-link',
             appliesTo:

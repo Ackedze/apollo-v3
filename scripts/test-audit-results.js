@@ -47,8 +47,7 @@ function auditItem(overrides = {}) {
 
 async function main() {
   const { buildAuditResultViews, prepareAuditReport } = loadModule();
-  const current = auditItem({
-    baselineDiffs: [{
+  const assessedDiff = {
       message: 'Заливка: neutral/100 → accent/secondary',
       nodePath: 'Page/[D] Button/Background',
       nodeName: 'Background',
@@ -72,7 +71,18 @@ async function main() {
         reference: { value: 'neutral/100', resourceType: 'token' },
         actual: { value: 'accent/secondary', resourceType: 'token' },
       },
-    }],
+      assessment: {
+        verdict: 'violation',
+        source: 'component-contract',
+        reasonCode: 'component-contract-violation',
+        ruleId: 'component:test.button.fill',
+        message: 'Button fill is fixed.',
+        remediation: null,
+      },
+  };
+  const current = auditItem({
+    diffs: [assessedDiff],
+    baselineDiffs: [Object.assign({}, assessedDiff, {assessment: null})],
   });
   const update = auditItem({
     id: '1:2',
@@ -140,7 +150,7 @@ async function main() {
   assert.equal(views.statsViews.currentComponents[0], current);
   assert.deepEqual(
     views.visibleViews.changes.map((item) => item.id),
-    ['1:5'],
+    ['1:1', '1:5'],
   );
   assert.deepEqual(
     views.visibleViews.changesWip.map((item) => item.id),
@@ -158,6 +168,7 @@ async function main() {
     report,
     agentReport,
     baselineCustomizationReport,
+    patternReport,
   } = await prepareAuditReport({
     pluginVersion: 'test',
     user: { id: 'user-1', name: 'Test User' },
@@ -168,6 +179,7 @@ async function main() {
     },
     scan: {
       channel: 'Desktop',
+      pageType: 'form',
       startedAt: new Date('2026-08-04T09:00:00.000Z'),
       finishedAt: new Date('2026-08-04T09:00:01.000Z'),
       shellAuditEnabled: false,
@@ -189,6 +201,18 @@ async function main() {
 
   assert.equal(componentKeyReads, 1);
   assert.equal(report.summary.scannedComponents, 3);
+  assert.equal(report.scan.pageType, 'form');
+  assert.equal(agentReport.scan.pageType, 'form');
+  assert.equal(baselineCustomizationReport.scan.pageType, 'form');
+  assert.equal(patternReport.scan.pageType, 'form');
+  assert.equal(patternReport.reportKind, 'apollo-pattern-audit-report');
+  assert.deepEqual(patternReport.requestedRuleIds, [
+    'rule:forms.construction-rules.title-medium-one-per-plate',
+  ]);
+  assert.equal(patternReport.summary.generalChangeCount, 1);
+  assert.equal(patternReport.category.count, 1);
+  assert.equal(patternReport.category.changeCount, 1);
+  assert.equal(patternReport.category.items.length, 1);
   assert.equal(report.scan.selection[0].componentKey, null);
   assert.equal(
     report.scan.selection[1].componentKey,
@@ -208,8 +232,17 @@ async function main() {
   assert.equal(baselineCustomizationReport.category.count, 1);
   assert.equal(baselineCustomizationReport.category.changeCount, 1);
   assert.equal(
-    baselineCustomizationReport.category.items[0].changes[0].assessment,
+    baselineCustomizationReport.category.items[0].changes[0].assessment.verdict,
+    'violation',
+  );
+  assert.equal(
+    baselineCustomizationReport.category.items[0].changes[0].assessment.ruleId,
+    'component:test.button.fill',
+  );
+  assert.equal(
+    views.visibleViews.changesWip[0].diffs[0].assessment,
     null,
+    'The raw WIP fact must remain uninterpreted before report reconciliation',
   );
   assert.deepEqual(
     baselineCustomizationReport.category.items[0].changes[0].componentRules,

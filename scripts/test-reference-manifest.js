@@ -33,6 +33,7 @@ function main() {
     resolveCatalogManifestUrls,
     resolveAuditPolicyConfigUrl,
     resolveRemediationConfigUrl,
+    resolveCatalogUrl,
   } = loadReferenceList();
   const baseUrl = 'https://ackedze.github.io/design-system_ab/JSONS/';
   const explicit = buildReferenceCatalogSources({
@@ -136,6 +137,13 @@ function main() {
     `${baseUrl}apollo/auditPolicies.json`,
   );
   assert.equal(resolveAuditPolicyConfigUrl({ baseUrl, apollo: {} }), null);
+  assert.equal(
+    resolveCatalogUrl(
+      'https://raw.githubusercontent.com/Ackedze/design-system_ab/main/JSONS/',
+      'apollo/patternRules.json',
+    ),
+    `${baseUrl}apollo/patternRules.json`,
+  );
   assert.throws(
     () =>
       buildReferenceCatalogSources({

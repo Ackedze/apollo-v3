@@ -1,4 +1,7 @@
-import type { DSStructureNode } from '../types/structures';
+import type {
+  DSReferencePropertyOwner,
+  DSStructureNode,
+} from '../types/structures';
 import { buildOccurrenceKeyMap } from '../structure/occurrenceKeys';
 import { traceAudit } from '../utils/auditInstrumentation';
 
@@ -8,6 +11,7 @@ export type MaterializedInstanceReferenceDecision = {
     | 'outside-materialized-subtree'
     | 'candidate-not-nested'
     | 'deeper-nested-materialization'
+    | 'merge-parent-owned-descendant'
     | 'merge-parent-variant-owned-descendant'
     | 'keep-existing-nested-materialization'
     | 'existing-not-host'
@@ -51,8 +55,11 @@ export function mergeMaterializedInstanceReferenceNode(
     return candidateNode;
   }
 
-  if (decision.reason === 'merge-parent-variant-owned-descendant') {
-    const merged = applyParentVariantOwnedProperties(candidateNode, existingNode);
+  if (
+    decision.reason === 'merge-parent-owned-descendant' ||
+    decision.reason === 'merge-parent-variant-owned-descendant'
+  ) {
+    const merged = applyParentOwnedProperties(candidateNode, existingNode);
     traceMaterializedPaintDecision(existingNode, candidateNode, merged, decision);
     return merged;
   }
@@ -61,15 +68,11 @@ export function mergeMaterializedInstanceReferenceNode(
     decision.reason !== 'replace-instance-root' &&
     !(decision.reason === 'replace-host-descendant' && decision.relativePath === '')
   ) {
-    return (existingNode.referenceVariantOwnedProperties?.length ?? 0) > 0
-      ? applyParentVariantOwnedProperties(candidateNode, existingNode)
-      : candidateNode;
+    return applyParentOwnedProperties(candidateNode, existingNode);
   }
 
   const merged = applyMaterializedHostVariantBaselineToNode(candidateNode, existingNode);
-  const result = (existingNode.referenceVariantOwnedProperties?.length ?? 0) > 0
-    ? applyParentVariantOwnedProperties(merged, existingNode)
-    : merged;
+  const result = applyParentOwnedProperties(merged, existingNode);
   traceMaterializedPaintDecision(existingNode, candidateNode, result, decision);
   return result;
 }
@@ -92,7 +95,11 @@ function traceMaterializedPaintDecision(
     parentVariantPaint: parentPaint,
     nestedCandidatePaint: candidatePaint,
     selectedPaint: resultPaint,
-    parentOwnedProperties: parentVariantNode.referenceVariantOwnedProperties ?? [],
+    parentOwnedProperties: getParentOwnedPropertyPaths(
+      parentVariantNode,
+      candidateNode,
+    ),
+    propertyOwners: resultNode.referencePropertyOwners ?? {},
   });
 }
 
@@ -105,7 +112,10 @@ export function selectMaterializedInstanceMergeSource(
   originalHostBaseline: DSStructureNode | null | undefined,
   decision: MaterializedInstanceReferenceDecision,
 ): DSStructureNode {
-  if (decision.reason === 'merge-parent-variant-owned-descendant') {
+  if (
+    decision.reason === 'merge-parent-owned-descendant' ||
+    decision.reason === 'merge-parent-variant-owned-descendant'
+  ) {
     return existingNode;
   }
   return originalHostBaseline ?? existingNode;
@@ -304,16 +314,59 @@ function getRelativeAlignedPath(ownerPath: string, nodePath: string): string | n
   return nodePath.startsWith(prefix) ? nodePath.slice(prefix.length) : null;
 }
 
-function applyParentVariantOwnedProperties(
+const WHOLE_REFERENCE_PROPERTY_PATHS = [
+  'fill',
+  'stroke',
+  'effects',
+  'variableModes',
+];
+
+const LEAF_REFERENCE_PROPERTY_ROOTS = [
+  'styles',
+  'layout',
+  'radius',
+  'text',
+  'componentInstance.variantProperties',
+];
+
+const SCALAR_REFERENCE_PROPERTY_PATHS = [
+  'visible',
+  'opacity',
+  'clipsContent',
+  'opacityToken',
+  'typographyToken',
+  'radiusToken',
+];
+
+/**
+ * Materializes an effective nested baseline property by property.
+ *
+ * `parentNode` is the value observed in the containing component's canonical
+ * structure. `candidateNode` is the standalone baseline of the nested
+ * component. Whenever those canonical values differ, the containing
+ * component owns that property. Equal and parent-absent properties continue
+ * to come from the nested component. This is the only ownership inference
+ * used by the merge; component names and path decoration are intentionally
+ * irrelevant.
+ */
+function applyParentOwnedProperties(
   candidateNode: DSStructureNode,
-  parentVariantNode: DSStructureNode,
+  parentNode: DSStructureNode,
 ): DSStructureNode {
-  const ownedProperties = parentVariantNode.referenceVariantOwnedProperties ?? [];
+  const ownedProperties = getParentOwnedPropertyPaths(parentNode, candidateNode);
   if (!ownedProperties.length) {
-    return candidateNode;
+    return attachDefaultPropertyOwners(candidateNode);
   }
 
-  const merged = Object.assign({}, candidateNode) as DSStructureNode;
+  const merged = Object.assign(
+    {},
+    candidateNode,
+    {
+      referencePropertyOwners: clonePropertyOwners(
+        attachDefaultPropertyOwners(candidateNode).referencePropertyOwners,
+      ),
+    },
+  ) as DSStructureNode;
   for (const property of ownedProperties) {
     const segments = property.split('.').filter(Boolean);
     if (!segments.length) {
@@ -324,10 +377,17 @@ function applyParentVariantOwnedProperties(
       segments,
       clonePropertyValue(
         getNestedProperty(
-          parentVariantNode as unknown as Record<string, unknown>,
+          parentNode as unknown as Record<string, unknown>,
           segments,
         ),
       ),
+    );
+    if (!merged.referencePropertyOwners) {
+      merged.referencePropertyOwners = {};
+    }
+    merged.referencePropertyOwners[property] = resolveParentPropertyOwner(
+      parentNode,
+      property,
     );
   }
 
@@ -335,34 +395,313 @@ function applyParentVariantOwnedProperties(
     candidateNode.referenceVariantOwnedProperties ?? [],
   );
   for (const property of ownedProperties) {
-    combinedOwnedProperties.add(property);
+    if (isVariantOwnedProperty(parentNode, property)) {
+      combinedOwnedProperties.add(property);
+    }
   }
 
-  merged.referenceOrigin = parentVariantNode.referenceOrigin ?? 'nested-component';
+  merged.referenceOrigin = parentNode.referenceOrigin ?? 'nested-component';
   merged.referenceOwnerComponentKey =
-    parentVariantNode.referenceOwnerComponentKey ??
+    parentNode.referenceOwnerComponentKey ??
     candidateNode.referenceOwnerComponentKey ??
     null;
   merged.referenceOwnerRole =
-    parentVariantNode.referenceOwnerRole ??
+    parentNode.referenceOwnerRole ??
     candidateNode.referenceOwnerRole ??
     null;
   merged.referenceOwnerPath =
-    parentVariantNode.referenceOwnerPath ??
+    parentNode.referenceOwnerPath ??
     candidateNode.referenceOwnerPath ??
     null;
   merged.referenceOwnerRelativePath =
-    parentVariantNode.referenceOwnerRelativePath ??
+    parentNode.referenceOwnerRelativePath ??
     candidateNode.referenceOwnerRelativePath ??
     null;
   merged.referenceOwnerVariantProperties =
-    parentVariantNode.referenceOwnerVariantProperties ??
+    parentNode.referenceOwnerVariantProperties ??
     candidateNode.referenceOwnerVariantProperties ??
     null;
   merged.referenceVariantOwnedProperties =
     Array.from(combinedOwnedProperties).sort();
 
   return merged;
+}
+
+function getParentOwnedPropertyPaths(
+  parentNode: DSStructureNode,
+  candidateNode: DSStructureNode,
+): string[] {
+  const owned = new Set<string>();
+  const parentRecord = parentNode as unknown as Record<string, unknown>;
+  const candidateRecord = candidateNode as unknown as Record<string, unknown>;
+  for (const path of WHOLE_REFERENCE_PROPERTY_PATHS) {
+    if (
+      hasNestedProperty(parentRecord, path.split('.')) &&
+      !propertyValuesEqual(
+        getNestedProperty(parentRecord, path.split('.')),
+        getNestedProperty(candidateRecord, path.split('.')),
+      )
+    ) {
+      owned.add(path);
+    }
+  }
+
+  for (const path of SCALAR_REFERENCE_PROPERTY_PATHS) {
+    if (
+      hasNestedProperty(parentRecord, path.split('.')) &&
+      !propertyValuesEqual(
+        getNestedProperty(parentRecord, path.split('.')),
+        getNestedProperty(candidateRecord, path.split('.')),
+      )
+    ) {
+      owned.add(path);
+    }
+  }
+
+  for (const root of LEAF_REFERENCE_PROPERTY_ROOTS) {
+    const segments = root.split('.');
+    const parentValue = getNestedProperty(parentRecord, segments);
+    if (!hasNestedProperty(parentRecord, segments)) {
+      continue;
+    }
+    collectDifferentOwnedLeafPaths(
+      parentValue,
+      getNestedProperty(candidateRecord, segments),
+      root,
+      owned,
+    );
+  }
+
+  for (const property of parentNode.referenceVariantOwnedProperties ?? []) {
+    owned.add(property);
+  }
+
+  return collapseOwnedPropertyPaths(Array.from(owned));
+}
+
+function collectDifferentOwnedLeafPaths(
+  parentValue: unknown,
+  candidateValue: unknown,
+  path: string,
+  result: Set<string>,
+) {
+  if (
+    parentValue == null ||
+    Array.isArray(parentValue) ||
+    typeof parentValue !== 'object'
+  ) {
+    if (!propertyValuesEqual(parentValue, candidateValue)) {
+      result.add(path);
+    }
+    return;
+  }
+
+  const parentRecord = parentValue as Record<string, unknown>;
+  const candidateRecord =
+    candidateValue && typeof candidateValue === 'object' && !Array.isArray(candidateValue)
+      ? candidateValue as Record<string, unknown>
+      : {};
+  for (const key of Object.keys(parentRecord)) {
+    collectDifferentOwnedLeafPaths(
+      parentRecord[key],
+      candidateRecord[key],
+      `${path}.${key}`,
+      result,
+    );
+  }
+}
+
+function collapseOwnedPropertyPaths(paths: string[]): string[] {
+  const sorted = Array.from(new Set(paths)).sort((left, right) => {
+    const depthDifference = left.split('.').length - right.split('.').length;
+    return depthDifference || left.localeCompare(right);
+  });
+  const result: string[] = [];
+  for (const path of sorted) {
+    if (result.some((parent) => path.startsWith(`${parent}.`))) {
+      continue;
+    }
+    result.push(path);
+  }
+  return result.sort();
+}
+
+function attachDefaultPropertyOwners(node: DSStructureNode): DSStructureNode {
+  const existing = node.referencePropertyOwners ?? {};
+  const owners = clonePropertyOwners(existing);
+  const owner = buildReferencePropertyOwner(node, 'nested-baseline');
+  const propertyPaths = collectPresentReferencePropertyPaths(node);
+  let changed = false;
+  for (const property of propertyPaths) {
+    if (owners[property]) {
+      continue;
+    }
+    owners[property] = cloneReferencePropertyOwner(owner);
+    changed = true;
+  }
+  if (!changed && node.referencePropertyOwners) {
+    return node;
+  }
+  return Object.assign({}, node, { referencePropertyOwners: owners });
+}
+
+function collectPresentReferencePropertyPaths(node: DSStructureNode): string[] {
+  const record = node as unknown as Record<string, unknown>;
+  const result = new Set<string>();
+  for (const path of WHOLE_REFERENCE_PROPERTY_PATHS.concat(
+    SCALAR_REFERENCE_PROPERTY_PATHS,
+  )) {
+    if (hasNestedProperty(record, path.split('.'))) {
+      result.add(path);
+    }
+  }
+  for (const root of LEAF_REFERENCE_PROPERTY_ROOTS) {
+    const segments = root.split('.');
+    if (!hasNestedProperty(record, segments)) {
+      continue;
+    }
+    collectPresentLeafPaths(getNestedProperty(record, segments), root, result);
+  }
+  return collapseOwnedPropertyPaths(Array.from(result));
+}
+
+function collectPresentLeafPaths(
+  value: unknown,
+  path: string,
+  result: Set<string>,
+) {
+  if (value == null || Array.isArray(value) || typeof value !== 'object') {
+    result.add(path);
+    return;
+  }
+  const record = value as Record<string, unknown>;
+  const keys = Object.keys(record);
+  if (!keys.length) {
+    result.add(path);
+    return;
+  }
+  for (const key of keys) {
+    collectPresentLeafPaths(record[key], `${path}.${key}`, result);
+  }
+}
+
+function resolveParentPropertyOwner(
+  parentNode: DSStructureNode,
+  property: string,
+): DSReferencePropertyOwner {
+  const existing = findPropertyOwner(parentNode.referencePropertyOwners, property);
+  if (existing) {
+    return cloneReferencePropertyOwner(existing);
+  }
+  return buildReferencePropertyOwner(
+    parentNode,
+    isVariantOwnedProperty(parentNode, property)
+      ? 'variant-patch'
+      : 'host-override',
+  );
+}
+
+function findPropertyOwner(
+  owners: Record<string, DSReferencePropertyOwner> | null | undefined,
+  property: string,
+): DSReferencePropertyOwner | null {
+  if (!owners) {
+    return null;
+  }
+  if (owners[property]) {
+    return owners[property];
+  }
+  const parentPath = Object.keys(owners)
+    .filter((candidate) => property.startsWith(`${candidate}.`))
+    .sort((left, right) => right.length - left.length)[0];
+  return parentPath ? owners[parentPath] : null;
+}
+
+function buildReferencePropertyOwner(
+  node: DSStructureNode,
+  origin: DSReferencePropertyOwner['origin'],
+): DSReferencePropertyOwner {
+  return {
+    componentKey: node.referenceOwnerComponentKey ?? null,
+    ownerPath: node.referenceOwnerPath ?? null,
+    ownerRelativePath: node.referenceOwnerRelativePath ?? null,
+    origin,
+  };
+}
+
+function clonePropertyOwners(
+  owners: Record<string, DSReferencePropertyOwner> | null | undefined,
+): Record<string, DSReferencePropertyOwner> {
+  const result: Record<string, DSReferencePropertyOwner> = {};
+  for (const key of Object.keys(owners ?? {})) {
+    result[key] = cloneReferencePropertyOwner((owners ?? {})[key]);
+  }
+  return result;
+}
+
+function cloneReferencePropertyOwner(
+  owner: DSReferencePropertyOwner,
+): DSReferencePropertyOwner {
+  return {
+    componentKey: owner.componentKey,
+    ownerPath: owner.ownerPath,
+    ownerRelativePath: owner.ownerRelativePath,
+    origin: owner.origin,
+  };
+}
+
+function isVariantOwnedProperty(node: DSStructureNode, property: string): boolean {
+  return (node.referenceVariantOwnedProperties ?? []).some(
+    (owned) =>
+      owned === property ||
+      property.startsWith(`${owned}.`) ||
+      owned.startsWith(`${property}.`),
+  );
+}
+
+function hasNestedProperty(
+  source: Record<string, unknown>,
+  segments: string[],
+): boolean {
+  let current: unknown = source;
+  for (const segment of segments) {
+    if (!current || typeof current !== 'object') {
+      return false;
+    }
+    if (!Object.prototype.hasOwnProperty.call(current, segment)) {
+      return false;
+    }
+    current = (current as Record<string, unknown>)[segment];
+  }
+  return true;
+}
+
+function propertyValuesEqual(left: unknown, right: unknown): boolean {
+  if (left === right) {
+    return true;
+  }
+  if (Array.isArray(left) || Array.isArray(right)) {
+    if (!Array.isArray(left) || !Array.isArray(right) || left.length !== right.length) {
+      return false;
+    }
+    return left.every((value, index) => propertyValuesEqual(value, right[index]));
+  }
+  if (
+    !left ||
+    !right ||
+    typeof left !== 'object' ||
+    typeof right !== 'object'
+  ) {
+    return false;
+  }
+  const leftRecord = left as Record<string, unknown>;
+  const rightRecord = right as Record<string, unknown>;
+  const leftKeys = Object.keys(leftRecord).sort();
+  const rightKeys = Object.keys(rightRecord).sort();
+  if (!propertyValuesEqual(leftKeys, rightKeys)) {
+    return false;
+  }
+  return leftKeys.every((key) => propertyValuesEqual(leftRecord[key], rightRecord[key]));
 }
 
 function getNestedProperty(
@@ -572,31 +911,12 @@ export function getMaterializedInstanceReferenceDecision(
       candidateNode,
     );
     if (
-      hasDifferentExplicitPaint(existingNode, candidateNode) &&
-      shouldKeepExistingNestedPaintMaterialization(
-        existingNode,
-        candidateNode,
-        isHostControlledPath,
-      )
-    ) {
-      return buildDecision(
-        false,
-        'keep-host-controlled-descendant',
-        existingOrigin,
-        candidateOrigin,
-        ownerComponentKey,
-        relativePath,
-        withinMaterializedSubtree,
-      );
-    }
-
-    if (
       preferDeeper &&
-      (existingNode.referenceVariantOwnedProperties?.length ?? 0) > 0
+      getParentOwnedPropertyPaths(existingNode, candidateNode).length > 0
     ) {
       return buildDecision(
         true,
-        'merge-parent-variant-owned-descendant',
+        'merge-parent-owned-descendant',
         existingOrigin,
         candidateOrigin,
         ownerComponentKey,
@@ -632,11 +952,11 @@ export function getMaterializedInstanceReferenceDecision(
 
   if (
     existingNode.path === candidateNode.path &&
-    (existingNode.referenceVariantOwnedProperties?.length ?? 0) > 0
+    getParentOwnedPropertyPaths(existingNode, candidateNode).length > 0
   ) {
     return buildDecision(
       true,
-      'merge-parent-variant-owned-descendant',
+      'merge-parent-owned-descendant',
       existingOrigin,
       candidateOrigin,
       ownerComponentKey,
@@ -698,53 +1018,6 @@ export function shouldPreferDeeperNestedMaterialization(
   }
 
   return candidateOwnerPath.startsWith(`${existingOwnerPath} / `);
-}
-
-function shouldKeepExistingNestedPaintMaterialization(
-  existingNode: DSStructureNode,
-  candidateNode: DSStructureNode,
-  isHostControlledPath?: (
-    componentKey: string | null | undefined,
-    relativePath: string | null | undefined,
-  ) => boolean,
-): boolean {
-  const candidateOwnerComponentKey = candidateNode.referenceOwnerComponentKey ?? null;
-  const candidateRelativePath = candidateNode.referenceOwnerRelativePath ?? null;
-  if (
-    typeof isHostControlledPath === 'function' &&
-    isHostControlledPath(candidateOwnerComponentKey, candidateRelativePath)
-  ) {
-    return true;
-  }
-
-  const existingOwnerComponentKey = existingNode.referenceOwnerComponentKey ?? null;
-  const existingRelativePath = existingNode.referenceOwnerRelativePath ?? null;
-  if (
-    typeof isHostControlledPath === 'function' &&
-    isHostControlledPath(existingOwnerComponentKey, existingRelativePath)
-  ) {
-    return true;
-  }
-
-  return isComponentQualifiedParentPaint(existingRelativePath, candidateRelativePath);
-}
-
-function isComponentQualifiedParentPaint(
-  existingRelativePath: string | null | undefined,
-  candidateRelativePath: string | null | undefined,
-): boolean {
-  if (!existingRelativePath || !candidateRelativePath) {
-    return false;
-  }
-
-  if (
-    existingRelativePath === candidateRelativePath ||
-    !existingRelativePath.endsWith(candidateRelativePath)
-  ) {
-    return false;
-  }
-
-  return /(^| \/ )\[[^\]]+\] /.test(existingRelativePath);
 }
 
 function shouldPreferMaterializedHostDescendant(
@@ -811,22 +1084,10 @@ function getHostDescendantDecision(
     );
   }
 
-  if (hasDifferentExplicitPaint(existingNode, candidateNode)) {
+  if (getParentOwnedPropertyPaths(existingNode, candidateNode).length > 0) {
     return buildDecision(
-      false,
-      'keep-host-painted-descendant',
-      existingOrigin,
-      candidateOrigin,
-      ownerComponentKey,
-      relativePath,
-      withinMaterializedSubtree,
-    );
-  }
-
-  if (hasDifferentExplicitTypography(existingNode, candidateNode)) {
-    return buildDecision(
-      false,
-      'keep-host-typography-descendant',
+      true,
+      'merge-parent-owned-descendant',
       existingOrigin,
       candidateOrigin,
       ownerComponentKey,
@@ -849,70 +1110,6 @@ function getHostDescendantDecision(
     ownerComponentKey,
     relativePath,
     withinMaterializedSubtree,
-  );
-}
-
-function hasDifferentExplicitPaint(
-  existingNode: DSStructureNode,
-  candidateNode: DSStructureNode,
-): boolean {
-  if (!hasPaintDescriptor(existingNode) || !hasPaintDescriptor(candidateNode)) {
-    return false;
-  }
-
-  return !arePaintDescriptorsEqual(existingNode, candidateNode);
-}
-
-function hasDifferentExplicitTypography(
-  existingNode: DSStructureNode,
-  candidateNode: DSStructureNode,
-): boolean {
-  const existingDescriptor = getExplicitTypographyDescriptor(existingNode);
-  const candidateDescriptor = getExplicitTypographyDescriptor(candidateNode);
-  if (!existingDescriptor) {
-    return false;
-  }
-  // A host variant with an explicit style/token is more authoritative than a
-  // standalone nested catalog that only exposes resolved font properties.
-  if (!candidateDescriptor) {
-    return true;
-  }
-  return existingDescriptor !== candidateDescriptor;
-}
-
-function getExplicitTypographyDescriptor(node: DSStructureNode): string | null {
-  const styleKey = node.styles?.text?.styleKey ?? null;
-  const token = node.typographyToken ?? null;
-  if (!styleKey && !token) {
-    return null;
-  }
-  return `${styleKey ?? ''}|${token ?? ''}`;
-}
-
-function hasPaintDescriptor(node: DSStructureNode): boolean {
-  return Boolean(
-    node.fill?.token ||
-    node.fill?.color ||
-    node.stroke?.token ||
-    node.stroke?.color ||
-    node.styles?.fill?.styleKey ||
-    node.styles?.stroke?.styleKey,
-  );
-}
-
-function arePaintDescriptorsEqual(
-  left: DSStructureNode,
-  right: DSStructureNode,
-): boolean {
-  return (
-    (left.fill?.token ?? null) === (right.fill?.token ?? null) &&
-    (left.fill?.color ?? null) === (right.fill?.color ?? null) &&
-    (left.stroke?.token ?? null) === (right.stroke?.token ?? null) &&
-    (left.stroke?.color ?? null) === (right.stroke?.color ?? null) &&
-    (left.styles?.fill?.styleKey ?? null) ===
-      (right.styles?.fill?.styleKey ?? null) &&
-    (left.styles?.stroke?.styleKey ?? null) ===
-      (right.styles?.stroke?.styleKey ?? null)
   );
 }
 

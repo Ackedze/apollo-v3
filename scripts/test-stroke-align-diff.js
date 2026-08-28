@@ -170,6 +170,7 @@ function main() {
             ruleId: 'component:web-corp.background-plate.border-stroke-align-is-fixed',
             severity: 'error',
             ruleKind: 'design-rule',
+            authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
             severityScope: 'design',
             source: 'pattern-link',
             appliesTo: 'stroke.align|strokeAlign',

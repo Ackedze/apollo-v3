@@ -147,6 +147,33 @@ async function main() {
     'Visible non-solid fills must remain observable for deterministic no-fill rules',
   );
 
+  const mixedStrokeNode = createFrame('mixed-stroke-node-id', 'Bottom divider');
+  mixedStrokeNode.strokes = [{
+    type: 'SOLID',
+    visible: true,
+    opacity: 1,
+    color: {r: 0, g: 0, b: 0},
+    boundVariables: {color: {id: 'VariableID:stroke-secondary'}},
+  }];
+  mixedStrokeNode.strokeWeight = figma.mixed;
+  mixedStrokeNode.strokeTopWeight = 0;
+  mixedStrokeNode.strokeRightWeight = 0;
+  mixedStrokeNode.strokeBottomWeight = 1;
+  mixedStrokeNode.strokeLeftWeight = 0;
+  mixedStrokeNode.strokeAlign = 'INSIDE';
+  const mixedStrokeSnapshot = await snapshotNode(mixedStrokeNode, '');
+  assert.deepEqual(
+    mixedStrokeSnapshot.stroke,
+    {
+      color: 'rgba(0,0,0,1)',
+      token: 'VariableID:stroke-secondary',
+      weight: 1,
+      weights: {top: 0, right: 0, bottom: 1, left: 0},
+      align: 'INSIDE',
+    },
+    'Per-side strokes must remain observable when strokeWeight is mixed',
+  );
+
   const hiddenChild = createFrame('hidden-child-node-id', 'Hidden child');
   hiddenChild.visible = false;
   const hiddenGrandchild = createFrame(

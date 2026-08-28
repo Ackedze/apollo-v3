@@ -14,8 +14,13 @@ export interface ApolloPluginMessageRouterDependencies {
   sendAgentReport(
     requestId: string | null | undefined,
     userMessage: string | null | undefined,
+    reportType: string | null | undefined,
+    agentSource: string | null | undefined,
+    dialogue: unknown,
   ): Promise<void>;
+  setAgentSource(source: string | null | undefined): Promise<void>;
   cancelAgentReport(requestId: string | null | undefined): boolean;
+  retryStatsUpload(): Promise<void>;
   resizeUi(compact: boolean): void;
   focusNode(nodeId: string | undefined): Promise<void>;
   resetCustomizationGroup(payload: any): Promise<void>;
@@ -72,6 +77,9 @@ export function routeApolloPluginMessage(
         .sendAgentReport(
           message.payload?.requestId,
           message.payload?.userMessage,
+          message.payload?.reportType,
+          message.payload?.agentSource,
+          message.payload?.dialogue,
         )
         .catch((error) => {
           dependencies.logError('[Apollo] failed to send agent report', error);
@@ -87,6 +95,13 @@ export function routeApolloPluginMessage(
           });
         });
       return true;
+    case 'set-apollo-agent-source':
+      void dependencies
+        .setAgentSource(message.payload?.source)
+        .catch((error) => {
+          dependencies.logError('[Apollo] failed to save agent source', error);
+        });
+      return true;
     case 'cancel-apollo-agent-report': {
       const requestId = message.payload?.requestId;
       if (dependencies.cancelAgentReport(requestId)) {
@@ -97,6 +112,11 @@ export function routeApolloPluginMessage(
       }
       return true;
     }
+    case 'retry-stats-upload':
+      void dependencies.retryStatsUpload().catch((error) => {
+        dependencies.logError('[Apollo] failed to retry stats upload', error);
+      });
+      return true;
     case 'set-ui-compact':
       dependencies.resizeUi(message.payload?.compact === true);
       return true;

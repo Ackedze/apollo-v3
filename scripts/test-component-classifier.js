@@ -856,7 +856,13 @@ async function main() {
       type: 'INSTANCE',
       name: '[D] Button',
       visible: true,
-      componentInstance: { componentKey: 'button-text-key' },
+      componentInstance: {
+        componentKey: 'button-text-key',
+        directOverrides: [
+          { nodeId: 'nested-content-card', fields: ['boundVariables'] },
+          { nodeId: 'nested-title', fields: ['fills'] },
+        ],
+      },
     },
     {
       id: 102,
@@ -904,6 +910,33 @@ async function main() {
       name: 'Label',
       visible: true,
     },
+    {
+      id: 107,
+      parentId: 101,
+      nodeId: 'nested-content-card',
+      path: 'TitleView / Button / ContentCardWrapper',
+      type: 'FRAME',
+      name: 'ContentCardWrapper',
+      visible: true,
+    },
+    {
+      id: 108,
+      parentId: 101,
+      nodeId: 'nested-title',
+      path: 'TitleView / Button / Title',
+      type: 'TEXT',
+      name: 'Title',
+      visible: true,
+    },
+    {
+      id: 109,
+      parentId: 101,
+      nodeId: 'nested-unproven',
+      path: 'TitleView / Button / Unproven',
+      type: 'TEXT',
+      name: 'Unproven',
+      visible: true,
+    },
   ];
   const baselineDiff = (nodeId, property, reference, actual) => ({
     message: `${property}: ${reference} → ${actual}`,
@@ -943,19 +976,46 @@ async function main() {
         'static_text_inverted/primary',
       ),
       baselineDiff('status-label', 'component.identity', '🔩 Label', '🔩 Label'),
+      baselineDiff('nested-content-card', 'layout.padding.left', 24, 12),
+      baselineDiff('nested-title', 'fill', 'text/secondary', 'text/primary'),
+      baselineDiff('nested-unproven', 'fill', 'text/secondary', 'text/primary'),
     ],
     [baselineDiff('button', 'variant.View', 'Secondary', 'Text')],
     (diff) => diff.nodeId === 'button',
   );
   assert.deepEqual(
     titleViewBaselineFacts.map((diff) => diff.details.property),
-    ['styles.text', 'text.case', 'variant.View'],
-    'WIP facts must keep direct mutations while dropping derived variant visuals, hidden descendants, unproven nested baselines and no-op identity diffs.',
+    [
+      'styles.text',
+      'text.case',
+      'layout.padding.left',
+      'fill',
+      'variant.View',
+    ],
+    'WIP facts must keep native overrides from nested instance owners while dropping derived variant visuals, hidden descendants, unproven nested baselines and no-op identity diffs.',
   );
   assert.equal(
     titleViewBaselineFacts[0].assessment,
     undefined,
     'WIP facts must not inherit policy verdicts from the deterministic customization category.',
+  );
+  const expandedNestedFacts = buildBaselineCustomizationFacts(
+    titleViewActual[0],
+    titleViewActual,
+    [],
+    [],
+    () => false,
+    [
+      baselineDiff('nested-content-card', 'layout.padding.left', 24, 12),
+      baselineDiff('nested-title', 'fill', 'text/secondary', 'text/primary'),
+      baselineDiff('nested-unproven', 'fill', 'text/secondary', 'text/primary'),
+      baselineDiff('button', 'variant.View', 'Secondary', 'Text'),
+    ],
+  );
+  assert.deepEqual(
+    expandedNestedFacts.map((diff) => diff.details.property),
+    ['layout.padding.left', 'fill'],
+    'WIP must include direct nested layer/style overrides from the expanded comparison without reintroducing derived nested variant baselines.',
   );
   assert.equal(
     shouldMaterializeComponentDiff({

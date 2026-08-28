@@ -8,6 +8,10 @@ const resultSubCardSource = fs.readFileSync(
   path.join(root, 'src/ui-app/components/ResultSubCard.tsx'),
   'utf8',
 );
+const resultCardPresetsCss = fs.readFileSync(
+  path.join(root, 'src/ui-app/components/ResultCardPresets.module.css'),
+  'utf8',
+);
 
 function assertIncludes(source, value, message) {
   if (!source.includes(value)) {
@@ -37,18 +41,13 @@ assertIncludes(
 );
 assertIncludes(
   uiSource,
-  "nextView !== 'dialogue'",
-  'The dialogue view is missing from the view state guard.',
+  "nextView !== 'texts'",
+  'The texts view is missing from the view state guard.',
 );
 assertIncludes(
   uiSource,
-  "activeApolloView !== 'dialogue'",
-  'The composer must only be visible in dialogue mode.',
-);
-assertIncludes(
-  uiSource,
-  'placeholder="Введи или выбери текст"',
-  'The dialogue composer placeholder does not match the Figma contract.',
+  "agentComposer.classList.add('hidden')",
+  'The legacy dialogue composer must stay hidden in report-only tabs.',
 );
 assertIncludes(
   uiSource,
@@ -57,27 +56,44 @@ assertIncludes(
 );
 assertIncludes(
   uiSource,
-  'let agentDialogueMessages = [];',
-  'Dialogue messages must have isolated state.',
+  'let agentTextMessages = [];',
+  'Text report messages must have isolated state.',
 );
 assertIncludes(
   uiSource,
-  'function requestAgentReportWhenVisible()',
-  'Agent reports must be requested through the report-tab visibility gate.',
+  'function requestNextPendingAgentReport()',
+  'Agent reports must be requested immediately through the serialized report queue.',
 );
 assertIncludes(
   uiSource,
-  "activeApolloView !== 'report' ||",
-  'The report visibility gate must require the report tab.',
+  "sendAgentReportToProxy('', 'report');",
+  'The pattern report must be submitted without waiting for its tab to open.',
 );
 assertIncludes(
   uiSource,
-  'agentRequestedReportId === reportId',
-  'Opening the report tab repeatedly must not resend the same report.',
+  "sendAgentReportToProxy('', 'texts');",
+  'The text report must be submitted without waiting for its tab to open.',
 );
-if (codeSource.includes('void sendApolloAgentReport();')) {
-  throw new Error('A completed audit must not send its report to the LLM automatically.');
-}
+assertIncludes(
+  uiSource,
+  'function groupCollapsibleMarkdownSections(blocks)',
+  'Allowed customization report sections must be grouped into a disclosure.',
+);
+assertIncludes(
+  uiSource,
+  '<details class="md-block md-collapsible">',
+  'Allowed customization report sections must use an accessible details element.',
+);
+assertIncludes(
+  uiSource,
+  '/^Допустимые кастомизации',
+  'The report renderer must recognize allowed customization sections.',
+);
+assertIncludes(
+  uiSource,
+  'loading-state-visible',
+  'Pattern and text tabs must center their loading state.',
+);
 assertIncludes(
   uiSource,
   'function getCustomizationStructuredValues(diff)',
@@ -120,6 +136,21 @@ assertIncludes(
 );
 assertIncludes(
   uiSource,
+  'let hideCustomizations = false;',
+  'Customization categories must remain visible by default.',
+);
+assertIncludes(
+  uiSource,
+  "tab.id !== 'changes' && tab.id !== 'changesWip'",
+  'The customization visibility setting must hide both customization categories.',
+);
+assertIncludes(
+  uiSource,
+  'function handleHideCustomizationsToggle()',
+  'The customization visibility setting must be connected to the Apollo shell.',
+);
+assertIncludes(
+  uiSource,
   "return () => getVisibleCustomizationItems();",
   'Customization counters must use the Expected-aware visible item source.',
 );
@@ -152,5 +183,15 @@ assertIncludes(
 if (uiSource.includes('agentChatOpen')) {
   throw new Error('Legacy binary chat state is still present.');
 }
+assertIncludes(
+  resultCardPresetsCss,
+  'overflow: visible;',
+  'Action picker wrapper must not clip the menu shadow.',
+);
+assertIncludes(
+  resultCardPresetsCss,
+  '0 24px 56px rgba(15, 23, 42, 0.2)',
+  'Action picker must render a visible elevation shadow.',
+);
 
 console.log('Agent view mode regression checks passed.');

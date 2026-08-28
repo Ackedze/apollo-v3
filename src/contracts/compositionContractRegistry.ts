@@ -7,6 +7,7 @@ import type {
   PropertyEqualsFirstConstraint,
   PropertyEqualsHostConstraint,
   PropertyDomainConstraint,
+  PropertySequenceConstraint,
   ValuePositionConstraint,
 } from './compositionContractTypes';
 
@@ -222,12 +223,38 @@ const evaluatePropertyEqualsFirst: CompositionConstraintEvaluator<PropertyEquals
   });
 };
 
+const evaluatePropertySequence: CompositionConstraintEvaluator<PropertySequenceConstraint> = (
+  constraint,
+  context,
+) => context.members.flatMap((member, index) => {
+  const expected = constraint.values[index];
+  const actual = member.variantProperties[constraint.property];
+  if (!expected || !actual || actual === expected) {
+    return [];
+  }
+  return [propertyDecision({
+    verdict: 'violation',
+    context,
+    constraint,
+    member,
+    expected,
+    actual,
+    remediationValue: expected,
+    evidence: {
+      property: constraint.property,
+      position: member.position,
+      expectedSequence: constraint.values.slice(),
+    },
+  })];
+});
+
 const evaluators = {
   countBetween: evaluateCountBetween,
   propertyDomain: evaluatePropertyDomain,
   valuePosition: evaluateValuePosition,
   propertyEqualsHost: evaluatePropertyEqualsHost,
   propertyEqualsFirst: evaluatePropertyEqualsFirst,
+  propertySequence: evaluatePropertySequence,
 };
 
 export function evaluateCompositionConstraint(
@@ -245,7 +272,8 @@ function propertyDecision(options: {
     | PropertyDomainConstraint
     | ValuePositionConstraint
     | PropertyEqualsHostConstraint
-    | PropertyEqualsFirstConstraint;
+    | PropertyEqualsFirstConstraint
+    | PropertySequenceConstraint;
   member: CompositionContractContext['members'][number];
   expected: string | null;
   actual: string;

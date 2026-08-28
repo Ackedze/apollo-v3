@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import type { GenerationExampleCaptureRequest } from '../types';
+import type { GenerationExampleCaptureRequest, PageTypeId } from '../types';
 import { Button } from './Button';
 import { GenerationExampleModal } from './GenerationExampleModal';
 import { OptionList } from './OptionList';
@@ -7,8 +7,6 @@ import { OptionListCell } from './OptionListCell';
 import { OptionListHeader } from './OptionListHeader';
 import { PickerButton } from './PickerButton';
 import {
-  ArrowsInIcon,
-  ArrowsOutIcon,
   FlashIcon,
   PickerAndroidIcon,
   PickerAppleIcon,
@@ -16,11 +14,11 @@ import {
   PickerMobilePhoneIcon,
   SettingsIcon,
 } from './PickerIcons';
-import { SmallButton } from './SmallButton';
 import styles from './TopSection.module.css';
 
 type TopSectionProps = {
   title: string;
+  pageTypeId: PageTypeId | null;
   channelId: string;
   pickerLabel: string;
   actionLabel: string;
@@ -30,13 +28,16 @@ type TopSectionProps = {
   compact: boolean;
   shellAuditEnabled: boolean;
   showExpectedCustomizations: boolean;
+  hideCustomizations: boolean;
   experimentalContractV2Enabled: boolean;
   onActionPress: () => void;
   onToggleCompact: () => void;
   onChannelChange?: (channelId: string) => void;
   onPickerChange?: (pickerLabel: string) => void;
+  onPageTypeChange?: (pageTypeId: PageTypeId) => void;
   onShellAuditToggle?: () => void;
   onShowExpectedToggle?: () => void;
+  onHideCustomizationsToggle?: () => void;
   onExperimentalContractV2Toggle?: () => void;
   onExampleCapture?: (request: GenerationExampleCaptureRequest) => void;
 };
@@ -52,6 +53,20 @@ type WorkshopOption = {
   id: string;
   label: string;
 };
+
+type PageTypeOption = {
+  id: PageTypeId;
+  label: string;
+};
+
+const PAGE_TYPE_OPTIONS: PageTypeOption[] = [
+  { id: 'form', label: 'Форма' },
+  { id: 'details', label: 'Просмотровая' },
+  { id: 'data-list', label: 'Страница с таблицей' },
+  { id: 'landing', label: 'Лендинг' },
+  { id: 'dashboard', label: 'Дашборд' },
+  { id: 'other', label: 'Другое' },
+];
 
 const PICKER_OPTIONS: PickerOption[] = [
   {
@@ -101,6 +116,7 @@ const WORKSHOP_OPTIONS: WorkshopOption[] = [
 
 export function TopSection({
   title,
+  pageTypeId,
   channelId,
   pickerLabel,
   actionLabel,
@@ -110,20 +126,25 @@ export function TopSection({
   compact,
   shellAuditEnabled,
   showExpectedCustomizations,
+  hideCustomizations,
   experimentalContractV2Enabled,
   onActionPress,
   onToggleCompact,
   onChannelChange,
   onPickerChange,
+  onPageTypeChange,
   onShellAuditToggle,
   onShowExpectedToggle,
+  onHideCustomizationsToggle,
   onExperimentalContractV2Toggle,
   onExampleCapture,
 }: TopSectionProps): React.JSX.Element {
   const settingsRootRef = useRef<HTMLDivElement | null>(null);
+  const pageTypeRootRef = useRef<HTMLDivElement | null>(null);
   const pickerRootRef = useRef<HTMLDivElement | null>(null);
   const workshopRootRef = useRef<HTMLDivElement | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [pageTypeOpen, setPageTypeOpen] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [workshopOpen, setWorkshopOpen] = useState(false);
   const [exampleModalOpen, setExampleModalOpen] = useState(false);
@@ -150,7 +171,7 @@ export function TopSection({
   }, [actionLoading]);
 
   useEffect(() => {
-    if (!settingsOpen && !pickerOpen && !workshopOpen) {
+    if (!settingsOpen && !pageTypeOpen && !pickerOpen && !workshopOpen) {
       return undefined;
     }
 
@@ -158,6 +179,9 @@ export function TopSection({
       const target = event.target as Node;
       if (!settingsRootRef.current?.contains(target)) {
         setSettingsOpen(false);
+      }
+      if (!pageTypeRootRef.current?.contains(target)) {
+        setPageTypeOpen(false);
       }
       if (!pickerRootRef.current?.contains(target)) {
         setPickerOpen(false);
@@ -170,6 +194,7 @@ export function TopSection({
     function handleKeyDown(event: KeyboardEvent): void {
       if (event.key === 'Escape') {
         setSettingsOpen(false);
+        setPageTypeOpen(false);
         setPickerOpen(false);
         setWorkshopOpen(false);
       }
@@ -182,7 +207,7 @@ export function TopSection({
       document.removeEventListener('mousedown', handlePointerDown);
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [settingsOpen, pickerOpen, workshopOpen]);
+  }, [settingsOpen, pageTypeOpen, pickerOpen, workshopOpen]);
 
   const selectedOption =
     PICKER_OPTIONS.find((option) => option.label === selectedPickerLabel) ??
@@ -190,11 +215,14 @@ export function TopSection({
   const selectedWorkshop =
     WORKSHOP_OPTIONS.find((option) => option.id === selectedWorkshopId) ??
     WORKSHOP_OPTIONS[0];
+  const selectedPageType =
+    PAGE_TYPE_OPTIONS.find((option) => option.id === pageTypeId) ?? null;
   const actionKey = [
     selectedOption.label,
     selectedWorkshop.id,
     shellAuditEnabled ? 'shared-on' : 'shared-off',
     showExpectedCustomizations ? 'expected-on' : 'expected-off',
+    hideCustomizations ? 'customizations-hidden' : 'customizations-visible',
     experimentalContractV2Enabled ? 'contract-v2-on' : 'contract-v2-off',
     actionType,
     actionLabel,
@@ -214,6 +242,7 @@ export function TopSection({
         title="Настройки"
         icon={<SettingsIcon />}
         onPress={() => {
+          setPageTypeOpen(false);
           setPickerOpen(false);
           setWorkshopOpen(false);
           setSettingsOpen((value) => !value);
@@ -329,6 +358,25 @@ export function TopSection({
             type="button"
             className={styles.switchRow}
             disabled={actionLoading}
+            aria-pressed={compact}
+            onClick={onToggleCompact}
+          >
+            <span className={styles.switchText}>Компактный вид</span>
+            <span
+              className={[
+                styles.switchTrack,
+                compact ? styles.switchTrackActive : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+            >
+              <span className={styles.switchThumb} />
+            </span>
+          </button>
+          <button
+            type="button"
+            className={styles.switchRow}
+            disabled={actionLoading}
             aria-pressed={experimentalContractV2Enabled}
             onClick={onExperimentalContractV2Toggle}
           >
@@ -356,6 +404,25 @@ export function TopSection({
               className={[
                 styles.switchTrack,
                 showExpectedCustomizations ? styles.switchTrackActive : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+            >
+              <span className={styles.switchThumb} />
+            </span>
+          </button>
+          <button
+            type="button"
+            className={styles.switchRow}
+            disabled={actionLoading}
+            aria-pressed={hideCustomizations}
+            onClick={onHideCustomizationsToggle}
+          >
+            <span className={styles.switchText}>Скрыть кастомизации</span>
+            <span
+              className={[
+                styles.switchTrack,
+                hideCustomizations ? styles.switchTrackActive : '',
               ]
                 .filter(Boolean)
                 .join(' ')}
@@ -395,34 +462,64 @@ export function TopSection({
       size={compact ? 'compact' : 'regular'}
       singleIcon={compact}
       icon={<FlashIcon />}
-      onPress={onActionPress}
+      onPress={() => {
+        setPageTypeOpen(false);
+        onActionPress();
+      }}
     />
+  );
+
+  const pageTypeControl = (
+    <div className={styles.pageTypeWrap} ref={pageTypeRootRef}>
+      <PickerButton
+        label={selectedPageType?.label ?? 'Тип страницы'}
+        open={pageTypeOpen}
+        disabled={actionLoading && actionLabel === 'Остановить'}
+        className={[
+          styles.pageTypeButton,
+          selectedPageType ? styles.pageTypeButtonSelected : '',
+        ]
+          .filter(Boolean)
+          .join(' ')}
+        onPress={() => {
+          setSettingsOpen(false);
+          setPickerOpen(false);
+          setWorkshopOpen(false);
+          setPageTypeOpen((value) => !value);
+        }}
+      />
+      {pageTypeOpen ? (
+        <OptionList className={styles.pageTypeMenu}>
+          {PAGE_TYPE_OPTIONS.map((option) => (
+            <OptionListCell
+              key={option.id}
+              label={option.label}
+              selected={pageTypeId === option.id}
+              showLeadingIcon={false}
+              onPress={() => {
+                onPageTypeChange?.(option.id);
+                setPageTypeOpen(false);
+              }}
+            />
+          ))}
+        </OptionList>
+      ) : null}
+    </div>
   );
 
   return (
     <>
-      <div className={[styles.root, compact ? styles.rootCompact : ''].filter(Boolean).join(' ')}>
-        <div className={[styles.titleWrap, compact ? styles.titleWrapCompact : ''].filter(Boolean).join(' ')}>
-          <div className={styles.titleButton}>
-            {compact ? 'A' : title}
-          </div>
-          <SmallButton
-            singleIcon
-            icon={compact ? <ArrowsInIcon /> : <ArrowsOutIcon />}
-            onPress={onToggleCompact}
-          />
+      <div
+        className={[styles.root, compact ? styles.rootCompact : '']
+          .filter(Boolean)
+          .join(' ')}
+        data-product={title}
+      >
+        {pageTypeControl}
+        <div className={compact ? styles.compactRightSide : styles.rightSide}>
+          {settingsControl}
+          {actionButton}
         </div>
-        {compact ? (
-          <div className={styles.compactRightSide}>
-            {settingsControl}
-            {actionButton}
-          </div>
-        ) : (
-          <div className={styles.rightSide}>
-            {settingsControl}
-            {actionButton}
-          </div>
-        )}
       </div>
       {exampleModalOpen ? (
         <GenerationExampleModal

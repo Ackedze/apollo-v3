@@ -16,7 +16,29 @@ export interface CustomizationResetPayload {
     kind?: string;
     nodeId?: string;
     properties?: Record<string, string>;
+    property?: string;
+    collectionName?: string;
+    value?: number;
   }>;
+}
+
+type CustomizationRemediation =
+  | {
+      kind: 'set-variant-properties';
+      nodeId: string;
+      properties: Record<string, string>;
+    }
+  | {
+      kind: 'bind-layout-variable';
+      nodeId: string;
+      property: string;
+      collectionName: string;
+      value: number;
+    };
+
+export interface NumericVariableToken {
+  key: string;
+  name: string;
 }
 
 export type CustomizationResetReferenceResult =
@@ -32,6 +54,10 @@ export interface CustomizationResetActionDependencies {
     options?: { preferSelectedComponentVariant?: boolean }
   ): Promise<CustomizationResetReferenceResult>;
   rerunAudit(fallbackSelection: SceneNode[]): Promise<void>;
+  resolveNumericVariableToken(
+    collectionName: string,
+    value: number,
+  ): NumericVariableToken | null;
   mutations: CustomizationResetMutations;
   notify(message: string): void;
   log(message: string, payload: unknown): void;
@@ -72,21 +98,27 @@ export function createCustomizationResetAction(
     const atomicDetails = paintSurfaceResetRequested
       ? details.filter((detail) => detail.resetSurface !== 'paint')
       : details;
-    const remediations = Array.isArray(payload?.remediations)
+    const remediations: CustomizationRemediation[] = Array.isArray(payload?.remediations)
       ? payload.remediations.filter(
           (
             item
-          ): item is {
-            kind: 'set-variant-properties';
-            nodeId: string;
-            properties: Record<string, string>;
-          } =>
+          ): item is CustomizationRemediation =>
             Boolean(
-              item?.kind === 'set-variant-properties' &&
+              item &&
                 typeof item.nodeId === 'string' &&
                 item.nodeId.length > 0 &&
-                item.properties &&
-                typeof item.properties === 'object'
+                ((item.kind === 'set-variant-properties' &&
+                  item.properties &&
+                  typeof item.properties === 'object') ||
+                  (item.kind === 'bind-layout-variable' &&
+                    typeof item.property === 'string' &&
+                    /^layout\.padding\.(top|right|bottom|left)$/.test(
+                      item.property
+                    ) &&
+                    typeof item.collectionName === 'string' &&
+                    item.collectionName.length > 0 &&
+                    typeof item.value === 'number' &&
+                    Number.isFinite(item.value)))
             )
         )
       : [];
@@ -113,6 +145,38 @@ export function createCustomizationResetAction(
     }
 
     for (const remediation of remediations) {
+      if (remediation.kind === 'bind-layout-variable') {
+        const bindingNode = await dependencies.getSceneNodeById(
+          remediation.nodeId
+        );
+        if (!bindingNode) {
+          dependencies.notify('Не удалось найти слой для привязки токена.');
+          return;
+        }
+        const token = dependencies.resolveNumericVariableToken(
+          remediation.collectionName,
+          remediation.value,
+        );
+        if (!token) {
+          dependencies.notify(
+            `Не найден однозначный токен ${remediation.collectionName}/${remediation.value}.`
+          );
+          return;
+        }
+        await dependencies.mutations.applyReferenceResetByDetails(bindingNode, [
+          {
+            property: remediation.property,
+            reference: {
+              value: remediation.value,
+              resourceType: 'token',
+              resourceId: token.key,
+              displayName: token.name,
+            },
+          },
+        ]);
+        continue;
+      }
+
       const variantNode = await dependencies.getSceneNodeById(
         remediation.nodeId
       );
@@ -187,7 +251,11 @@ export function createCustomizationResetAction(
     }
 
     if (remediations.length && !messages.length && !details.length) {
-      dependencies.notify('Параметры компонента восстановлены.');
+      dependencies.notify(
+        remediations.every((item) => item.kind === 'bind-layout-variable')
+          ? 'Токены Spacing привязаны.'
+          : 'Параметры компонента восстановлены.'
+      );
       await dependencies.rerunAudit([rootNode]);
       return;
     }

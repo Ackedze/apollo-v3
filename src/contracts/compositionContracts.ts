@@ -191,6 +191,13 @@ function validateConstraint(
     requireIdentifier(constraint.property, `${prefix}.property`);
     return;
   }
+  if (constraint.op === 'propertySequence') {
+    requireIdentifier(constraint.property, `${prefix}.property`);
+    if (!hasStringArray(constraint.values)) {
+      throw new Error(`${prefix}.values must be a non-empty string array`);
+    }
+    return;
+  }
 
   throw new Error(`${prefix}.op is unsupported`);
 }

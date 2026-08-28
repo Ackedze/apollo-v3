@@ -49,12 +49,21 @@ export type PropertyEqualsFirstConstraint = {
   message: string;
 };
 
+export type PropertySequenceConstraint = {
+  id: string;
+  op: 'propertySequence';
+  property: string;
+  values: string[];
+  message: string;
+};
+
 export type CompositionConstraint =
   | CountBetweenConstraint
   | PropertyDomainConstraint
   | ValuePositionConstraint
   | PropertyEqualsHostConstraint
-  | PropertyEqualsFirstConstraint;
+  | PropertyEqualsFirstConstraint
+  | PropertySequenceConstraint;
 
 export type SubtreePropertyPolicy = {
   id: string;

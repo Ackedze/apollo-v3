@@ -84,6 +84,9 @@ function main() {
   } = loadModule(
       '../src/contracts/compositionContractEngine.ts',
     );
+  const {evaluateCompositionConstraint} = loadModule(
+    '../src/contracts/compositionContractRegistry.ts',
+  );
   const {collapseSemanticVariantDiffs} = loadModule(
     '../src/assessment/customizationAssessment.ts',
   );
@@ -99,6 +102,66 @@ function main() {
   assert.ok(buttonGroupComposition);
   const config = buttonGroupComposition.contract;
   assert.equal(validateCompositionContractsConfig(config).contracts.length, 1);
+  const sequenceConstraint = {
+    id: 'card-size-order',
+    op: 'propertySequence',
+    property: 'Size',
+    values: ['212x132', '264x164', '212x132'],
+    message: 'CardImage size follows the previous/current/next sequence',
+  };
+  const sequenceContract = {
+    id: 'card-swiper-mobile.card-window',
+    match: {hostComponentNames: ['CardSwiperMobile']},
+    select: {
+      nestedComponentNames: ['CardImage'],
+      visibility: 'all',
+      order: 'document',
+    },
+    constraints: [sequenceConstraint],
+  };
+  assert.equal(validateCompositionContractsConfig({
+    schemaVersion: 1,
+    contracts: [sequenceContract],
+  }).contracts.length, 1);
+  const sequenceMember = (position, size) => ({
+    nodeId: `card-${position}`,
+    nodeName: 'CardImage',
+    nodePath: `CardSwiperMobile / CardImage ${position}`,
+    visible: true,
+    componentKey: 'card-image-key',
+    componentName: 'CardImage',
+    position,
+    count: 3,
+    variantProperties: {Size: size},
+    expectedVariantProperties: {},
+    subtreeNodeIds: new Set(),
+  });
+  const sequenceDecisions = evaluateCompositionConstraint(
+    sequenceConstraint,
+    {
+      contract: sequenceContract,
+      host: {
+        nodeId: 'swiper',
+        nodeName: 'CardSwiperMobile',
+        nodePath: 'CardSwiperMobile',
+        componentKey: 'swiper-key',
+        componentName: 'CardSwiperMobile',
+        variantProperties: {'Screen Size': '360+'},
+      },
+      members: [
+        sequenceMember(1, '212x132'),
+        sequenceMember(2, '212x132'),
+        sequenceMember(3, '212x132'),
+      ],
+    },
+  );
+  assert.equal(sequenceDecisions.length, 1);
+  assert.equal(sequenceDecisions[0].target.nodeId, 'card-2');
+  assert.equal(sequenceDecisions[0].expected, '264x164');
+  assert.equal(sequenceDecisions[0].actual, '212x132');
+  assert.deepEqual(sequenceDecisions[0].remediation.properties, {
+    Size: '264x164',
+  });
   const titleViewComposition = compileContractCompositionArtifact(
     fixtures.titleView,
     ['TitleView', '[D] TitleView', '[M] TitleView'],
@@ -553,6 +616,16 @@ function main() {
   assert.throws(
     () => validateCompositionContractsConfig({schemaVersion: 2, contracts: []}),
     /Unsupported composition contracts schemaVersion/,
+  );
+  assert.throws(
+    () => validateCompositionContractsConfig({
+      schemaVersion: 1,
+      contracts: [{
+        ...sequenceContract,
+        constraints: [{...sequenceConstraint, values: []}],
+      }],
+    }),
+    /values must be a non-empty string array/,
   );
   assert.throws(
     () => validateCompositionContractsConfig({

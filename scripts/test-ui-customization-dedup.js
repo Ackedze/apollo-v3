@@ -5,6 +5,10 @@ const vm = require('vm');
 
 const root = path.resolve(__dirname, '..');
 const uiSource = fs.readFileSync(path.join(root, 'src/ui.html'), 'utf8');
+assert.ok(
+  uiSource.includes('rawBaseline && item.id ? `node ${item.id}` : null'),
+  'WIP customization cards must expose the Figma node id to distinguish equal names.',
+);
 const start = uiSource.indexOf('const TECHNICAL_DIFF_PATTERN');
 const end = uiSource.indexOf('function setScanningState', start);
 
@@ -182,6 +186,92 @@ assert.deepEqual(
   replacementActions.map((action) => action.label),
   ['Primary', 'Secondary'],
   'Variant replacement picker must contain only real variant values.',
+);
+
+const layerResetActions = context.buildCustomizationResetActions('root', {
+  nodeId: 'layer',
+  remediationChoices: [],
+  messages: [],
+  details: [{property: 'radius', reference: {value: 16}}],
+  remediations: [],
+});
+assert.deepEqual(
+  layerResetActions.map((action) => action.label),
+  ['Сбросить'],
+  'A single deterministic layer reset must use the explicit Сбросить label.',
+);
+
+const paddingViolation = {
+  nodeId: 'plate',
+  details: {
+    property: 'layout.padding.left',
+    reference: { value: 24 },
+    actual: { value: 32, bindingId: null },
+  },
+  assessment: {
+    verdict: 'violation',
+    evidence: {
+      requiredTokenSource: { collection: 'Spacing' },
+    },
+  },
+};
+const paddingRemediation = context.getLayoutTokenBindingRemediation(
+  paddingViolation,
+);
+assert.deepEqual(
+  JSON.parse(JSON.stringify(paddingRemediation)),
+  {
+    kind: 'bind-layout-variable',
+    nodeId: 'plate',
+    property: 'layout.padding.left',
+    collectionName: 'Spacing',
+    value: 32,
+  },
+  'An unbound padding violation must become a deterministic Spacing binding remediation.',
+);
+const paddingActions = context.buildCustomizationResetActions('root', {
+  nodeId: 'plate',
+  remediationChoices: [],
+  messages: [],
+  details: [],
+  remediations: [paddingRemediation],
+});
+assert.deepEqual(
+  paddingActions.map((action) => action.label),
+  ['Привязать'],
+  'Padding token remediation must use the Привязать card action.',
+);
+context.resolveViewArray = () => [
+  { diffs: [paddingViolation] },
+];
+const interpretedPadding = context.findInterpretedCustomizationDiff(
+  'plate',
+  'layout.padding.left',
+);
+assert.equal(
+  interpretedPadding,
+  paddingViolation,
+  'A raw WIP fact must resolve one matching interpreted customization for its local action.',
+);
+context.resolveViewArray = () => [
+  { diffs: [paddingViolation, Object.assign({}, paddingViolation)] },
+];
+assert.equal(
+  context.findInterpretedCustomizationDiff(
+    'plate',
+    'layout.padding.left',
+  ),
+  null,
+  'An ambiguous WIP-to-customization match must not authorize a mutation.',
+);
+
+assert.ok(
+  uiSource.includes('(rawBaseline ||'),
+  'WIP customization cards must expose deterministic reset actions too.',
+);
+assert.ok(
+  uiSource.includes("? 'Привязать'\n                            : 'Сбросить'"),
+  'Mixed binding/reset surfaces must expose the binding action without losing the reset picker.',
 );
 
 console.log('Customization UI dedupe regression checks passed.');

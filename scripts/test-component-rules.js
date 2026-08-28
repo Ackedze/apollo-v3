@@ -144,6 +144,7 @@ function main() {
     severity: 'error',
     source: 'pattern-link',
     ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'layout.sizing.horizontal|layout.sizing.vertical',
     ruleText: 'Slot must use Fill and Hug.',
     target: {
@@ -160,6 +161,7 @@ function main() {
     severity: 'error',
     source: 'pattern-link',
     ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'layout.padding.*',
     ruleText: 'Padding must use a spacing token.',
     target: {
@@ -175,6 +177,7 @@ function main() {
     severity: 'error',
     source: 'component-contract',
     ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'fill|stroke',
     checkType: 'deterministic',
     matchKind: 'exact_component_rule',
@@ -195,6 +198,7 @@ function main() {
     severity: 'error',
     source: 'component-contract',
     ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'fill|styles.fill',
     checkType: 'deterministic',
     matchKind: 'exact_component_rule',
@@ -211,6 +215,7 @@ function main() {
     severity: 'error',
     source: 'component-contract',
     ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'fill|styles.fill|stroke|styles.stroke',
     checkType: 'deterministic',
     matchKind: 'exact_component_rule',
@@ -229,6 +234,7 @@ function main() {
     severity: 'error',
     source: 'component-contract',
     ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'fill|styles.fill|stroke|styles.stroke',
     checkType: 'deterministic',
     matchKind: 'exact_component_rule',
@@ -247,6 +253,7 @@ function main() {
     severity: 'error',
     source: 'pattern-link',
     ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'layout.itemSpacing|layout.direction',
     ruleText: 'CorporateContent root layout is protected.',
     target: {
@@ -259,6 +266,7 @@ function main() {
     severity: 'error',
     source: 'pattern-link',
     ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'layout.padding.*',
     ruleText: 'CorporateContent root spacing must use Grid & Cols.',
     target: {
@@ -271,6 +279,7 @@ function main() {
     severity: 'error',
     source: 'pattern-link',
     ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'layout.padding.*',
     ruleText: 'CorporateContent canonical root layer is protected.',
     target: {
@@ -283,6 +292,7 @@ function main() {
     severity: 'warning',
     source: 'pattern-link',
     ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'layout.itemSpacing',
     ruleText: 'Body owns its internal layout.',
     target: {
@@ -295,6 +305,7 @@ function main() {
     severity: 'error',
     source: 'pattern-link',
     ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'layout.itemSpacing',
     ruleText: 'Section root gutter is required.',
     target: {
@@ -307,6 +318,7 @@ function main() {
     severity: 'warning',
     source: 'pattern-link',
     ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'layout.itemSpacing',
     ruleText: 'Section Content and Isle are semantic slots.',
     target: {
@@ -319,6 +331,7 @@ function main() {
     severity: 'warning',
     source: 'pattern-link',
     ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'opacity',
     ruleText: 'Section Isle opacity is protected.',
     target: {
@@ -377,6 +390,7 @@ function main() {
     severity: 'error',
     source: 'pattern-link',
     ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'component.key',
     ruleText: 'Transition component key is prohibited.',
     target: {
@@ -388,6 +402,7 @@ function main() {
     severity: 'error',
     source: 'pattern-link',
     ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'component.name',
     ruleText: 'Transition component name is prohibited.',
     target: {
@@ -399,6 +414,7 @@ function main() {
     severity: 'warning',
     source: 'pattern-link',
     ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'layout.itemSpacing',
     ruleText: 'Placeholder policy is structural.',
     target: {
@@ -411,6 +427,7 @@ function main() {
     severity: 'warning',
     source: 'pattern-link',
     ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'variant.*',
     ruleText: 'Table cell properties are first-class.',
     target: {
@@ -422,6 +439,8 @@ function main() {
     ruleId: 'component:web-corp.title-view.status-style-matches-surface',
     severity: 'error',
     source: 'pattern-link',
+    ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'variant.Style|surface.context',
     checkType: 'deterministic',
     matchKind: 'composition_rule',
@@ -439,6 +458,8 @@ function main() {
     ruleId: 'component:web-corp.title-view.status-type-follows-public-api',
     severity: 'info',
     source: 'component-contract',
+    ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'variant.Type',
     checkType: 'deterministic',
     matchKind: 'exact_component_rule',
@@ -453,6 +474,8 @@ function main() {
     ruleId: 'component:web-corp.title-view.status-size-24',
     severity: 'error',
     source: 'pattern-link',
+    ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'variant.Size',
     checkType: 'deterministic',
     matchKind: 'exact_component_rule',
@@ -467,6 +490,8 @@ function main() {
     ruleId: 'component:web-corp.status-property.status-preset-contrast-on-grey-surface',
     severity: 'error',
     source: 'composition-contract',
+    ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'variant.Style',
     checkType: 'deterministic',
     matchKind: 'exact_component_rule',
@@ -489,6 +514,8 @@ function main() {
     ruleId: 'component:web-corp.buttons-group.spacing-uses-effective-baseline',
     severity: 'error',
     source: 'component-contract',
+    ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'layout.itemSpacing|layout.itemSpacingToken',
     checkType: 'deterministic',
     matchKind: 'exact_component_rule',
@@ -506,6 +533,7 @@ function main() {
     severity: 'warning',
     source: 'component-contract',
     ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'layout.width',
     checkType: 'deterministic',
     matchKind: 'exact_component_rule',
@@ -522,6 +550,7 @@ function main() {
     severity: 'error',
     source: 'component-contract',
     ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'layout.width',
     checkType: 'deterministic',
     matchKind: 'exact_component_rule',
@@ -537,6 +566,8 @@ function main() {
     ruleId: 'component:web-corp.amount-styles.parts-share-color',
     severity: 'error',
     source: 'component-contract',
+    ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'fill|fills',
     checkType: 'deterministic',
     matchKind: 'exact_component_rule',
@@ -555,6 +586,7 @@ function main() {
     severity: 'error',
     source: 'component-contract',
     ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'styles.text',
     checkType: 'deterministic',
     matchKind: 'exact_component_rule',
@@ -569,6 +601,7 @@ function main() {
     severity: 'error',
     source: 'component-contract',
     ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'opacity|variant.Opacity',
     checkType: 'deterministic',
     matchKind: 'exact_component_rule',
@@ -583,6 +616,7 @@ function main() {
     severity: 'error',
     source: 'component-contract',
     ruleKind: 'design-rule',
+    authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
     appliesTo: 'layout.*',
     checkType: 'deterministic',
     matchKind: 'exact_component_rule',
@@ -744,6 +778,51 @@ function main() {
     'onboarding-hint-key': 'Onboarding Hint',
     'amount-paragraph-key': '🔒 AmountParagraph',
   };
+
+  const authorityGateRule = {
+    ruleId: 'component:web-corp.authority-gate.fill-is-fixed',
+    severity: 'error',
+    source: 'component-contract',
+    ruleKind: 'design-rule',
+    authority: {
+      status: 'draft',
+      provenance: 'design-system-author',
+      revision: 1,
+    },
+    appliesTo: 'fill',
+    checkType: 'deterministic',
+    matchKind: 'exact_component_rule',
+    ruleText: 'Fill is fixed only after authority approval.',
+  };
+  globalThis.__APOLLO_TEST_REMOTE_COMPONENT_RULE_REGISTRY__.push({
+    componentKey: 'web-corp.authority-gate',
+    aliases: ['AuthorityGate'],
+    figmaKeys: ['authority-gate-key'],
+    rulesFile: {
+      componentKey: 'web-corp.authority-gate',
+      rules: [authorityGateRule],
+    },
+  });
+  const authorityGateDiff = scopedDiff(
+    'AuthorityGate',
+    'AuthorityGate',
+    'fill',
+    scopedContext({actualComponentKey: 'authority-gate-key'}),
+  );
+  assert.equal(rules.isActiveComponentDesignRule(authorityGateRule), false);
+  assert.equal(
+    rules.findComponentContractViolationForDiff(authorityGateDiff),
+    null,
+    'draft authority must not confirm a violation',
+  );
+  authorityGateRule.authority.status = 'active';
+  assert.equal(rules.isActiveComponentDesignRule(authorityGateRule), true);
+  assert.equal(
+    rules.findComponentContractViolationForDiff(authorityGateDiff)?.ruleId,
+    authorityGateRule.ruleId,
+    'active authority must unlock the same exact design rule',
+  );
+  globalThis.__APOLLO_TEST_REMOTE_COMPONENT_RULE_REGISTRY__.pop();
 
   const styleLevelPaintDiff = (
     type,
@@ -1150,6 +1229,13 @@ function main() {
     rules.findComponentContractViolationForDiff(rawPadding)?.ruleId,
     paddingTokenRule.ruleId,
     'A changed padding with explicit missing binding remains a token violation',
+  );
+  const assessedRawPadding = rules.applyVariableBindingAssessment(rawPadding);
+  assert.equal(assessedRawPadding.assessment?.verdict, 'violation');
+  assert.deepEqual(
+    assessedRawPadding.assessment?.evidence?.requiredTokenSource,
+    { collection: 'Spacing' },
+    'A requiredTokenSource violation must preserve deterministic binding evidence for Apollo remediation.',
   );
 
   const buttonsGroupSpacing = scopedDiff(

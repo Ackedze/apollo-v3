@@ -11,10 +11,14 @@
   position: fixed;
   z-index: 100;
   width: 320px;
-  max-height: 320px;
-  overflow-y: auto;
+  overflow: visible;
 }
 
 .candidatePickerList {
   width: 100%;
+  max-height: 320px;
+  overflow-y: auto;
+  box-shadow:
+    0 24px 56px rgba(15, 23, 42, 0.2),
+    0 4px 14px rgba(15, 23, 42, 0.1);
 }

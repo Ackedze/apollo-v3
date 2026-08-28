@@ -30,6 +30,7 @@ export function Button({
   const className = [
     styles.button,
     type === 'secondary' ? styles.secondary : styles.primary,
+    loading ? styles.loading : '',
     size === 'compact' ? styles.compact : '',
     singleIcon ? styles.singleIcon : '',
   ].join(' ');

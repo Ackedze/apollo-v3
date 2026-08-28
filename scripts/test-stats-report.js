@@ -67,6 +67,7 @@ function main() {
             severity: 'error',
             source: 'component-contract',
             ruleKind: 'design-rule',
+            authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
             severityScope: 'design',
             appliesTo: 'styles.text',
             checkType: 'deterministic',
@@ -94,6 +95,7 @@ function main() {
             severity: 'error',
             source: 'pattern-link',
             ruleKind: 'design-rule',
+            authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
             severityScope: 'design',
             appliesTo: 'stroke.align|strokeAlign',
             checkType: 'deterministic',
@@ -111,6 +113,7 @@ function main() {
             severity: 'error',
             source: 'pattern-link',
             ruleKind: 'design-rule',
+            authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
             severityScope: 'design',
             appliesTo:
               'layout.sizing.horizontal|layout.sizing.vertical|layoutSizingHorizontal|layoutSizingVertical',
@@ -152,6 +155,7 @@ function main() {
             severity: 'error',
             source: 'component-contract',
             ruleKind: 'design-rule',
+            authority: { status: 'active', provenance: 'design-system-author', revision: 1 },
             severityScope: 'design',
             appliesTo: 'styles.text',
             checkType: 'deterministic',
@@ -823,6 +827,11 @@ function main() {
   );
   assert.equal(agentButtonChange.componentRules.length, 1);
   assert.equal(agentButtonChange.componentRules[0].ruleKind, 'design-rule');
+  assert.deepEqual(agentButtonChange.componentRules[0].authority, {
+    status: 'active',
+    provenance: 'design-system-author',
+    revision: 1,
+  });
   assert.equal(
     agentButtonChange.context.actualNestedOwnerComponentKey,
     'web-core.button',

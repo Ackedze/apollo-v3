@@ -62,7 +62,21 @@ export function expandReferenceWithInstanceComponents(
 ): DSStructureNode[] {
   if (!reference.length || !actual.length) return reference;
 
-  const referenceEntries: DSStructureNode[] = reference.map((node) =>
+  // Align the complete authored host reference before recursively expanding
+  // nested component baselines. Figma may expose a nested instance with a
+  // consumer-facing name (`Label`) while the catalog keeps a technical name
+  // (`🔩 Label`). If only the standalone nested reference is aligned, the
+  // original host-owned descendant remains under the old path and the deeper
+  // baseline is appended as a second node. That duplicate can then replace an
+  // exact parent-owned paint with the generic nested baseline. Aligning the
+  // host first gives every subsequent materialization one canonical occurrence
+  // key and lets the property-level ownership merge do its job.
+  const alignedHostReference = alignMaterializedReferenceInstancePaths(
+    reference,
+    actual,
+    actual[0]?.path ?? reference[0]?.path ?? '',
+  );
+  const referenceEntries: DSStructureNode[] = alignedHostReference.map((node) =>
     Object.assign({}, node, {
       referenceOrigin: node.referenceOrigin ?? 'host',
     }),
@@ -212,7 +226,10 @@ export function expandReferenceWithInstanceComponents(
     }
   }
 
-  return applyMaterializedHostVariantBaselines(referenceEntries, reference);
+  return applyMaterializedHostVariantBaselines(
+    referenceEntries,
+    alignedHostReference,
+  );
 }
 
 export function __test_expandReferenceWithCatalogs(
@@ -275,4 +292,3 @@ function replacePathPrefix(path: string, from: string, to: string): string {
   }
   return path;
 }
-

@@ -65,6 +65,10 @@ function createHarness() {
     },
     rerunAudit: async (selection) =>
       calls.push(['rerunAudit', selection.map((node) => node.id)]),
+    resolveNumericVariableToken: (collectionName, value) =>
+      collectionName === 'Spacing' && value === 32
+        ? { key: 'spacing-32-key', name: 'Spacing/32' }
+        : null,
     mutations: {
       applyReferenceResetByDetails: async (node, details) =>
         calls.push(['details', node.id, details]),
@@ -129,6 +133,36 @@ async function main() {
   assert.equal(
     remediation.calls.some((call) => call[0] === 'resolveReferenceNode'),
     false,
+  );
+
+  const tokenBinding = createHarness();
+  await createCustomizationResetAction(tokenBinding.dependencies)({
+    rootId: 'root',
+    nodeId: 'target',
+    remediations: [
+      {
+        kind: 'bind-layout-variable',
+        nodeId: 'target',
+        property: 'layout.padding.left',
+        collectionName: 'Spacing',
+        value: 32,
+      },
+    ],
+  });
+  assert.ok(
+    tokenBinding.calls.some(
+      (call) =>
+        call[0] === 'details' &&
+        call[1] === 'target' &&
+        call[2][0].property === 'layout.padding.left' &&
+        call[2][0].reference.resourceId === 'spacing-32-key',
+    ),
+    'Padding token remediation must bind the current value to the matching Spacing token.',
+  );
+  assert.ok(
+    tokenBinding.calls.some(
+      (call) => call[0] === 'notify' && call[1] === 'Токены Spacing привязаны.',
+    ),
   );
 
   const invalidVariantRemediation = createHarness();

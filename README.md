@@ -12,14 +12,42 @@ Figma-снапшота и полных raw-каталогов.
 
 После каждой проверки Apollo v3 дополнительно отправляет отдельный
 `*_customizations-wip.json` с фактами `effective baseline → actual`. В нём нет
-verdict, policy-фильтров и автоматических исправлений: отчёт предназначен для
-отладки будущей агентской интерпретации кастомизаций. До записи фактов выполняется
+policy-фильтров и автоматических исправлений: все исходные отклонения сохраняются
+для отладки агентской интерпретации. Перед отправкой к ним присоединяются уже
+рассчитанные в основном отчёте `assessment`, component rules и reset metadata,
+чтобы агент не переоценивал детерминированный verdict. До записи фактов выполняется
 только техническая нормализация: baseline берётся из выбранного host-варианта,
-отклонение должно быть подтверждено `InstanceNode.overrides`, а скрытые слои,
+отклонение должно быть подтверждено `InstanceNode.overrides` корневого или
+любого вложенного instance-владельца фактически проверяемой структуры, а скрытые слои,
 технические `same → same` и визуальные следствия смены component property не
 считаются самостоятельными кастомизациями. Производные свойства отделяются
 сравнением с baseline фактически выбранного nested-варианта, так как Figma
-может включать такие следствия в native `overrides`.
+может включать такие следствия в native `overrides`. Семантически одинаковые
+факты от разных этапов evidence pipeline объединяются по узлу, свойству и паре
+`baseline → actual`; при объединении сохраняется запись с более полным контекстом.
+Если нужный вложенный слой отсутствует в authored host-каталоге, WIP также
+рассматривает diff из expanded nested-component reference. Такой diff попадает в
+отчёт только при точном совпадении `nodeId + overriddenFields` с native override
+в фактической структуре; поэтому реальные изменения `ContentCardWrapper` и
+вложенного `Title` не теряются, а неподтверждённые standalone-baseline отличия
+по-прежнему отбрасываются. Component-property и variant diffs из expanded
+reference не переносятся: они продолжают определяться только относительно host
+baseline, чтобы не возвращать производные строки вроде `Tag size 56 → 40`.
+Подтверждённый component contract факт `requiredPaintState=none-or-not-visible`
+также включается в WIP без `InstanceNode.overrides`: в этом случае отсутствие
+paint задаёт контракт, а наличие видимой заливки или обводки берётся напрямую из
+actual snapshot. Другие итоговые contract- и pattern-findings этим исключением
+в слой baseline-фактов не переносятся.
+Числовые `width` и `height` считаются самостоятельным отклонением только при
+режиме `Fixed`: для `Hug` и `Fill` это производная геометрия. Изменение самого
+режима sizing и явные ограничения `min/max width/height` проверяются отдельно,
+а числовые требования component contract исполняются независимо от WIP-baseline.
+В карточке WIP рядом с библиотекой показывается Figma node ID, чтобы одинаково
+названные экземпляры не выглядели дубликатами.
+Текстовая вкладка пока отправляет compact-отчёт в асинхронный
+`/v1/analyze/codex/runs`. Пилот вкладки `Паттерны` больше не запускает Codex:
+он отправляет EvidenceBundle v2 в синхронный `/v1/validate/predicates`, получает
+детерминированные P01–P14 evaluations и локально отображает их как Markdown.
 
 Исходный `Apollo` и экспериментальный `Apollo v2` не зависят от этой копии.
 
@@ -50,7 +78,7 @@ verdict, policy-фильтров и автоматических исправл�
 
 Важно: Apollo работает с component-каталогами через index-only lazy loading. После первой проверки он не должен скачивать все component-каталоги подряд. Reference manifest schema v2 обязан явно содержать `source.indexPath` для каждого component-каталога; отсутствующий или недоступный index останавливает проверку, а не включает inferred fallback.
 
-Component contracts загружаются только через `componentContractIndex.json` schema v2. Индекс задаёт явную политику покрытия `required | optional | none`; обязательные пакеты должны объявлять `generatedContract`, `rules` и `composition`, а поиск пакета выполняется в порядке Figma key, source catalog path, уникальный alias. Дубликаты и двусмысленные alias считаются ошибкой данных. Текущий архитектурный бэклог зафиксирован в [`docs/ARCHITECTURE_BACKLOG.md`](./docs/ARCHITECTURE_BACKLOG.md).
+Component contracts загружаются только через `componentContractIndex.json` schema v2. Индекс задаёт явную политику покрытия `required | optional | none`; обязательные пакеты должны объявлять `generatedContract`, `rules` и `composition`, а поиск пакета выполняется в порядке Figma key, source catalog path, уникальный alias. Дубликаты и двусмысленные alias считаются ошибкой данных. Текущий архитектурный бэклог зафиксирован в [`docs/ARCHITECTURE_BACKLOG.md`](./docs/ARCHITECTURE_BACKLOG.md), а обязательный процесс переноса реального компонента или паттерна на исполняемые правила — в [`docs/EXECUTABLE_RULE_PACKAGE_MIGRATION.md`](./docs/EXECUTABLE_RULE_PACKAGE_MIGRATION.md).
 
 Runtime contract pipeline разделён на независимые слои. [`src/contracts/contractTransport.ts`](./src/contracts/contractTransport.ts) отвечает только за fetch, JSON parse, URL resolution и cache-busting. [`src/contracts/contractIndexResolver.ts`](./src/contracts/contractIndexResolver.ts) детерминированно разрешает package по Figma key, source catalog path или уникальному alias и строит безопасные artifact paths. [`src/contracts/contractArtifactCompiler.ts`](./src/contracts/contractArtifactCompiler.ts) компилирует public rules, composition, overrides, agent context, audit mapping и examples. [`src/contracts/runtimeContractRegistry.ts`](./src/contracts/runtimeContractRegistry.ts) остаётся совместимым фасадом, а lifecycle загрузок управляется общим автоматом состояний.
 
@@ -178,14 +206,14 @@ Source-аудит дедуплицирует owner definitions по стабил
 Важно: скрытые и полностью прозрачные `fill`-paints игнорируются в actual snapshot так же, как и в reference-нормализации. Это убирает ложные кастомизации, когда в компонентных каталогах есть технические `fills` с `"visible": false`.
 Важно: strict comparison не создаёт warning для отсутствующего `radius`, если reference содержит эффективное значение `0`, и не считает actual-радиус кастомизацией, если поле полностью отсутствует в reference-каталоге. Также отсутствие paint или padding у корня actual `INSTANCE`, сопоставленного с reference `COMPONENT`, считается ограничением Figma snapshot, а не ошибкой данных; доступное и реально изменённое свойство по-прежнему попадает в `Кастомизации`.
 Для nested instances используется variant-aware reference expansion: Apollo сначала пытается взять nested reference по текущему `componentKey`, а если этого недостаточно, добирает нужный variant по `variantProperties`, чтобы stateful nested-компоненты вроде `Radio_24` не сравнивались с неправильным reference-state.
-Важно: при раскрытии nested instances host reference имеет приоритет над standalone reference вложенного компонента. Standalone-структура nested-компонента используется только для дозаполнения отсутствующих путей. Приоритет распространяется и на корень materialized nested instance: если host-каталог явно переопределяет его layout/radius, standalone baseline не может вернуть собственную геометрию. Например, `Button / RightAddon` сохраняет radius `0` из варианта Button вместо radius `4` standalone-компонента Addon.
-Важно: свойства, явно заданные patch-операциями выбранного parent variant, сохраняют property-level provenance. При более глубокой materialization standalone-компонент может дозаполнить только свойства, которыми parent variant не владеет. Например, `StatusPreset Type=Approved, Style=Muted, Size=20` сохраняет `decorative-text/green` на вложенном Label вместо default baseline `text/info`; реальная ручная перекраска этого Label по-прежнему считается кастомизацией.
+Важно: при раскрытии nested instances Apollo строит effective baseline посвойственно. Для каждого materialized узла standalone reference вложенного компонента сравнивается с канонической структурой содержащего его host-компонента. Отличающиеся свойства принадлежат host, совпадающие и отсутствующие у host — вложенному компоненту; результат хранит `referencePropertyOwners`. Поэтому один и тот же узел может брать `fill` у `StatusPreset`, typography у `Status`, а layout у ещё более глубокого `Label`. Имена компонентов и оформление path не участвуют в определении ownership.
+Важно: точная provenance patch-операций выбранного parent variant дополняет вычисляемый ownership и помечает соответствующие свойства origin=`variant-patch`. Остальные свойства определяются сравнением canonical host и selected nested baseline: отличия остаются за host, а совпадающие или отсутствующие у host данные — за nested component. Например, `StatusPreset Approved/Contrast` сохраняет `static_text_inverted/primary` на вложенном Label, но не блокирует независимые свойства вложенного `Status`.
 Важно: nested instance paths выравниваются с actual snapshot сначала по цепочке component keys, а при отсутствии ключа в raw variant patch — по нормализованной цепочке имён и occurrence. Поэтому техническое имя из каталога вроде `🔩 Label` может корректно сопоставляться с переименованным actual instance `Label`, не теряя host-variant baseline его descendants.
 Важно: explicit variant properties вложенных instances всегда сверяются с effective host chain после identity/name alignment. Свойство, явно заданное выбранным parent variant, имеет приоритет над stale descendant baseline более общего host-компонента и над standalone-каталогом. Например, `StatusPreset` сохраняет принадлежащее его варианту `Label.Uppercase=True`, даже если структура `Table Wide` содержит более общий Label baseline `False`. Lazy-loaded component catalogs сначала загружаются всем batch, затем Apollo детерминированно пересчитывает inferred nested component keys и host-controlled policies; ранее выведенный по имени key удаляется, если после догрузки имя стало неоднозначным. Поэтому повторный аудит неизменного selection не должен менять набор `variant.*` findings.
 Важно: если host reference уже содержит явный paint descriptor на descendant-узле, Apollo не заменяет его standalone paint descriptor вложенного компонента. Это сохраняет корректный expected-token для variant-controlled слоёв вроде `Button / Addon / PaintMe`, `FilterTag / Addon|Arrow / PaintMe`, `Tag / Icon|Addon / PaintMe`, `IconButton / Icon / PaintMe`, `ActionButton / Bg / PaintMe` и `CompactTag / Arrow / PaintMe`.
 Важно: suppression для host-controlled nested properties применяется только к diff-ам, построенным от standalone nested reference. Если diff построен от host reference, ручное изменение остаётся видимым как кастомизация.
 Важно: `Button / Addon / PaintMe`, `FilterTag / PaintMe`, `Tag / PaintMe`, `IconButton / PaintMe`, `ActionButton / PaintMe` и `CompactTag / PaintMe` не входят в allowlist разрешённых recolor-кастомизаций. Цвет задаётся variant-controlled host reference и ручное изменение должно попадать в `Кастомизации`.
-Важно: если parent nested materialization уже несёт host-controlled paint, более глубокий standalone nested reference не затирает это значение. Например, `TitleView → FilterCompanySelect → CompactTag → Arrow / PaintMe` сравнивается с expected из `TitleView/FilterCompanySelect`, а не со standalone `FilterTag / Arrow`.
+Важно: каждый следующий уровень nested materialization объединяется по той же property-ownership модели для paint, stroke, typography, layout, radius, effects, visibility и component variant properties. Более глубокий standalone reference не может затереть свойство, принадлежащее внешней композиции, но сохраняет все независимые свойства своего baseline.
 Важно: если policy-карта ещё не знает inner variant key, Apollo дополнительно сохраняет parent-reference для component-qualified путей вида `[D] CompactTag / Arrow / Fixer / PaintMe`. Это не allowlist: ручная перекраска всё равно остаётся кастомизацией, но expected берётся из более специфичной сборки.
 Важно: ложные кастомизации для nested overrides теперь подавляются универсально, если reference-каталоги показывают, что хост-компонент управляет свойством вложенного компонента. Сейчас policy покрывает не только `fill/stroke`, `BgColor` и `Border`, но и nested `typographyToken`/`text style`.
 Важно: отдельный suppression введён и для root-level nested variant switch. Если на одном и том же path actual и reference указывают на разные variant keys одной и той же component family, Apollo больше не считает это кастомизацией layout/paint/property самого вложенного узла.
@@ -210,8 +238,8 @@ Source-аудит дедуплицирует owner definitions по стабил
 ## Источники данных
 Плагин работает с удалёнными JSON-справочниками напрямую из веток `main` через `raw.githubusercontent.com`. GitHub Pages больше не участвует в runtime-цепочке и может использоваться только как необязательное зеркало:
 
-- bootstrap URL: `https://raw.githubusercontent.com/Ackedze/design-system_ab/main/JSONS/referenceSourcesMVP.json`;
-- Web, token/style, contract catalogs и indexes: `https://raw.githubusercontent.com/Ackedze/design-system_ab/main/JSONS/`;
+- bootstrap URL: `https://ackedze.github.io/design-system_ab/JSONS/referenceSourcesMVP.json`;
+- Web, token/style, contract catalogs и indexes: `https://ackedze.github.io/design-system_ab/JSONS/`;
 - Android/iOS ABM catalogs и indexes: `https://raw.githubusercontent.com/Ackedze/desing-system_abm/main/JSONS/` через дочерний manifest;
 - декларативные правила кастомизаций: путь `apollo.patternRulesPath` из основного списка, сейчас `JSONS/apollo/patternRules.json`;
 - экспериментальный Contract v2 index: путь `experimentalComponentContractIndexPath`; загружается только после ручного включения тестового контура;
@@ -247,6 +275,7 @@ Apollo постепенно расширяется от одного Figma-пл�
 - `contract.overrides.json` — ручной semantic layer: public API компонента, anatomy semantics, reset model и dependency policy. Его место в pipeline — до diff/classification, когда Apollo строит effective модель компонента.
 - `composition-contract.json` — optional-файл для wrapper/composite компонентов. Он нужен, когда родительский компонент владеет настройками вложенных компонентов и должен объявить effective baseline для nested layers. У standalone core-компонентов вроде Button такого файла может не быть.
 - `rules.json` — source of truth для component rules, design-rule violations и ссылок на pattern rules. Matched rules добавляются в `*_agent.json` рядом с конкретным change.
+- Component rule подтверждает violation или allowed verdict только при полном gate: `ruleKind=design-rule`, `authority.status=active`, доверенный `authority.provenance` и положительный `authority.revision`. Draft, отсутствующий или некорректный authority остаётся контекстом и не создаёт deterministic assessment.
 - `audit-mapping.json` — декларативная карта группировки, порядка и reset-action для diff-ов. Сейчас часть этого поведения ещё зашита в Apollo, но целевая модель — переносить такую классификацию сюда.
 - `agent-context.json` — компактный explanatory context для агента. Он может ссылаться на rule ids, но не должен дублировать `ruleText`, `severity` и `matchKind` из `rules.json`. Утверждённое назначение конкретных Figma-компонентов хранится в `manual.componentSemantics[]`; записи связываются по published component key и имеют приоритет над Figma-description.
 - `examples.json` — fixtures и примеры интерпретации. Их стоит подключать к агенту on demand, а не класть в каждый отчёт.
@@ -306,6 +335,10 @@ Targetless rules имеют отдельную scope-политику. `matchKin
 Изменение не считается завершённым, пока эти шаги не выполнены или пока явно не зафиксировано, почему какой-то из них нельзя выполнить.
 
 ## UI и поведение
+- Оболочка Apollo v3 синхронизирована с Figma-экраном `apollo-main-default`: фиолетовый верхний chrome, page-type picker (`Форма`, `Просмотровая`, `Страница с таблицей`, `Лендинг`, `Дашборд`, `Другое`), сегменты `Компоненты / Паттерны / Тексты`, скруглённая рабочая область и двухколоночная компоновка 263/537 px. Выбранный `pageType` проходит через `scan-selection`, сохраняется в `scan.pageType` всех отчётов и повторно используется при локальном rerun; если тип не выбран или неизвестен, отчёт содержит `null`.
+- В правом нижнем углу оболочки закреплена отдельная кнопка чата с отступами 12 px. Она открывает модальное окно поверх текущего таба, сохраняет историю после закрытия и отправляет открытые вопросы о паттернах и компонентах через `design-dialogue`-канал Apollo. В верхней части окна дизайнер может переключить источник между `LangFlow` и `Локальный Codex`; выбор сохраняется в `figma.clientStorage`, а локальный режим передаёт ограниченную историю диалога в read-only Codex-контур. Вкладки `Паттерны` и `Тексты` при этом не меняют режим работы.
+- Вкладка `Паттерны` находится в режиме Predicate Engine MVP. Она отправляет неизменяемый EvidenceBundle v2 в `/v1/validate/predicates`; зарегистрированный `buttons-group-pilot` детерминированно проверяет компонентные и страничные контуры, возвращает точный focus node и закреплённый источник. Evidence graph включает наблюдаемые `opacity` и `radius`; generic baseline-контур использует точный WIP diff, а при override без точного baseline возвращает `Зови ДС`, не подменяя baseline визуально похожим значением. Агент не участвует в verdict и не может добавить, удалить или изменить строку. Старый pattern-agent runtime остаётся только замороженной сравнительной базой до завершения cutover.
+- Машиночитаемые component contours обнаруживаются в активных пакетных `rules.json`, а pattern contours — в fenced-блоках `json apollo-predicate-contour` активных Markdown-паттернов. Оба источника компилируются одним закрытым реестром P21–P28 и закрепляются checksum исходного файла; добавление нового компонента или паттерна не требует ветки по его имени в runtime. Универсальный `platform-match` получает платформу конкретного опубликованного ключа из `contract.generated.json`, переносит её в `component.platform` и сопоставляет с `page.context.platform`; имена компонентов и тестовые подписи не используются как доказательство канала.
 - [`src/ui.html`](./src/ui.html) теперь служит HTML-shell и bridge-слоем: в нём остались message-handlers, placeholder-сценарии и маршрутизация табов в React results bridge.
 - Внутренний контракт между runtime и [`src/ui.html`](./src/ui.html) упрощён: правый bridge больше не держит legacy-fallback на дублирующее поле `views`, а читает только актуальные `visibleViews`.
 - React-хром UI вынесен в [`src/ui-app`](./src/ui-app): на первом этапе туда перенесены `topSection`, `leftSection` и базовые компоненты (`Button`, `CategoryCard`, `CounterBadge`).
@@ -342,6 +375,7 @@ Targetless rules имеют отдельную scope-политику. `matchKin
 - Layout token-изменения, включая `itemSpacingToken`, `paddingTokens`, `radiusToken` и `opacityToken`, в diff-выводе проходят через token label resolver и показываются по имени токена, а не как сырые `VariableID`; для padding скрывается технический namespace `Vertical/Horizontal Paddings`, а token-diff подавляется, если после резолва видимые значения совпадают.
 - Карточка кастомизации берёт reference/actual из структурированных `DiffDetails`, а не разбирает человекочитаемую строку как источник истины. Поэтому token/style labels, регистр variant values и признак `different-binding` не теряются после contract-aware обработки; строка `message` остаётся только fallback для legacy findings.
 - Variable-bound свойства сравниваются binding-first: если actual и reference ссылаются на одну canonical variable, различие resolved values из-за другого mode не считается ручной кастомизацией. Для реальных `unbound`/`different-binding` изменений full и agent reports сохраняют `bindingStatus`, имя variable/collection, resolved/explicit mode и узел-владельца mode. Агенту запрещено называть значение ручным только по числовой паре `referenceValue -> actualValue`; `unresolved-binding` и `missing-reference-binding` требуют ручной проверки.
+- Правило `requiredTokenSource` формирует runtime assessment до рендера UI и сохраняет требуемую коллекцию в evidence. Благодаря этому карточка и агентская таблица выбирают действие `Привязать`, а не fallback `Сбросить`, ещё до сериализации статистического отчёта.
 - Потеря binding является самостоятельной ошибкой даже тогда, когда сохранённое raw-значение совпадает с эталоном или корректным значением текущего mode. В UI такие изменения выводятся в секции `Переменные` как `Переменная ... → Отвязана`, а не как значение из другого mode. Сброс восстанавливает не только число, но и reference variable binding для padding, itemSpacing, radius и opacity.
 - Reset variable-binding сначала разрешает переменную как уже доступную local variable по `VariableID`, затем через canonical published variable key из token-каталога. Для binding-ошибки числовой fallback не применяется: если переменную не удалось найти или импортировать, Apollo сообщает об ошибке и не заменяет корректное mode-driven значение числом из mode экспортированного каталога.
 - Стили React-компонентов вынесены из [`src/ui.html`](./src/ui.html) в отдельные `*.module.css` рядом с компонентами; при сборке `ui-app.css` автоматически инлайнится в `dist/ui.html`.
@@ -371,9 +405,13 @@ Targetless rules имеют отдельную scope-политику. `matchKin
 - Старый text-node pipeline и таб `textAll` удалены из runtime: аудит больше не собирает неиспользуемые текстовые представления, а `tabDefinitions` больше не хранят legacy `builder`-ключи.
 - После сканирования в карточках доступна кнопка перехода к ноде.
 - UI показывает тосты о загрузке каталогов и завершении сканирования.
-- В верхнем segmented control доступны три независимых режима: результаты проверки, read-only отчёт агента и диалог с агентом. Автоматический ответ по проверке хранится отдельно от истории пользовательского диалога.
-- В режиме `Отчёт` поле ввода отсутствует; composer с placeholder `Введи или выбери текст` отображается только в режиме `Диалог`.
-- Запрос из режима `Диалог` отправляет только `design-dialogue` envelope и никогда автоматически не прикладывает последний `apollo-agent-report`, component examples или audit evidence. Диалог использует отдельную session текущего запуска плагина. Завершение проверки только подготавливает agent report: в LLM он отправляется один раз при первом переходе пользователя в режим `Отчёт` и сохраняет собственную report session. Повторное переключение табов не отправляет тот же отчёт заново; явный retry после ошибки остаётся доступен.
+- В верхнем segmented control доступны три независимых режима: детерминированные проверки компонентов, read-only аудит паттернов и read-only аудит текстов. Ответы паттернов и текстов хранятся раздельно и запрашиваются лениво при первом открытии вкладки.
+- Для вкладки `Тексты` Apollo формирует отдельный `apollo-text-audit-report` только из видимых `TEXT`-слоёв выбранной области. В факт входят текст, путь и ближайший component context; скриншот не передаётся. Этот отчёт не отправляется в stats collector и существует только в памяти плагина до локального запроса proxy.
+- В read-only отчёте агента строки таблиц нарушений связаны со структурированными `finding.nodeId`: клик, `Enter` или `Space` выделяет соответствующий слой в Figma и фокусирует viewport. В колонке `Нарушение` заголовок и наблюдаемый факт показаны вместе, чтобы таблица оставалась компактной.
+- Пустые разделы read-only отчёта не отображаются. Если подтверждённая ошибка однозначно сопоставляется по `finding.nodeId + finding.factPath` с одним локальным diff из `Кастомизации [WIP]`, последняя колонка запускает локально рассчитанное действие Apollo; агент не исполняет и не авторизует мутацию. Неоднозначное сопоставление остаётся текстовой рекомендацией.
+- Карточки `Кастомизации [WIP]` используют те же детерминированные действия, что и `Кастомизации`: raw baseline-факт сопоставляется ровно с одним интерпретированным diff по `nodeId + property`; неоднозначное сопоставление не авторизует мутацию. Baseline-отклонение сбрасывается, а unbound `layout.padding.*` с точным `requiredTokenSource` получает действие `Привязать`. Apollo находит опубликованный FLOAT-токен с текущим числовым значением в требуемой коллекции (например, `Spacing/32`) и привязывает его к конкретной стороне padding; при неоднозначном или отсутствующем токене мутация не выполняется. Несколько поверхностей или вариантов показываются выпадающим списком с portal-позиционированием и видимой тенью.
+- Поле ввода в агентских вкладках скрыто: обе вкладки работают как evidence-backed read-only отчёты. Завершение проверки только подготавливает отчёты; каждый из них отправляется один раз при первом открытии соответствующей вкладки. Повторное переключение не отправляет тот же отчёт заново; явный retry после ошибки остаётся доступен.
+- Для режима `Отчёт` WIP transport сохраняет голый набор baseline-отклонений, но дополняет каждое из них уже рассчитанными `assessment` и `componentRules`, не фильтруя сами изменения. Proxy требует отдельную `classification` для каждого `nodeId + factPath`: `assessment.verdict=violation` нельзя пропустить или понизить, а допустимые изменения не исчезают из покрытия и отображаются отдельным сворачиваемым разделом без кнопки сброса.
 - Свёрнутый интерфейс имеет размер `400 × 860`, соответствующий компактным Figma-макетам; категории проверки занимают всю ширину панели.
 - Состояние основной кнопки задаётся через явную фазу UI (`catalog-loading` / `scanning` / `idle`), чтобы не возникали смешанные состояния вроде `Остановить` с неправильным цветом или `disabled`.
 - В React-хроме верхняя action-кнопка переключается между variant-инстансами `Button[type=primary]` и `Button[type=secondary]`, а не только меняет цвет у одного и того же узла.
@@ -417,7 +455,11 @@ Targetless rules имеют отдельную scope-политику. `matchKin
 
 ## Локальная статистика проверок
 
-После каждой успешно завершённой проверки Apollo формирует полный JSON-отчёт и компактный агентский JSON-отчёт, затем автоматически отправляет оба файла в production Edge Function:
+После каждой успешно завершённой проверки Apollo формирует полный JSON-отчёт,
+компактный агентский JSON-отчёт, WIP-отчёт кастомизаций и отдельный
+predicate-отчёт. Перед сетевой отправкой каждый файл атомарно сохраняется в
+локальный outbox через `figma.clientStorage`, затем очередь последовательно
+передаётся в production Edge Function:
 
 ```text
 POST https://dwjnndpxzqizrcwpasrs.supabase.co/functions/v1/apollo-stats
@@ -431,7 +473,15 @@ Ackedze/design-system_stats/apollo/stats/<figma-user>/dd-mm-yyyy/
 
 Полный отчёт содержит все категории аудита, включая устаревшие компоненты и стили, кастомные стили, обновления, кастомизации, локальные и detached-компоненты, пресеты, технические и актуальные компоненты, ошибки канала и темизации. Актуальные компоненты используются как инвентаризация и не входят в общий счётчик проблем. Агентский отчёт получает суффикс `_agent.json`, не включает `currentComponents.items`, фильтрует `expected`/`allowed` кастомизации и предназначен для ручной передачи корпоративному агенту.
 
-Пользователю плагина не нужны GitHub token, Supabase-аккаунт, локальный сервис или дополнительная настройка. GitHub token хранится только в Supabase secret и запрещён в `src`, `manifest.json`, build-конфиге и собранном plugin bundle. Ошибка загрузки статистики не прерывает аудит.
+Пользователю плагина не нужны GitHub token, Supabase-аккаунт, локальный сервис
+или дополнительная настройка. GitHub token хранится только в Supabase secret и
+запрещён в `src`, `manifest.json`, build-конфиге и собранном plugin bundle.
+Временная ошибка Edge Function не прерывает аудит и не удаляет отчёт: очередь
+остаётся в `clientStorage` и автоматически повторяется при следующем запуске
+Apollo. UI показывает состояния `Отправляем отчёты…`, `Отчёты отправлены` и
+постоянное `Не отправлено: N · Повторить` для ручного retry. Сетевой запрос
+допускает до 45 секунд на попытку, чтобы переживать медленный CORS preflight и
+холодный старт Edge Function.
 
 Локальный `services/apollo-stats-collector` сохранён только как инструмент разработки и не используется production-сборкой Apollo.
 

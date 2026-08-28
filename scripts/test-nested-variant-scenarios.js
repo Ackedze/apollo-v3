@@ -84,6 +84,9 @@ function main() {
   const nestedReferenceMerge = bundleModule(
     path.resolve(__dirname, '../src/reference/nestedReferenceMerge.ts'),
   );
+  const nestedReferencePreparation = bundleModule(
+    path.resolve(__dirname, '../src/services/nestedReferencePreparation.ts'),
+  );
   const occurrenceKeys = bundleModule(
     path.resolve(__dirname, '../src/structure/occurrenceKeys.ts'),
   );
@@ -427,12 +430,12 @@ function main() {
     );
   assert.equal(
     hostControlledInstanceRootDecision.preferCandidate,
-    false,
-    'Standalone nested root must not overwrite a materialized host layout override',
+    true,
+    'Standalone nested root must merge without overwriting a materialized host layout override',
   );
   assert.equal(
     hostControlledInstanceRootDecision.reason,
-    'keep-host-controlled-descendant',
+    'merge-parent-owned-descendant',
   );
 
   const mergedHostDescendantRoot = nestedReferenceMerge.mergeMaterializedInstanceReferenceNode(
@@ -583,7 +586,7 @@ function main() {
     );
   assert.equal(
     hostOwnedTextDecision.reason,
-    'merge-parent-variant-owned-descendant',
+    'merge-parent-owned-descendant',
     'A host variant text override must survive nested component materialization',
   );
   const mergedHostOwnedText =
@@ -594,7 +597,11 @@ function main() {
     );
   assert.equal(mergedHostOwnedText.styles.text.styleKey, 'headline-18-22');
   assert.equal(mergedHostOwnedText.text.fontSize, 18);
-  assert.equal(mergedHostOwnedText.text.lineHeight, 20);
+  assert.equal(
+    mergedHostOwnedText.text.lineHeight,
+    22,
+    'A canonical host baseline difference remains host-owned even when the selected variant patch owns sibling typography leaves',
+  );
 
   const baselineApplied = nestedReferenceMerge.applyMaterializedHostVariantBaselines(
     [
@@ -792,13 +799,13 @@ function main() {
 
   assert.equal(
     hostPaintedDecision.preferCandidate,
-    false,
-    'Host-painted descendants must keep the host token as expected value',
+    true,
+    'Host-painted descendants must merge the host token into the nested baseline',
   );
   assert.equal(
     hostPaintedDecision.reason,
-    'keep-host-painted-descendant',
-    'Host-painted descendant merge must report why standalone nested paint was ignored',
+    'merge-parent-owned-descendant',
+    'Host-painted descendant merge must report property-level parent ownership',
   );
 
   for (const path of [
@@ -842,7 +849,7 @@ function main() {
 
     assert.equal(
       decision.reason,
-      'keep-host-painted-descendant',
+      'merge-parent-owned-descendant',
       `Host-painted descendant merge must keep host expected paint for ${path}`,
     );
   }
@@ -890,13 +897,13 @@ function main() {
 
   assert.equal(
     nestedHostControlledPaintDecision.preferCandidate,
-    false,
-    'Deeper standalone materialization must not overwrite parent host-controlled paint',
+    true,
+    'Deeper standalone materialization must merge without overwriting parent-owned paint',
   );
   assert.equal(
     nestedHostControlledPaintDecision.reason,
-    'keep-host-controlled-descendant',
-    'Nested host-controlled paint must report why parent expected token was kept',
+    'merge-parent-owned-descendant',
+    'Nested host-controlled paint must report property-level parent ownership',
   );
 
   const componentQualifiedNestedPaintDecision =
@@ -940,8 +947,12 @@ function main() {
 
   assert.equal(
     componentQualifiedNestedPaintDecision.preferCandidate,
-    false,
+    true,
     'Component-qualified parent nested paint must remain the expected value even without policy registry hit',
+  );
+  assert.equal(
+    componentQualifiedNestedPaintDecision.reason,
+    'merge-parent-owned-descendant',
   );
 
   const parentVariantComponent = {
@@ -1122,6 +1133,48 @@ function main() {
     referenceOwnerPath: 'Table / StatusPreset / Status / Label',
     referenceOwnerRelativePath: 'Label',
   };
+  const defaultHostPaintNode = Object.assign({}, parentOwnedPaintNode, {
+    referenceVariantOwnedProperties: undefined,
+  });
+  const defaultHostPaintDecision =
+    nestedReferenceMerge.getMaterializedInstanceReferenceDecision(
+      defaultHostPaintNode,
+      standaloneLabelNode,
+      'Table / StatusPreset / Status / Label',
+      () => false,
+    );
+
+  assert.equal(
+    defaultHostPaintDecision.preferCandidate,
+    true,
+    'A default host variant paint must merge into deeper standalone materialization even without a variant patch',
+  );
+  assert.equal(
+    defaultHostPaintDecision.reason,
+    'merge-parent-owned-descendant',
+    'A canonical property difference must produce explicit parent property ownership',
+  );
+  const mergedDefaultHostPaint =
+    nestedReferenceMerge.mergeMaterializedInstanceReferenceNode(
+      defaultHostPaintNode,
+      standaloneLabelNode,
+      defaultHostPaintDecision,
+    );
+  assert.equal(
+    mergedDefaultHostPaint.fill.token,
+    'decorative-text/green',
+    'Default host paint must remain the effective fill baseline',
+  );
+  assert.equal(
+    mergedDefaultHostPaint.layout.itemSpacing,
+    0,
+    'Each differing property must retain its canonical host baseline independently',
+  );
+  assert.equal(
+    mergedDefaultHostPaint.referencePropertyOwners.fill.componentKey,
+    'status-approved',
+    'Effective baseline must expose the component that owns fill',
+  );
   const parentVariantDecision =
     nestedReferenceMerge.getMaterializedInstanceReferenceDecision(
       parentOwnedPaintNode,
@@ -1137,7 +1190,7 @@ function main() {
   );
   assert.equal(
     parentVariantDecision.reason,
-    'merge-parent-variant-owned-descendant',
+    'merge-parent-owned-descendant',
     'Property-level merge must explicitly report parent variant precedence',
   );
 
@@ -1172,8 +1225,8 @@ function main() {
   );
   assert.equal(
     mergedApprovedLabel.layout.itemSpacing,
-    10,
-    'Standalone fallback must still fill properties that the parent variant did not own',
+    0,
+    'Canonical host baseline differences remain host-owned independently from explicit variant-patch provenance',
   );
   assert.equal(
     mergedApprovedLabel.referenceOwnerComponentKey,
@@ -1210,6 +1263,111 @@ function main() {
     approvedWithManualRecolor.diffs[0].message,
     'заливка: decorative-text/green → decorative-text/red',
     'Manual recolor must use the selected parent variant token as its reference baseline',
+  );
+
+  const statusPresetCatalog = JSON.parse(fs.readFileSync(
+    path.resolve(
+      __dirname,
+      '../../../shared/design-system_ab/JSONS/web/components/web-corp/Web _ Corp Components -- Status & Property.json',
+    ),
+    'utf8',
+  ));
+  const coreStatusCatalog = JSON.parse(fs.readFileSync(
+    path.resolve(
+      __dirname,
+      '../../../shared/design-system_ab/JSONS/web/components/web-core/core/Web _ Core -- Status.json',
+    ),
+    'utf8',
+  ));
+  library.__test_hydrateCatalogs([statusPresetCatalog, coreStatusCatalog]);
+  const realStatusPreset = library.findComponent(
+    '930878602bfd3100e2a3b210d9d88bf4208b6ef5',
+  );
+  const realStatusPresetReference = library.resolveStructureForInstance(
+    realStatusPreset,
+    {
+      componentKey: '930878602bfd3100e2a3b210d9d88bf4208b6ef5',
+      variantProperties: {
+        Type: 'Approved',
+        Style: 'Contrast',
+        Size: '20',
+      },
+    },
+  );
+  const realStatusPresetActual = realStatusPresetReference.map((entry) => {
+    const cloned = Object.assign({}, entry, {
+      nodeId: `actual-status-preset-${entry.id}`,
+      path: entry.path.replace(' / 🔩 Label', ' / Label'),
+      name: entry.name === '🔩 Label' ? 'Label' : entry.name,
+    });
+    if (entry.componentInstance) {
+      cloned.componentInstance = Object.assign({}, entry.componentInstance, {
+        variantProperties: Object.assign(
+          {},
+          entry.componentInstance.variantProperties ?? {},
+        ),
+      });
+    }
+    return cloned;
+  });
+  const realStatusNode = realStatusPresetActual.find((entry) =>
+    entry.path.endsWith(' / Status'),
+  );
+  const realLabelInstance = realStatusPresetActual.find((entry) =>
+    entry.path.endsWith(' / Status / Label') && entry.type === 'INSTANCE',
+  );
+  realStatusNode.componentInstance.componentKey =
+    '349af184bee87341370ef007d5e8189c51bd31ff';
+  realLabelInstance.componentInstance.componentKey =
+    '5979648b15fed7f52e8d9ae9ab6f4c27fe8fcc6e';
+
+  const realExpandedStatusPreset =
+    nestedReferencePreparation.__test_expandReferenceWithCatalogs(
+      realStatusPresetReference,
+      realStatusPresetActual,
+      [statusPresetCatalog, coreStatusCatalog],
+    );
+  const expandedStatusPresetLabels = realExpandedStatusPreset.filter((entry) =>
+    entry.path.endsWith(' / Status / Label / Label'),
+  );
+  assert.equal(
+    expandedStatusPresetLabels.length,
+    1,
+    'A renamed nested instance must not create a duplicate effective-baseline leaf',
+  );
+  assert.equal(
+    expandedStatusPresetLabels[0].fill.token,
+    'VariableID:9d628b4143392a46dacd623e81b3de011d3cc6a1/1930:68',
+    'The StatusPreset-owned Contrast label paint must survive Status and Label materialization',
+  );
+  assert.equal(
+    diff.diffStructures(realStatusPresetActual, realExpandedStatusPreset).diffs
+      .filter((entry) => entry.details?.property === 'fill').length,
+    0,
+    'A canonical Approved/Contrast label must not be reported as a paint customization',
+  );
+  const manuallyRecoloredStatusPreset = realStatusPresetActual.map((entry) =>
+    Object.assign({}, entry),
+  );
+  const manuallyRecoloredStatusLabel = manuallyRecoloredStatusPreset.find((entry) =>
+    entry.path.endsWith(' / Status / Label / Label'),
+  );
+  manuallyRecoloredStatusLabel.fill = {
+    token: 'VariableID:373a7154059297e96c397d0055152b95685c34d5/3541:192',
+    color: 'rgba(42,119,239,1)',
+  };
+  const realStatusPaintDiffs = diff
+    .diffStructures(manuallyRecoloredStatusPreset, realExpandedStatusPreset)
+    .diffs.filter((entry) => entry.details?.property === 'fill');
+  assert.equal(
+    realStatusPaintDiffs.length,
+    1,
+    'A real nested Status label recolor must remain detectable',
+  );
+  assert.equal(
+    realStatusPaintDiffs[0].details.reference.value,
+    'VariableID:9d628b4143392a46dacd623e81b3de011d3cc6a1/1930:68',
+    'A real recolor must be evaluated against the parent-owned StatusPreset token',
   );
 
   for (let row = 1; row <= 4; row += 1) {
@@ -2213,13 +2371,13 @@ function main() {
     );
   assert.equal(
     amountTypographyDecision.preferCandidate,
-    false,
-    'Explicit host typography must not be replaced by a standalone nested component baseline',
+    true,
+    'Explicit host typography must be merged into the standalone nested component baseline',
   );
   assert.equal(
     amountTypographyDecision.reason,
-    'keep-host-typography-descendant',
-    'Typography precedence must remain observable in nested reference diagnostics',
+    'merge-parent-owned-descendant',
+    'Typography ownership must remain observable in nested reference diagnostics',
   );
 
   const unboundStandaloneOperationMinus = Object.assign(
@@ -2246,13 +2404,13 @@ function main() {
     );
   assert.equal(
     unboundAmountTypographyDecision.preferCandidate,
-    false,
-    'A nested physical font must not replace an explicit host text-style baseline',
+    true,
+    'A nested physical font must merge without replacing an explicit host text-style baseline',
   );
   assert.equal(
     unboundAmountTypographyDecision.reason,
-    'keep-host-typography-descendant',
-    'An unbound nested font must retain the host typography precedence reason',
+    'merge-parent-owned-descendant',
+    'An unbound nested font must retain property-level host typography ownership',
   );
 
   const amountTextStyleDiff = diff.diffStructures(
@@ -2275,6 +2433,115 @@ function main() {
     amountTextStyleDiff?.message,
     'Стиль текст: Paragraph/14–20 → Paragraph/16–20',
     'Amount typography changes must be reported as text-style tokens, not resolved font names',
+  );
+
+  const genericParentOwnedNode = {
+    id: 3001,
+    parentId: 3000,
+    path: 'Root / Wrapper / Child / Content',
+    type: 'FRAME',
+    name: 'Content',
+    visible: true,
+    referenceOrigin: 'nested-component',
+    referenceOwnerComponentKey: 'wrapper-key',
+    referenceOwnerPath: 'Root / Wrapper',
+    referenceOwnerRelativePath: 'Child / Content',
+    fill: { token: 'wrapper/fill' },
+    stroke: { token: 'wrapper/stroke', weight: 1 },
+    radius: { topLeft: 16, topRight: 16, bottomRight: 16, bottomLeft: 16 },
+    styles: {
+      text: { styleKey: 'wrapper/text' },
+    },
+    layout: {
+      itemSpacing: 24,
+      padding: { top: 16 },
+    },
+    componentInstance: {
+      componentKey: 'child-key',
+      variantProperties: { Size: '40', View: 'Primary' },
+    },
+  };
+  const genericNestedBaselineNode = {
+    id: 4001,
+    parentId: 4000,
+    path: 'Root / Wrapper / Child / Content',
+    type: 'FRAME',
+    name: 'Content',
+    visible: true,
+    referenceOrigin: 'nested-component',
+    referenceOwnerComponentKey: 'child-key',
+    referenceOwnerPath: 'Root / Wrapper / Child',
+    referenceOwnerRelativePath: 'Content',
+    fill: { token: 'child/fill' },
+    stroke: { token: 'child/stroke', weight: 1 },
+    radius: { topLeft: 8, topRight: 8, bottomRight: 8, bottomLeft: 8 },
+    styles: {
+      text: { styleKey: 'child/text' },
+      fill: { styleKey: 'child/background-style' },
+    },
+    layout: {
+      itemSpacing: 8,
+      padding: { top: 16, right: 12 },
+    },
+    componentInstance: {
+      componentKey: 'child-key',
+      variantProperties: {
+        Size: '32',
+        View: 'Primary',
+        Disabled: 'False',
+      },
+    },
+  };
+  const genericOwnershipDecision =
+    nestedReferenceMerge.getMaterializedInstanceReferenceDecision(
+      genericParentOwnedNode,
+      genericNestedBaselineNode,
+      'Root / Wrapper / Child',
+      () => false,
+    );
+  assert.equal(genericOwnershipDecision.preferCandidate, true);
+  assert.equal(
+    genericOwnershipDecision.reason,
+    'merge-parent-owned-descendant',
+    'Any wrapper/nested pair must use the same property ownership merge',
+  );
+  const genericOwnershipMerged =
+    nestedReferenceMerge.mergeMaterializedInstanceReferenceNode(
+      genericParentOwnedNode,
+      genericNestedBaselineNode,
+      genericOwnershipDecision,
+    );
+  assert.equal(genericOwnershipMerged.fill.token, 'wrapper/fill');
+  assert.equal(genericOwnershipMerged.stroke.token, 'wrapper/stroke');
+  assert.equal(genericOwnershipMerged.radius.topLeft, 16);
+  assert.equal(genericOwnershipMerged.styles.text.styleKey, 'wrapper/text');
+  assert.equal(
+    genericOwnershipMerged.styles.fill.styleKey,
+    'child/background-style',
+    'Nested properties absent from the wrapper baseline must remain nested-owned',
+  );
+  assert.equal(genericOwnershipMerged.layout.itemSpacing, 24);
+  assert.equal(genericOwnershipMerged.layout.padding.top, 16);
+  assert.equal(
+    genericOwnershipMerged.layout.padding.right,
+    12,
+    'Nested-only layout leaves must survive a sibling host override',
+  );
+  assert.equal(
+    genericOwnershipMerged.componentInstance.variantProperties.Size,
+    '40',
+  );
+  assert.equal(
+    genericOwnershipMerged.componentInstance.variantProperties.Disabled,
+    'False',
+  );
+  assert.equal(
+    genericOwnershipMerged.referencePropertyOwners.fill.componentKey,
+    'wrapper-key',
+  );
+  assert.equal(
+    genericOwnershipMerged.referencePropertyOwners['layout.padding.right'].componentKey,
+    'child-key',
   );
 
   console.log('Nested variant and suppression policy regression checks passed');

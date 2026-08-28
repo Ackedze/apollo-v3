@@ -495,6 +495,32 @@ export function markDirectHostVariantDiffs(
   });
 }
 
+function markDirectStructureVariantDiffs(
+  structure: readonly DSStructureNode[],
+  diffs: readonly DiffEntry[],
+): DiffEntry[] {
+  const fieldsByNodeId = new Map<string, Set<string>>();
+  for (const node of structure) {
+    for (const override of node.componentInstance?.directOverrides ?? []) {
+      const fields = fieldsByNodeId.get(override.nodeId) ?? new Set<string>();
+      for (const field of override.fields) fields.add(field);
+      fieldsByNodeId.set(override.nodeId, fields);
+    }
+  }
+  if (!fieldsByNodeId.size) return Array.from(diffs);
+
+  return diffs.map((diff) => {
+    if (!diff.nodeId) return diff;
+    const fields = findDirectOverrideFieldsForDiff(fieldsByNodeId, diff);
+    if (!fields || !directOverrideFieldsMatchDiff(fields, diff)) return diff;
+    return Object.assign({}, diff, {
+      context: Object.assign({}, diff.context, {
+        directHostVariantOverride: true,
+      }),
+    });
+  });
+}
+
 function findDirectOverrideFieldsForDiff(
   fieldsByNodeId: ReadonlyMap<string, ReadonlySet<string>>,
   diff: DiffEntry,
@@ -703,12 +729,19 @@ export function buildBaselineCustomizationFacts(
   hostDiffs: readonly DiffEntry[],
   explicitVariantStateDiffs: readonly DiffEntry[],
   isExplainedBySelectedVariant: (diff: DiffEntry) => boolean = () => false,
+  expandedNestedDiffs: readonly DiffEntry[] = [],
 ): DiffEntry[] {
   if (!host) return [];
 
-  const candidates = markDirectHostVariantDiffs(
-    host,
-    Array.from(hostDiffs).concat(explicitVariantStateDiffs),
+  const candidates = markDirectStructureVariantDiffs(
+    actualStructure,
+    Array.from(hostDiffs)
+      .concat(
+        expandedNestedDiffs.filter(
+          (diff) => !isComponentSelectionDiff(diff),
+        ),
+      )
+      .concat(explicitVariantStateDiffs),
   );
   const changedSelectionNodeIds = new Set(
     candidates
@@ -1253,6 +1286,7 @@ export async function classifyComponentNode(
     hostDiffs,
     explicitVariantStateDiffs,
     (diff) => baselineSelectedVariantEvidence?.explains(diff) ?? false,
+    markedDiffs,
   );
   const markedHostVariantDiffs = alignedActualStructure?.[0]
     ? markDirectHostVariantDiffs(alignedActualStructure[0], hostDiffs)

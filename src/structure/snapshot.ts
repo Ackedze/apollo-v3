@@ -591,10 +591,12 @@ function extractStrokeInfo(node: SceneNode) {
         .join(',')
     : null;
   const variableToken = extractPaintVariableId(strokes);
-  const weight =
+  const scalarWeight =
     'strokeWeight' in node && typeof (node as any).strokeWeight === 'number'
       ? (node as any).strokeWeight
       : null;
+  const sideWeights = readStrokeSideWeights(node);
+  const weight = scalarWeight ?? representativeStrokeWeight(sideWeights);
   const align =
     'strokeAlign' in node && (node as any).strokeAlign
       ? String((node as any).strokeAlign)
@@ -606,8 +608,35 @@ function extractStrokeInfo(node: SceneNode) {
     color: color || null,
     token: variableToken,
     weight,
+    weights: sideWeights,
     align,
   };
+}
+
+function readStrokeSideWeights(node: SceneNode) {
+  const source = node as SceneNode & {
+    strokeTopWeight?: unknown;
+    strokeRightWeight?: unknown;
+    strokeBottomWeight?: unknown;
+    strokeLeftWeight?: unknown;
+  };
+  const values = {
+    top: typeof source.strokeTopWeight === 'number' ? source.strokeTopWeight : null,
+    right: typeof source.strokeRightWeight === 'number' ? source.strokeRightWeight : null,
+    bottom: typeof source.strokeBottomWeight === 'number' ? source.strokeBottomWeight : null,
+    left: typeof source.strokeLeftWeight === 'number' ? source.strokeLeftWeight : null,
+  };
+  return Object.values(values).some((value) => value !== null) ? values : null;
+}
+
+function representativeStrokeWeight(
+  weights: ReturnType<typeof readStrokeSideWeights>,
+): number | null {
+  if (!weights) return null;
+  const values = Object.values(weights).filter(
+    (value): value is number => typeof value === 'number',
+  );
+  return values.length ? Math.max(...values) : null;
 }
 
 function extractPaintVariableId(

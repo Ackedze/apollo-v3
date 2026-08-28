@@ -6,50 +6,57 @@
   gap: 12px;
   width: 100%;
   box-sizing: border-box;
-  padding: 16px 12px 16px 28px;
+  height: 72px;
+  padding: 16px 12px;
 }
 
 .rootCompact,
 :global(.chrome-top-section-compact) {
   gap: 12px;
   justify-content: space-between;
-  padding-right: 16px;
+  padding-right: 12px;
 }
 
-.titleWrap {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-right: 28px;
+.pageTypeWrap {
+  position: relative;
+  z-index: 20;
   flex-shrink: 0;
-  width: 244px;
-  box-sizing: border-box;
 }
 
-.titleWrapCompact {
-  flex: 0 0 auto;
+.pageTypeButton.pageTypeButton {
+  min-width: 146px;
+  background: rgba(0, 0, 0, 0.12);
+  border-color: rgba(0, 0, 0, 0.04);
+  color: #fff;
+}
+
+.pageTypeButton.pageTypeButton:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.pageTypeButtonSelected.pageTypeButtonSelected {
+  min-width: 88px;
+  background: #000;
+  border-color: #000;
+  color: #fff;
+}
+
+.pageTypeButtonSelected.pageTypeButtonSelected:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.72);
+  border-color: #000;
+}
+
+.pageTypeMenu {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  z-index: 40;
+  width: 212px;
+}
+
+.rootCompact .pageTypeButton.pageTypeButton {
   min-width: 0;
-  width: auto;
-  padding-right: 0;
-}
-
-.titleButton,
-:global(.chrome-title-button) {
-  border: none;
-  background: transparent;
-  padding: 0;
-  margin: 0;
-  font-size: 18px;
-  line-height: 22px;
-  font-weight: 700;
-  letter-spacing: 0.38px;
-  color: rgba(3, 3, 6, 0.88);
-  cursor: pointer;
-}
-
-.titleButton:hover,
-:global(.chrome-title-button:hover) {
-  opacity: 0.82;
+  max-width: 132px;
 }
 
 .rightSide {

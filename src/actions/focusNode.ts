@@ -1,10 +1,12 @@
 /// <reference types="@figma/plugin-typings" />
 
+import { resolveSceneNodeById } from './sceneNodeResolver';
+
 export async function focusNode(nodeId: string | undefined): Promise<void> {
   if (!nodeId) return;
-  const node = await figma.getNodeByIdAsync(nodeId);
+  const node = await resolveSceneNodeById(nodeId);
 
-  if (!node || node.type === 'DOCUMENT') {
+  if (!node) {
     figma.notify('Не удалось найти слой для перехода');
     return;
   }

@@ -57,6 +57,27 @@ async function main() {
   assert.deepEqual(viewportTargets, [[targetNode.id]]);
   assert.deepEqual(notifications, []);
 
+  const nestedNode = {
+    id: 'I6:6;7:7',
+    type: 'INSTANCE',
+    parent: null,
+  };
+  const ownerNode = {
+    id: '6:6',
+    type: 'INSTANCE',
+    parent: targetPage,
+    findOne(predicate) {
+      return predicate(nestedNode) ? nestedNode : null;
+    },
+  };
+  nestedNode.parent = ownerNode;
+  globalThis.figma.getNodeByIdAsync = async (nodeId) =>
+    nodeId === ownerNode.id ? ownerNode : null;
+
+  await focusNode(nestedNode.id);
+  assert.deepEqual(targetPage.selection, [nestedNode]);
+  assert.deepEqual(viewportTargets.at(-1), [nestedNode.id]);
+
   await focusNode('missing');
   assert.equal(notifications.at(-1), 'Не удалось найти слой для перехода');
 

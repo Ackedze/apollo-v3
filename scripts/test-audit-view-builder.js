@@ -106,7 +106,64 @@ async function main() {
     nodeName: 'Hidden',
     visible: false,
   };
-  instanceItem.baselineDiffs = [allowedBaselineDiff, allowedBaselineDiff, hiddenBaselineDiff];
+  const richerAllowedBaselineDiff = Object.assign({}, allowedBaselineDiff, {
+    context: {
+      surfaceContext: { kind: 'white', source: 'ancestor-fill-color' },
+    },
+  });
+  const requiredPaintStateDiff = {
+    message: 'заливка: — → base-bg-alt/secondary',
+    nodeId: 'I:background-plate-style-level-1',
+    nodePath: '[D] BackgroundPlate / [D] Style Level 1',
+    nodeName: '[D] Style Level 1',
+    visible: true,
+    diffKind: 'paint',
+    details: {
+      property: 'fill',
+      reference: { value: null },
+      actual: {
+        value: 'VariableID:base-bg-alt-secondary',
+        resourceType: 'token',
+        displayName: 'base-bg-alt/secondary',
+      },
+    },
+    assessment: {
+      verdict: 'violation',
+      source: 'component-contract',
+      reasonCode: 'component-contract-required-paint-state',
+      ruleId: 'component:background-plate.border-has-no-visible-fill',
+      message: 'Type=Border must not have a visible fill',
+    },
+  };
+  const unrelatedContractFinding = {
+    message: 'variant: Primary → Secondary',
+    nodeId: 'I:unrelated-component',
+    nodePath: '[D] Card / [D] Button',
+    nodeName: '[D] Button',
+    visible: true,
+    diffKind: 'other',
+    details: {
+      property: 'variant.View',
+      reference: { value: 'Primary' },
+      actual: { value: 'Secondary' },
+    },
+    assessment: {
+      verdict: 'violation',
+      source: 'component-contract',
+      reasonCode: 'component-contract-pattern-violation',
+      ruleId: 'component:button.view',
+      message: 'View is not allowed in this context',
+    },
+  };
+  instanceItem.diffs = instanceItem.diffs.concat(
+    requiredPaintStateDiff,
+    unrelatedContractFinding,
+  );
+  instanceItem.baselineDiffs = [
+    allowedBaselineDiff,
+    richerAllowedBaselineDiff,
+    hiddenBaselineDiff,
+  ];
   const baselineResults = computeBaselineChangeResults([
     componentItem,
     instanceItem,
@@ -116,12 +173,29 @@ async function main() {
   assert.equal(
     baselineResults[0].diffs.length,
     2,
-    'WIP baseline facts must keep allowed and duplicate deviations without policy filtering',
+    'WIP must keep raw facts, merge duplicates and restore contract-required paint-state facts',
   );
   assert.equal(
     baselineResults[0].diffs[0].assessment.verdict,
     'allowed',
     'View construction must not manufacture or reinterpret a verdict',
+  );
+  assert.equal(
+    baselineResults[0].diffs[0].context.surfaceContext.kind,
+    'white',
+    'Deduplication must preserve the duplicate carrying richer context evidence',
+  );
+  assert.equal(
+    baselineResults[0].diffs[1].assessment.reasonCode,
+    'component-contract-required-paint-state',
+    'A contract-confirmed no-paint baseline must remain visible without native override evidence',
+  );
+  assert.equal(
+    baselineResults[0].diffs.some(
+      (diff) => diff.assessment?.reasonCode === 'component-contract-pattern-violation',
+    ),
+    false,
+    'WIP must not import unrelated interpreted contract or pattern findings',
   );
 
   globalThis.figma = { mixed: Symbol('mixed') };

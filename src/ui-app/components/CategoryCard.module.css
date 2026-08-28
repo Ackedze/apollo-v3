@@ -19,12 +19,17 @@
 
 .button:hover,
 :global(.chrome-tab-card:hover) {
-  background: #f2f3f5;
+  background: #fff;
 }
 
 .active,
 :global(.chrome-tab-card-active) {
-  background: #f2f3f5;
+  background: #fff;
+}
+
+.active:hover,
+:global(.chrome-tab-card-active:hover) {
+  background: #fff;
 }
 
 .title,

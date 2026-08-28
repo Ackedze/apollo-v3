@@ -13,6 +13,8 @@ import type {
   RuntimeAuditPresentation,
   RuntimeComponentAgentContext,
 } from '../contracts/artifactContext';
+import type { ApolloPageType } from '../types/pageContext';
+import type { ApolloAuditEvidenceBundle } from './evidenceTypes';
 import type {
   DiffContext,
   VariableBindingEvidence,
@@ -41,6 +43,11 @@ export type StatsComponentContractRule = {
   severity: string;
   source: string;
   ruleKind: string | null;
+  authority: {
+    status: string | null;
+    provenance: string | null;
+    revision: number | null;
+  } | null;
   severityScope: string | null;
   appliesTo: string;
   checkType: string | null;
@@ -53,6 +60,11 @@ export type StatsComponentContractRule = {
     maximum?: number;
     recommended?: number;
   } | null;
+  requiredTokenSource: {
+    path?: string;
+    collection?: string;
+    tokenNames?: string[];
+  } | null;
 };
 
 export type StatsNode = {
@@ -62,6 +74,7 @@ export type StatsNode = {
   pageName: string;
   path: string;
   visible: boolean;
+  ancestorNodeIds?: string[];
 };
 
 export type StatsComponentItem = {
@@ -176,6 +189,7 @@ export type ApolloStatsReport = {
   };
   scan: {
     channel: string;
+    pageType: ApolloPageType | null;
     startedAt: string;
     finishedAt: string;
     durationMs: number;
@@ -320,5 +334,116 @@ export type ApolloBaselineCustomizationReport = {
     count: number;
     changeCount: number;
     items: StatsCustomizationItem[];
+  };
+};
+
+export type ApolloPatternOccurrence = {
+  node: StatsNode;
+  component: Pick<
+    StatsResource,
+    'name' | 'key' | 'library' | 'sourceFile'
+  >;
+  variant: {
+    name: string;
+    key: string | null;
+    properties: Record<string, string>;
+  } | null;
+  ancestors: Array<{
+    nodeId: string;
+    name: string;
+    componentName: string;
+    componentKey: string | null;
+    variantProperties: Record<string, string>;
+  }>;
+  documentOrder: number;
+};
+
+export type ApolloLayoutRelationNode = {
+  nodeId: string;
+  name: string;
+  type: string;
+  path: string;
+};
+
+export type ApolloLayoutRelation = {
+  id: string;
+  axis: 'vertical';
+  relationKind: 'page-top-margin' | 'next-content-gap';
+  from: ApolloLayoutRelationNode;
+  to: ApolloLayoutRelationNode;
+  container: (ApolloLayoutRelationNode & {
+    layoutMode: string | null;
+    itemSpacing: number | null;
+  }) | null;
+  measurement: {
+    actualPx: number;
+    source: 'bounding-box-gap' | 'spacer-height';
+  };
+  semantic: {
+    fromRole: 'header' | 'title-view';
+    toRole: 'title-view' | 'content' | 'tabs-view' | 'filters-block' | 'plate' | 'top-bar';
+  };
+  contextComplete: boolean;
+};
+
+export type ApolloPatternAuditReport = {
+  schemaVersion: 1;
+  reportKind: 'apollo-pattern-audit-report';
+  reportId: string;
+  sourceReportId: string;
+  generatedAt: string;
+  suggestedFileName: string;
+  user: ApolloStatsReport['user'];
+  plugin: ApolloStatsReport['plugin'];
+  figma: ApolloStatsReport['figma'];
+  scan: ApolloStatsReport['scan'];
+  summary: {
+    scannedComponents: number;
+    occurrenceCount: number;
+    layoutRelationCount: number;
+    generalChangeCount: number;
+    requestedRuleCount: number;
+  };
+  requestedRuleIds: string[];
+  category: ApolloBaselineCustomizationReport['category'];
+  facts: {
+    occurrences: ApolloPatternOccurrence[];
+    layoutRelations: ApolloLayoutRelation[];
+  };
+  evidenceBundle?: ApolloAuditEvidenceBundle;
+};
+
+export type ApolloTextComponentContext = {
+  nodeId: string;
+  name: string;
+  componentName: string;
+  componentKey: string | null;
+  variantProperties: Record<string, string>;
+};
+
+export type ApolloTextFact = {
+  node: StatsNode;
+  text: string;
+  owner: ApolloTextComponentContext | null;
+  ancestors: ApolloTextComponentContext[];
+  documentOrder: number;
+};
+
+export type ApolloTextAuditReport = {
+  schemaVersion: 1;
+  reportKind: 'apollo-text-audit-report';
+  reportId: string;
+  sourceReportId: string;
+  generatedAt: string;
+  suggestedFileName: string;
+  user: ApolloStatsReport['user'];
+  plugin: ApolloStatsReport['plugin'];
+  figma: ApolloStatsReport['figma'];
+  scan: ApolloStatsReport['scan'];
+  summary: {
+    scannedTextNodes: number;
+  };
+  facts: {
+    texts: ApolloTextFact[];
   };
 };

@@ -43,7 +43,8 @@
     "test:generation-example-candidate": "node scripts/test-generation-example-candidate.js",
     "test:reference-manifest": "node scripts/test-reference-manifest.js",
     "test:promise-pool": "node scripts/test-promise-pool.js",
-    "report:nested-overrides": "node scripts/report-nested-overrides.js"
+    "report:nested-overrides": "node scripts/report-nested-overrides.js",
+    "report:predicate-coverage": "node scripts/audit-predicate-coverage.js"
   },
   "devDependencies": {
     "@figma/plugin-typings": "^1.82.0",

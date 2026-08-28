@@ -27,6 +27,11 @@ export type ComponentContractRule = {
   severity: string;
   source: string;
   ruleKind?: string;
+  authority?: {
+    status?: string;
+    provenance?: string;
+    revision?: number;
+  };
   severityScope?: string;
   appliesTo: string;
   checkType?: string;
@@ -193,8 +198,7 @@ export function findComponentContractViolationForDiff(
   for (const rule of rules) {
     if (
       rule.severity === 'error' &&
-      (rule.ruleKind === 'design-rule' ||
-        isDeterministicBindingViolation(rule, diff)) &&
+      isActiveComponentDesignRule(rule) &&
       ruleConfirmsViolation(rule, diff)
     ) {
       return rule;
@@ -317,31 +321,6 @@ function diffActualHasVisiblePaint(diff: DiffEntry): boolean {
   ].includes(normalized);
 }
 
-function isDeterministicBindingViolation(
-  rule: ComponentContractRule,
-  diff: DiffEntry,
-): boolean {
-  if (rule.checkType !== 'deterministic') return false;
-  const bindingStatus = diff.details?.bindingStatus ?? null;
-  if (bindingStatus !== 'unbound' && bindingStatus !== 'different-binding') {
-    return false;
-  }
-  const property = diff.details?.property ?? '';
-  if (
-    property.startsWith('layout.padding.') ||
-    property.startsWith('layout.paddingTokens.')
-  ) {
-    return rule.requiredConfiguration?.manualPaddingAllowed === false;
-  }
-  if (
-    property === 'layout.itemSpacing' ||
-    property === 'layout.itemSpacingToken'
-  ) {
-    return rule.requiredConfiguration?.manualItemSpacingAllowed === false;
-  }
-  return false;
-}
-
 export function hasRequiredComponentSizingRules(
   componentKey: string | null | undefined,
   componentNames: Array<string | null | undefined> = [],
@@ -364,6 +343,7 @@ export function hasRequiredComponentSizingRules(
       (entry.rulesFile.rules ?? []).some(
         (rule) =>
           isUsableRule(rule) &&
+          isActiveComponentDesignRule(rule) &&
           (Boolean(
             readRequiredSizing(rule.requiredValues ?? {}, 'horizontal'),
           ) ||
@@ -434,6 +414,7 @@ export function hasVariableModeRules(
         const configuration = rule.requiredConfiguration;
         return (
           isUsableRule(rule) &&
+          isActiveComponentDesignRule(rule) &&
           rule.severity === 'error' &&
           rule.checkType === 'deterministic' &&
           readVariableModeCollections(rule.appliesTo).length > 0 &&
@@ -464,7 +445,7 @@ export function applyRequiredComponentSizingAssessment(
   const rules = findComponentContractRulesForDiff(diff);
   const rule = rules.find(
     (candidate) =>
-      candidate.ruleKind === 'design-rule' &&
+      isActiveComponentDesignRule(candidate) &&
       candidate.severity === 'error' &&
       Boolean(candidate.requiredValues),
   );
@@ -477,10 +458,20 @@ export function applyRequiredComponentSizingAssessment(
 
 export function applyVariableBindingAssessment(diff: DiffEntry): DiffEntry {
   const bindingStatus = diff.details?.bindingStatus ?? null;
-  if (bindingStatus !== 'unbound' && bindingStatus !== 'different-binding') {
+  const rule = findComponentContractViolationForDiff(diff);
+  const hasExplicitRequiredTokenSourceViolation = Boolean(
+    rule?.requiredTokenSource &&
+      diff.details?.actual &&
+      Object.prototype.hasOwnProperty.call(diff.details.actual, 'bindingId') &&
+      !diff.details.actual.bindingId,
+  );
+  if (
+    bindingStatus !== 'unbound' &&
+    bindingStatus !== 'different-binding' &&
+    !hasExplicitRequiredTokenSourceViolation
+  ) {
     return diff;
   }
-  const rule = findComponentContractViolationForDiff(diff);
   if (!rule) return diff;
   return Object.assign({}, diff, {
     assessment: createRuleViolationAssessment(rule),
@@ -525,6 +516,7 @@ export function applySharedValueComponentRuleAssessments(
     for (const rule of entry.rulesFile.rules ?? []) {
       if (
         !isUsableRule(rule) ||
+        !isActiveComponentDesignRule(rule) ||
         rule.severity !== 'error' ||
         rule.checkType !== 'deterministic' ||
         rule.sharedValueConstraint?.strategy !==
@@ -671,7 +663,7 @@ export function applyContextualComponentRuleAssessment(
   const structuredViolation = rules.find(
     (rule) =>
       rule.severity === 'error' &&
-      rule.ruleKind === 'design-rule' &&
+      isActiveComponentDesignRule(rule) &&
       Boolean(rule.requiredPaintState || rule.requiredTokenBinding) &&
       ruleConfirmsViolation(rule, diff),
   );
@@ -688,8 +680,10 @@ export function applyContextualComponentRuleAssessment(
   if (diff.assessment?.verdict === 'expected') {
     return diff;
   }
-  const paintRule = findComponentContractRulesForDiff(diff).find((rule) =>
-    ruleExplicitlyAllowsPaintDiff(rule, diff),
+  const paintRule = findComponentContractRulesForDiff(diff).find(
+    (rule) =>
+      isActiveComponentDesignRule(rule) &&
+      ruleExplicitlyAllowsPaintDiff(rule, diff),
   );
   if (paintRule) {
     return Object.assign({}, diff, {
@@ -713,7 +707,10 @@ export function applyContextualComponentRuleAssessment(
     }
   }
   for (const rule of rules) {
-    if (rule.classification?.allPublicApiValuesAllowed === true) {
+    if (
+      isActiveComponentDesignRule(rule) &&
+      rule.classification?.allPublicApiValuesAllowed === true
+    ) {
       return Object.assign({}, diff, {
         assessment: {
           verdict: 'allowed',
@@ -797,7 +794,11 @@ export function createRequiredComponentSizingDiffs(
 
     for (const entry of getComponentRuleRegistry()) {
       for (const rule of entry.rulesFile.rules ?? []) {
-        if (!isUsableRule(rule) || !rule.requiredValues) continue;
+        if (
+          !isUsableRule(rule) ||
+          !isActiveComponentDesignRule(rule) ||
+          !rule.requiredValues
+        ) continue;
 
         for (const axis of ['horizontal', 'vertical'] as const) {
           const property = `layout.sizing.${axis}`;
@@ -856,7 +857,11 @@ export function createRequiredPaintStateDiffs(
 
     for (const entry of getComponentRuleRegistry()) {
       for (const rule of entry.rulesFile.rules ?? []) {
-        if (!isUsableRule(rule) || !rule.requiredPaintState) continue;
+        if (
+          !isUsableRule(rule) ||
+          !isActiveComponentDesignRule(rule) ||
+          !rule.requiredPaintState
+        ) continue;
 
         for (const property of ['fill', 'stroke'] as const) {
           const expectedState = rule.requiredPaintState[property] ?? null;
@@ -1036,6 +1041,7 @@ export function createVariableModeRuleDiffs(
       for (const rule of entry.rulesFile.rules ?? []) {
         if (
           !isUsableRule(rule) ||
+          !isActiveComponentDesignRule(rule) ||
           rule.severity !== 'error' ||
           rule.checkType !== 'deterministic'
         ) {
@@ -1235,12 +1241,19 @@ function createRuleViolationAssessment(
   rule: ComponentContractRule,
 ): NonNullable<DiffEntry['assessment']> {
   const resetSurface = rule.classification?.resetSurface;
+  const evidence = Object.assign(
+    {},
+    resetSurface ? { resetSurface } : null,
+    rule.requiredTokenSource
+      ? { requiredTokenSource: rule.requiredTokenSource }
+      : null,
+  );
   return {
     verdict: 'violation',
     source: 'component-contract',
     reasonCode: 'component-contract-violation',
     ruleId: rule.ruleId,
-    evidence: resetSurface ? {resetSurface} : null,
+    evidence: Object.keys(evidence).length ? evidence : null,
     message: rule.ruleText,
     remediation: null,
     presentation: 'show',
@@ -1330,6 +1343,21 @@ function getComponentRuleRegistry(): ComponentRuleRegistryEntry[] {
 
 function isUsableRule(rule: ComponentContractRule): boolean {
   return Boolean(rule.ruleId && rule.appliesTo && rule.ruleText);
+}
+
+export function isActiveComponentDesignRule(
+  rule: ComponentContractRule,
+): boolean {
+  const authority = rule.authority;
+  return Boolean(
+    rule.ruleKind === 'design-rule' &&
+      authority?.status === 'active' &&
+      (authority.provenance === 'design-system-author' ||
+        authority.provenance === 'generated-policy') &&
+      typeof authority.revision === 'number' &&
+      Number.isInteger(authority.revision) &&
+      authority.revision >= 1,
+  );
 }
 
 function diffTargetsComponent(
@@ -1607,6 +1635,7 @@ function contextualVariantAssessment(
   diff: DiffEntry,
   property: string,
 ): NonNullable<DiffEntry['assessment']> | null {
+  if (!isActiveComponentDesignRule(rule)) return null;
   const propertyName = property.slice('variant.'.length);
   const actualValue = diff.details?.actual.value;
   if (typeof actualValue !== 'string') return null;

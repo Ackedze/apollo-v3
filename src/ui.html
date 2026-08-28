@@ -18,7 +18,7 @@
         width: 800px;
         height: 860px;
         margin: 0 auto;
-        background: #fff;
+        background: #d46dfa;
         border-radius: 0;
         display: flex;
         flex-direction: column;
@@ -30,7 +30,7 @@
 
       .header {
         padding: 0;
-        border-bottom: 1px solid #ececf2;
+        border-bottom: 0;
       }
 
       .results-pane {
@@ -41,8 +41,8 @@
         display: flex;
         flex-direction: column;
         gap: 8px;
-        background: #f3f4f7;
-        padding: 12px;
+        background: #fff;
+        padding: 4px;
         box-sizing: border-box;
       }
       #react-results {
@@ -51,10 +51,13 @@
       .workspace {
         display: grid;
         grid-template-columns: 263px 1fr;
-        gap: 8px;
+        gap: 0;
         flex: 1;
         min-width: 0;
         min-height: 0;
+        border-radius: 20px 20px 0 0;
+        background: #fff;
+        overflow: hidden;
       }
       .workspace.compact {
         grid-template-columns: 1fr;
@@ -69,20 +72,21 @@
       }
       .sidebar {
         width: 263px;
-        padding: 12px;
+        padding: 4px;
         overflow-y: auto;
         max-height: 100%;
         box-sizing: border-box;
       }
       .workspace.compact .sidebar {
         width: 100%;
-        padding-right: 12px;
+        padding-right: 4px;
       }
       .main {
         display: flex;
         flex-direction: column;
         min-width: 0;
         min-height: 0;
+        background: #fff;
       }
       .main.agent-active .results-pane {
         display: none !important;
@@ -119,10 +123,52 @@
       #toast.visible {
         opacity: 1;
       }
+      .stats-delivery-status {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        z-index: 26;
+        min-height: 32px;
+        padding: 6px 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(4, 4, 19, 0.14);
+        border-radius: 999px;
+        background: #fff;
+        color: #040413;
+        box-shadow: 0 6px 20px rgba(4, 4, 19, 0.14);
+        font: inherit;
+        cursor: default;
+      }
+      .stats-delivery-status[hidden] {
+        display: none;
+      }
+      .stats-delivery-status[data-phase='uploading']::before {
+        width: 12px;
+        height: 12px;
+        margin-right: 6px;
+        border: 2px solid rgba(4, 4, 19, 0.18);
+        border-top-color: #040413;
+        border-radius: 50%;
+        content: '';
+        animation: spin 0.8s linear infinite;
+      }
+      .stats-delivery-status[data-phase='failed'] {
+        border-color: rgba(239, 49, 36, 0.28);
+        background: #fff0ef;
+        color: #d52015;
+        cursor: pointer;
+      }
+      .stats-delivery-status[data-phase='success'] {
+        border-color: rgba(14, 157, 77, 0.22);
+        background: #eefaf3;
+        color: #087a3d;
+      }
       .view-segmented-control {
         position: absolute;
         left: 50%;
-        top: 12px;
+        top: 16px;
         z-index: 12;
         transform: translateX(-50%);
         display: flex;
@@ -131,13 +177,13 @@
         box-sizing: border-box;
         border: 1px solid rgba(0, 0, 0, 0.04);
         border-radius: 999px;
-        background: rgba(0, 0, 0, 0.04);
+        background: rgba(0, 0, 0, 0.12);
       }
       .view-segment {
         box-sizing: border-box;
-        width: 40px;
+        width: auto;
         height: 40px;
-        min-width: 40px;
+        min-width: 88px;
         min-height: 40px;
         padding: 4px 10px;
         display: inline-flex;
@@ -147,7 +193,11 @@
         border: 0;
         border-radius: 999px;
         background: transparent;
-        color: rgba(3, 3, 6, 0.78);
+        color: #fff;
+        font: inherit;
+        font-size: 14px;
+        line-height: 20px;
+        letter-spacing: -0.08px;
         cursor: pointer;
         transition:
           background 0.16s ease,
@@ -159,24 +209,25 @@
         color: #fff;
         box-shadow: inset 0 0 0 1px #000;
       }
-      .view-segment svg {
-        width: 20px;
-        height: 20px;
-        display: block;
+      .view-segment:nth-child(1) {
+        min-width: 118px;
+      }
+      .view-segment:nth-child(2) {
+        min-width: 99px;
       }
       .view-segmented-control.compact {
         top: 16px;
       }
       .view-segmented-control.compact .view-segment {
-        width: 32px;
+        width: auto;
         height: 32px;
-        min-width: 32px;
+        min-width: 72px;
         min-height: 32px;
         padding: 2px 6px;
+        font-size: 12px;
       }
-      .view-segmented-control.compact .view-segment svg {
-        width: 20px;
-        height: 20px;
+      .view-segmented-control.compact .view-segment:nth-child(1) {
+        min-width: 88px;
       }
       .view-segment:disabled {
         cursor: default;
@@ -193,6 +244,22 @@
       }
       .agent-chat-overlay.visible {
         display: flex;
+      }
+      .agent-chat-overlay.dialogue-visible {
+        position: fixed;
+        inset: 0;
+        z-index: 40;
+        box-sizing: border-box;
+        padding: 12px;
+        border-radius: 0;
+        background: rgba(0, 0, 0, 0.6);
+      }
+      .agent-chat-overlay.report-visible,
+      .agent-chat-overlay.report-visible .agent-chat-panel {
+        background: #fff;
+      }
+      .agent-chat-overlay.report-visible .agent-chat-panel::before {
+        background: linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0) 100%);
       }
       .agent-chat-panel {
         position: relative;
@@ -215,6 +282,22 @@
         pointer-events: none;
         background: linear-gradient(180deg, #f5f5f5 0%, rgba(245, 245, 245, 0) 100%);
       }
+      .agent-chat-overlay.dialogue-visible .agent-chat-panel {
+        width: 100%;
+        height: 100%;
+        flex: 1 1 auto;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        border-radius: 20px;
+        background: #fff;
+        box-shadow:
+          0 0 1px rgba(0, 0, 0, 0.04),
+          0 4px 8px rgba(0, 0, 0, 0.04),
+          0 12px 16px rgba(0, 0, 0, 0.04);
+      }
+      .agent-chat-overlay.dialogue-visible .agent-chat-panel::before {
+        width: 100%;
+        background: linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0) 100%);
+      }
       .agent-chat-panel,
       .agent-chat-panel *,
       .agent-chat-panel *::before,
@@ -233,6 +316,9 @@
         padding-right: 12px;
         padding-left: 12px;
       }
+      .agent-chat-overlay.dialogue-visible .agent-conversation {
+        padding: 72px 12px 16px;
+      }
       .agent-conversation-inner {
         min-height: 100%;
         display: flex;
@@ -240,9 +326,37 @@
         justify-content: flex-end;
         min-width: 0;
       }
+      .agent-conversation-inner.report-visible {
+        justify-content: flex-start;
+        padding: 28px 4px 0;
+      }
       .agent-conversation-inner.system-state-visible {
         align-items: center;
         justify-content: center;
+      }
+      .agent-conversation-inner.loading-state-visible {
+        align-items: center;
+        justify-content: center;
+        padding-top: 0;
+      }
+      .agent-conversation-inner.loading-state-visible .message-card {
+        width: auto;
+      }
+      .agent-conversation-inner.loading-state-visible .assistant-msg {
+        padding: 0;
+      }
+      .agent-conversation-inner.loading-state-visible .assistant-actions.loading {
+        flex-direction: column;
+        gap: 16px;
+        margin-top: 0;
+        font-size: 14px;
+        line-height: 20px;
+        text-align: center;
+      }
+      .agent-conversation-inner.loading-state-visible .spinner {
+        width: 40px;
+        height: 40px;
+        border-width: 4px;
       }
       .message-card {
         width: 100%;
@@ -337,12 +451,16 @@
         max-width: min(100%, 400px);
         min-width: 0;
         border-radius: 14px 14px 6px 14px;
-        background: #fff;
+        background: rgba(0, 0, 0, 0.08);
         padding: 12px 16px;
         color: rgba(3, 3, 6, 0.88);
         font-size: 14px;
         line-height: 20px;
         overflow-wrap: anywhere;
+      }
+      .agent-chat-overlay.dialogue-visible .user-msg__container {
+        font-size: 16px;
+        line-height: 24px;
       }
       .assistant-msg {
         display: flex;
@@ -402,6 +520,15 @@
       .agent-composer.hidden {
         display: none;
       }
+      .agent-chat-overlay.dialogue-visible .agent-composer {
+        width: calc(100% + 2px);
+        height: 56px;
+        min-height: 56px;
+        flex: 0 0 56px;
+        margin: 0 -1px -1px;
+        border-radius: 0 0 20px 20px;
+        background: #fff;
+      }
       .agent-composer-input {
         position: relative;
         z-index: 2;
@@ -429,6 +556,115 @@
         color: rgba(5, 8, 29, 0.38);
         opacity: 1;
         -webkit-text-fill-color: rgba(5, 8, 29, 0.38);
+      }
+      .agent-chat-overlay.dialogue-visible .agent-composer-input {
+        font-size: 16px;
+        line-height: 20px;
+      }
+      .agent-chat-close {
+        display: none;
+      }
+      .agent-chat-overlay.dialogue-visible .agent-chat-close {
+        position: absolute;
+        z-index: 3;
+        top: 19px;
+        right: 19px;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.04);
+        cursor: pointer;
+      }
+      .agent-chat-close__icon {
+        width: 24px;
+        height: 24px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .agent-chat-close__icon svg {
+        width: 12.6133px;
+        height: 12.6133px;
+        display: block;
+      }
+      .agent-source-control {
+        display: none;
+      }
+      .agent-chat-overlay.dialogue-visible .agent-source-control {
+        position: absolute;
+        z-index: 3;
+        top: 19px;
+        left: 19px;
+        height: 40px;
+        padding: 4px;
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.04);
+      }
+      .agent-source-control__option {
+        height: 32px;
+        padding: 0 12px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: rgba(3, 3, 6, 0.64);
+        font: inherit;
+        font-size: 13px;
+        line-height: 18px;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+      .agent-source-control__option:hover:not(.selected):not(:disabled) {
+        background: rgba(0, 0, 0, 0.06);
+        color: rgba(3, 3, 6, 0.88);
+      }
+      .agent-source-control__option.selected {
+        background: #000;
+        color: rgba(255, 255, 255, 0.94);
+      }
+      .agent-source-control__option:focus-visible {
+        outline: 2px solid #196cff;
+        outline-offset: 2px;
+      }
+      .agent-source-control__option:disabled {
+        cursor: default;
+        opacity: 0.48;
+      }
+      .agent-chat-launcher {
+        position: absolute;
+        right: 12px;
+        bottom: 12px;
+        z-index: 30;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #000;
+        border-radius: 999px;
+        background: #000;
+        cursor: pointer;
+      }
+      .agent-chat-launcher__icon {
+        width: 24px;
+        height: 24px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .agent-chat-launcher__icon svg {
+        width: 16.666px;
+        height: 16.334px;
+        display: block;
       }
       .agent-input-addon {
         position: absolute;
@@ -488,15 +724,104 @@
       .md-block--h5,
       .md-block--h6,
       .md-block--divider,
-      .md-block--table,
       .md-block--code {
         padding: 14px 0 12px;
+      }
+      .md-block--table {
+        padding: 12px 0;
+      }
+      .md-tabs {
+        width: 100%;
+        min-width: 0;
+        padding: 0 0 12px;
+      }
+      .md-tabs__list {
+        display: flex;
+        align-items: flex-end;
+        gap: 24px;
+        width: 100%;
+        min-width: 0;
+        border-bottom: 1px solid rgba(15, 25, 55, 0.22);
+      }
+      .md-tabs__tab {
+        min-height: 48px;
+        margin-bottom: -1px;
+        padding: 12px 0 10px;
+        border: 0;
+        border-bottom: 2px solid transparent;
+        background: transparent;
+        color: rgba(4, 4, 19, 0.55);
+        font: inherit;
+        font-size: 16px;
+        line-height: 24px;
+        letter-spacing: 0;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+      .md-tabs__tab[aria-selected='true'] {
+        border-bottom-color: #000;
+        color: rgba(3, 3, 6, 0.88);
+      }
+      .md-tabs__tab:focus-visible {
+        outline: 2px solid rgba(5, 8, 29, 0.72);
+        outline-offset: 2px;
+      }
+      .md-tabs__panel {
+        width: 100%;
+        min-width: 0;
+      }
+      .md-tabs__panel[hidden] {
+        display: none;
       }
       .md-block:first-child {
         padding-top: 0;
       }
       .md-block:last-child {
         padding-bottom: 0;
+      }
+      .md-collapsible {
+        margin: 18px 0 6px;
+        border: 1px solid #e7e8eb;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.52);
+        overflow: hidden;
+      }
+      .md-collapsible__summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 48px;
+        padding: 0 16px;
+        font-size: 15px;
+        line-height: 20px;
+        font-weight: 700;
+        cursor: pointer;
+        list-style: none;
+      }
+      .md-collapsible__summary::-webkit-details-marker {
+        display: none;
+      }
+      .md-collapsible__summary::after {
+        content: '⌄';
+        font-size: 18px;
+        line-height: 1;
+        color: rgba(5, 8, 29, 0.58);
+        transform: rotate(0deg);
+        transition: transform 140ms ease;
+      }
+      .md-collapsible[open] .md-collapsible__summary::after {
+        transform: rotate(180deg);
+      }
+      .md-collapsible__summary:focus-visible {
+        outline: 2px solid rgba(5, 8, 29, 0.72);
+        outline-offset: -2px;
+      }
+      .md-collapsible__content {
+        padding: 0 14px 14px;
+        border-top: 1px solid #e7e8eb;
+      }
+      .md-collapsible__content .md-block--table {
+        padding-top: 14px;
       }
       .md-h1,
       .md-h2,
@@ -513,14 +838,16 @@
         margin: 0;
       }
       .md-h1 {
-        font-size: 20px;
+        font-size: 22px;
         line-height: 26px;
         font-weight: 700;
+        letter-spacing: 0.2px;
       }
       .md-h2 {
-        font-size: 17px;
-        line-height: 24px;
+        font-size: 18px;
+        line-height: 22px;
         font-weight: 700;
+        letter-spacing: 0.38px;
       }
       .md-h3 {
         font-size: 15px;
@@ -588,48 +915,238 @@
         background: #e7e8eb;
       }
       .md-table-wrap {
-        width: 100%;
-        max-width: 100%;
-        border: 1px solid #e7e8eb;
-        border-radius: 12px;
-        background: rgba(255, 255, 255, 0.7);
-        overflow: hidden;
+        width: calc(100% + 24px);
+        max-width: none;
+        margin-left: -12px;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        overflow: visible;
       }
       .md-table-scroll {
         width: 100%;
-        overflow-x: auto;
-        overflow-y: hidden;
+        overflow: visible;
       }
       .md-table {
-        width: max-content;
-        min-width: 100%;
-        border-collapse: collapse;
-        table-layout: auto;
+        width: 100%;
+        min-width: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+        table-layout: fixed;
+        background: #fff;
       }
       .md-th,
       .md-td {
-        min-width: 96px;
-        max-width: 240px;
-        padding: 10px 12px;
+        min-width: 0;
+        max-width: none;
+        padding: 12px 10px;
         vertical-align: top;
         text-align: left;
-        font-size: 13px;
-        line-height: 18px;
+        font-size: 14px;
+        line-height: 20px;
         white-space: normal;
         word-break: normal;
         overflow-wrap: anywhere;
       }
       .md-th {
-        font-weight: 700;
-        background: rgba(30, 43, 68, 0.06);
+        padding-top: 8px;
+        padding-bottom: 8px;
+        font-weight: 500;
+        background: transparent;
+        background-image: linear-gradient(#d9dadd, #d9dadd);
+        background-position: left bottom;
+        background-repeat: no-repeat;
+        background-size: 100% 1px;
+      }
+      .md-th:first-child {
+        background-position: 12px bottom;
+        background-size: calc(100% - 12px) 1px;
+      }
+      .md-th:last-child {
+        background-size: calc(100% - 12px) 1px;
+      }
+      .md-th:first-child,
+      .md-td:first-child {
+        width: 102px;
+        padding-left: 12px;
+      }
+      .md-th:last-child,
+      .md-td:last-child {
+        padding-right: 12px;
       }
       .md-tr + .md-tr .md-td,
       .md-tr + .md-tr .md-th {
-        border-top: 1px solid #e7e8eb;
+        border-top: 0;
+        background-image: linear-gradient(#d9dadd, #d9dadd);
+        background-position: left top;
+        background-repeat: no-repeat;
+        background-size: 100% 1px;
+      }
+      .md-tr + .md-tr .md-td:first-child {
+        background-position: 12px top;
+        background-size: calc(100% - 12px) 1px;
+      }
+      .md-tr + .md-tr .md-td:last-child {
+        background-size: calc(100% - 12px) 1px;
+      }
+      .md-tr--interactive {
+        cursor: pointer;
+      }
+      .md-tr--interactive .md-td {
+        transition: background-color 120ms ease;
+      }
+      .md-tr--interactive:hover .md-td,
+      .md-tr--interactive:focus-visible .md-td {
+        background: #f5f5f5;
+      }
+      .md-tr--interactive:hover .md-td:first-child,
+      .md-tr--interactive:focus-visible .md-td:first-child {
+        border-radius: 12px 0 0 12px;
+      }
+      .md-tr--interactive:hover .md-td:last-child,
+      .md-tr--interactive:focus-visible .md-td:last-child {
+        border-radius: 0 12px 12px 0;
+      }
+      .md-tr--interactive:focus-visible {
+        outline: 2px solid rgba(5, 8, 29, 0.72);
+        outline-offset: -2px;
+      }
+      .md-action-cell {
+        width: 100%;
+        min-width: 0;
+        margin: -12px -10px;
+        padding: 12px 10px;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+      }
+      .md-action-cell:hover,
+      .md-action-cell:focus-visible {
+        background: transparent;
+        outline: none;
+      }
+      .md-action-cell__label {
+        display: block;
+        margin-top: 6px;
+        font-size: 12px;
+        line-height: 16px;
+        font-weight: 600;
+        color: rgba(5, 8, 29, 0.62);
+      }
+      .md-action-cell .md-link,
+      .md-td:last-child .md-link {
+        color: #196cff;
+        text-decoration: none;
+        border-bottom: 1px dashed currentColor;
+      }
+      .md-status {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 20px;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 11px;
+        line-height: 16px;
+        font-weight: 700;
+        letter-spacing: 0.24px;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+      .md-status--error {
+        background: rgba(255, 72, 55, 0.12);
+        color: #ff4837;
+      }
+      .md-status--warning {
+        background: rgba(250, 147, 19, 0.16);
+        color: #e67d00;
+      }
+      .md-status--success {
+        background: rgba(12, 196, 77, 0.12);
+        color: #07943a;
+      }
+      .md-status--neutral {
+        background: rgba(30, 43, 68, 0.08);
+        color: rgba(3, 3, 6, 0.72);
+      }
+      .agent-action-menu {
+        position: fixed;
+        z-index: 10000;
+        width: 280px;
+        max-height: 320px;
+        padding: 4px;
+        overflow-y: auto;
+        border: 1px solid rgba(30, 43, 68, 0.08);
+        border-radius: 16px;
+        background: #fff;
+        box-shadow:
+          0 24px 56px rgba(15, 23, 42, 0.2),
+          0 4px 14px rgba(15, 23, 42, 0.1);
+        box-sizing: border-box;
+      }
+      .agent-action-menu__item {
+        width: 100%;
+        min-height: 40px;
+        padding: 8px 12px;
+        border: 0;
+        border-radius: 12px;
+        background: transparent;
+        color: rgba(3, 3, 6, 0.88);
+        font: inherit;
+        font-size: 13px;
+        line-height: 18px;
+        text-align: left;
+        cursor: pointer;
+      }
+      .agent-action-menu__item:hover,
+      .agent-action-menu__item:focus-visible {
+        background: rgba(30, 43, 68, 0.07);
+        outline: none;
+      }
+      .md-line-break {
+        display: block;
+        content: '';
+        height: 4px;
+      }
+      .md-cell-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+      }
+      .md-cell-primary,
+      .md-cell-secondary {
+        display: block;
+        min-width: 0;
+      }
+      .md-cell-secondary {
+        color: rgba(4, 4, 19, 0.55);
       }
       .md-th + .md-th,
       .md-td + .md-td {
-        border-left: 1px solid #e7e8eb;
+        border-left: 0;
+      }
+      .workspace.compact .md-tabs__list {
+        gap: 16px;
+        overflow-x: auto;
+      }
+      .workspace.compact .md-tabs__tab {
+        font-size: 14px;
+        line-height: 20px;
+      }
+      .workspace.compact .md-th,
+      .workspace.compact .md-td {
+        padding: 8px 4px;
+        font-size: 12px;
+        line-height: 16px;
+      }
+      .workspace.compact .md-status {
+        padding-right: 4px;
+        padding-left: 4px;
+        font-size: 9px;
       }
       .md-pre {
         padding: 12px 14px;
@@ -692,8 +1209,45 @@
             id="agent-chat-overlay"
             class="agent-chat-overlay"
             aria-hidden="true"
+            data-figma-node-id="12473:114588"
           >
-            <div class="agent-chat-panel" role="region" aria-label="Apollo agent">
+            <div
+              id="agent-chat-panel"
+              class="agent-chat-panel"
+              role="region"
+              aria-label="Apollo agent"
+            >
+              <div
+                id="agent-source-control"
+                class="agent-source-control"
+                role="group"
+                aria-label="Источник ответов"
+              >
+                <button
+                  class="agent-source-control__option selected"
+                  type="button"
+                  data-agent-source="langflow"
+                  aria-pressed="true"
+                >LangFlow</button>
+                <button
+                  class="agent-source-control__option"
+                  type="button"
+                  data-agent-source="codex"
+                  aria-pressed="false"
+                >Локальный Codex</button>
+              </div>
+              <button
+                id="agent-chat-close"
+                class="agent-chat-close"
+                type="button"
+                aria-label="Закрыть чат"
+              >
+                <span class="agent-chat-close__icon" aria-hidden="true">
+                  <svg preserveAspectRatio="none" overflow="visible" width="12.6133" height="12.6133" viewBox="0 0 12.6133 12.6133" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.6133 1.41406L7.7207 6.30664L12.6133 11.1992L11.1992 12.6133L6.30664 7.7207L1.51367 12.5137L0.0996094 11.0996L4.89258 6.30664L0 1.41406L1.41406 0L6.30664 4.89258L11.1992 0L12.6133 1.41406Z" fill="#000000"/>
+                  </svg>
+                </span>
+              </button>
               <section id="agent-conversation" class="agent-conversation" aria-live="polite">
                 <div id="agent-conversation-inner" class="agent-conversation-inner"></div>
               </section>
@@ -702,7 +1256,7 @@
                   id="agent-composer-input"
                   class="agent-composer-input"
                   rows="1"
-                  placeholder="Введи или выбери текст"
+                  placeholder="Задай вопрос"
                 ></textarea>
                 <button
                   id="agent-composer-submit"
@@ -724,85 +1278,56 @@
           </section>
         </main>
       </div>
+      <button
+        id="agent-chat-launcher"
+        class="agent-chat-launcher"
+        type="button"
+        aria-label="Открыть чат с Apollo"
+        aria-controls="agent-chat-panel"
+        aria-expanded="false"
+        data-figma-node-id="12473:114528"
+      >
+        <span class="agent-chat-launcher__icon" aria-hidden="true">
+          <svg preserveAspectRatio="none" overflow="visible" width="16.666" height="16.334" viewBox="0 0 16.666 16.334" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8.33301 0.501015C12.7865 0.501068 16.6659 3.53634 16.666 7.58402C16.666 11.6318 12.7866 14.668 8.33301 14.668C8.02383 14.668 7.71788 14.6529 7.41699 14.625C6.77784 15.0491 6.08163 15.4407 5.42773 15.7393C4.71817 16.0633 3.94145 16.334 3.32129 16.334C2.67177 16.3339 2.0851 16.0207 1.81152 15.4395C1.54762 14.8782 1.66079 14.2426 2.0166 13.7588V13.7569C2.16747 13.5529 2.44201 13.1967 2.71973 12.8223C1.07614 11.5488 0 9.69447 0 7.58402C0.000135897 3.5363 3.87943 0.501015 8.33301 0.501015ZM8.33301 2.16801C4.50249 2.16801 1.66616 4.72838 1.66602 7.58402C1.66602 9.30525 2.66832 10.8917 4.32617 11.9092L5.06543 12.3633L4.58203 13.084C4.2175 13.6274 3.66464 14.3404 3.42285 14.6602C3.68513 14.6303 4.13972 14.4961 4.73633 14.2237C5.38408 13.9279 6.0975 13.5189 6.72852 13.0801L6.99121 12.8975L7.30859 12.9375C7.6421 12.9795 7.98429 13.001 8.33301 13.001C12.1636 13.001 15 10.4397 15 7.58402C14.9999 4.7284 12.1635 2.16806 8.33301 2.16801Z" fill="white" fill-opacity="0.94"/>
+          </svg>
+        </span>
+      </button>
     </div>
     <div id="toast"></div>
+    <button
+      id="stats-delivery-status"
+      class="stats-delivery-status"
+      type="button"
+      hidden
+    ></button>
     <div class="view-segmented-control" aria-label="Вид Apollo">
       <button
         id="agent-table-fab"
         class="view-segment active"
         type="button"
-        aria-label="Показать таблицу"
+        aria-label="Показать компоненты"
         aria-pressed="true"
       >
-        <svg viewBox="0 0 20 20" aria-hidden="true">
-          <rect
-            x="3.75"
-            y="3.75"
-            width="12.5"
-            height="12.5"
-            rx="2"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.5"
-          />
-          <path
-            d="M8 3.75v12.5M3.75 8h12.5"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-          />
-        </svg>
+        <span>Компоненты</span>
       </button>
       <button
         id="agent-report-fab"
         class="view-segment"
         type="button"
-        aria-label="Показать отчёт агента"
+        aria-label="Показать паттерны"
         aria-pressed="false"
       >
-        <svg viewBox="0 0 20 20" aria-hidden="true">
-          <path
-            d="M6 2.75h5.25l3.25 3.25v10.25a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3.75a1 1 0 0 1 1-1Z"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.4"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M11.25 2.75V6h3.25M7.5 9h5M7.5 11.75h5M7.5 14.5h3.25"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.4"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
+        <span>Паттерны</span>
       </button>
       <button
         id="agent-chat-fab"
         class="view-segment"
         type="button"
-        aria-label="Открыть диалог с агентом"
+        aria-label="Показать тексты"
         aria-pressed="false"
       >
-        <svg viewBox="0 0 20 20" aria-hidden="true">
-          <path
-            d="M10 3.25C6.27 3.25 3.25 5.82 3.25 9c0 1.54.72 2.94 1.88 3.98l-.55 2.28 2.55-1.18c.86.42 1.84.67 2.87.67 3.73 0 6.75-2.57 6.75-5.75S13.73 3.25 10 3.25Z"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M7.25 8.25h5.5M7.25 10.75h4"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-          />
-        </svg>
+        <span>Тексты</span>
       </button>
     </div>
     <script src="./ui-app.js"></script>
@@ -922,20 +1447,31 @@
         let isCompact = false;
         let currentChannelId = 'b2b';
         let currentPickerLabel = 'Desktop';
+        let currentPageTypeId = null;
         let shellAuditEnabled = false;
         let showExpectedCustomizations = true;
+        let hideCustomizations = false;
         let experimentalContractV2Enabled = false;
         let agentReportMeta = null;
+        let patternReportMeta = null;
+        let textReportMeta = null;
         let activeApolloView = 'audit';
+        let agentDialogueOpen = false;
+        let agentDialogueSource = 'langflow';
         let agentRequestInProgress = false;
         let agentActiveRequestId = null;
         let agentActiveRequestKind = null;
-        let agentRequestedReportId = null;
+        let agentRequestedPatternReportId = null;
+        let agentRequestedTextReportId = null;
         let agentReportMessages = [];
+        let agentTextMessages = [];
         let agentDialogueMessages = [];
         let agentLastQuestion = '';
         let agentMessageSequence = 0;
         let agentRetryTimerId = null;
+        let statsDeliverySuccessTimerId = null;
+        let agentActionMenuElement = null;
+        let agentActionMenuOutsideHandler = null;
 
         const shellEl = document.querySelector('.shell');
         const workspaceEl = document.querySelector('.workspace');
@@ -943,6 +1479,9 @@
         const listContainer = document.getElementById('results');
         const reactResultsContainer = document.getElementById('react-results');
         const toastEl = document.getElementById('toast');
+        const statsDeliveryStatusEl = document.getElementById(
+          'stats-delivery-status',
+        );
         const topChromeContainer = document.getElementById('react-top-section');
         const leftChromeContainer =
           document.getElementById('react-left-section');
@@ -953,6 +1492,12 @@
         const agentReportFab = document.getElementById('agent-report-fab');
         const agentChatFab = document.getElementById('agent-chat-fab');
         const agentChatOverlay = document.getElementById('agent-chat-overlay');
+        const agentChatPanel = document.getElementById('agent-chat-panel');
+        const agentChatLauncher = document.getElementById('agent-chat-launcher');
+        const agentChatClose = document.getElementById('agent-chat-close');
+        const agentSourceButtons = Array.from(
+          document.querySelectorAll('[data-agent-source]'),
+        );
         const agentConversation = document.getElementById('agent-conversation');
         const agentConversationInner = document.getElementById(
           'agent-conversation-inner',
@@ -980,8 +1525,10 @@
                 onToggleCompact: toggleCompactMode,
                 onChannelChange: handleChannelChange,
                 onPickerChange: handlePickerChange,
+                onPageTypeChange: handlePageTypeChange,
                 onShellAuditToggle: handleShellAuditToggle,
                 onShowExpectedToggle: handleShowExpectedToggle,
+                onHideCustomizationsToggle: handleHideCustomizationsToggle,
                 onExperimentalContractV2Toggle: handleExperimentalContractV2Toggle,
                 onExampleCapture: handleGenerationExampleCapture,
               }),
@@ -1012,16 +1559,118 @@
 
         agentTableFab?.addEventListener('click', () => setActiveApolloView('audit'));
         agentReportFab?.addEventListener('click', () => setActiveApolloView('report'));
-        agentChatFab?.addEventListener('click', () => setActiveApolloView('dialogue'));
+        agentChatFab?.addEventListener('click', () => setActiveApolloView('texts'));
+        agentChatLauncher?.addEventListener('click', openAgentDialogue);
+        agentChatClose?.addEventListener('click', () => closeAgentDialogue(true));
+        agentSourceButtons.forEach((button) => {
+          button.addEventListener('click', () => {
+            setAgentDialogueSource(button.dataset.agentSource, true);
+          });
+        });
+        agentChatOverlay?.addEventListener('click', (event) => {
+          if (agentDialogueOpen && event.target === agentChatOverlay) {
+            closeAgentDialogue(true);
+          }
+        });
+        document.addEventListener('keydown', (event) => {
+          if (!agentDialogueOpen) {
+            return;
+          }
+          if (event.key === 'Escape') {
+            event.preventDefault();
+            closeAgentDialogue(true);
+            return;
+          }
+          if (event.key !== 'Tab') {
+            return;
+          }
+          const focusableElements = [
+            ...agentSourceButtons,
+            agentChatClose,
+            agentComposerInput,
+            agentComposerSubmit,
+          ].filter((element) =>
+            Boolean(
+              element &&
+              !element.disabled &&
+              !element.classList.contains('hidden'),
+            ),
+          );
+          if (!focusableElements.length) {
+            return;
+          }
+          const firstElement = focusableElements[0];
+          const lastElement = focusableElements[focusableElements.length - 1];
+          if (event.shiftKey && document.activeElement === firstElement) {
+            event.preventDefault();
+            lastElement.focus();
+          } else if (!event.shiftKey && document.activeElement === lastElement) {
+            event.preventDefault();
+            firstElement.focus();
+          }
+        });
         agentComposer?.addEventListener('submit', handleAgentComposerSubmit);
         agentConversationInner?.addEventListener('click', (event) => {
           const target = event.target;
-          if (
-            target instanceof Element &&
-            target.closest('[data-agent-retry-button]')
-          ) {
-            retryActiveAgentRequest();
+          if (!(target instanceof Element)) {
+            return;
           }
+          if (target.closest('[data-agent-retry-button]')) {
+            retryActiveAgentRequest();
+            return;
+          }
+          const markdownTab = target.closest('[data-md-tab-index]');
+          if (markdownTab) {
+            activateMarkdownTab(markdownTab);
+            return;
+          }
+          const actionCell = target.closest('[data-agent-finding-action]');
+          if (actionCell) {
+            event.stopPropagation();
+            activateAgentFindingAction(actionCell);
+            return;
+          }
+          const findingRow = target.closest('tr[data-node-id]');
+          if (findingRow) {
+            focusNodeById(findingRow.getAttribute('data-node-id'));
+          }
+        });
+        agentConversationInner?.addEventListener('keydown', (event) => {
+          const target = event.target;
+          if (!(target instanceof Element)) {
+            return;
+          }
+          const markdownTab = target.closest('[data-md-tab-index]');
+          if (markdownTab) {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              activateMarkdownTab(markdownTab);
+              return;
+            }
+            if (
+              event.key === 'ArrowLeft' ||
+              event.key === 'ArrowRight' ||
+              event.key === 'Home' ||
+              event.key === 'End'
+            ) {
+              event.preventDefault();
+              moveMarkdownTabFocus(markdownTab, event.key);
+            }
+            return;
+          }
+          if (event.key !== 'Enter' && event.key !== ' ') {
+            return;
+          }
+          const actionCell = target.closest('[data-agent-finding-action]');
+          if (actionCell) {
+            return;
+          }
+          const findingRow = target.closest('tr[data-node-id]');
+          if (!findingRow) {
+            return;
+          }
+          event.preventDefault();
+          focusNodeById(findingRow.getAttribute('data-node-id'));
         });
         agentComposerInput?.addEventListener('input', () => {
           resizeAgentComposerInput();
@@ -1267,7 +1916,8 @@
             : [];
           for (const choice of remediationChoices) {
             actions.push({
-              label: choice.label,
+              label: remediationChoices.length === 1 ? 'Сбросить' : choice.label,
+              targetName: choice.label,
               singleIcon: false,
               onPress: () =>
                 requestCustomizationReset(
@@ -1282,11 +1932,37 @@
           if (remediationChoices.length) {
             return actions;
           }
+          const allRemediations = Array.isArray(group.remediations)
+            ? group.remediations
+            : [];
+          const bindingRemediations = allRemediations.filter(
+            (item) => item?.kind === 'bind-layout-variable',
+          );
+          const componentRemediations = allRemediations.filter(
+            (item) => item?.kind !== 'bind-layout-variable',
+          );
+          const hasTokenBindings = bindingRemediations.length > 0;
           const hasComponentProperties =
-            Array.isArray(group.remediations) && group.remediations.length > 0;
+            componentRemediations.length > 0;
           const hasLayerProperties =
             (Array.isArray(group.details) && group.details.length > 0) ||
             (Array.isArray(group.messages) && group.messages.length > 0);
+
+          if (hasTokenBindings) {
+            actions.push({
+              label: 'Привязать',
+              targetName: 'Привязать padding к токенам Spacing',
+              singleIcon: false,
+              onPress: () =>
+                requestCustomizationReset(
+                  rootId,
+                  group.nodeId,
+                  [],
+                  [],
+                  bindingRemediations,
+                ),
+            });
+          }
 
           if (hasComponentProperties && hasLayerProperties) {
             const allMessages = [
@@ -1306,14 +1982,15 @@
                   group.nodeId,
                   allMessages,
                   [],
-                  group.remediations,
+                  componentRemediations,
                 ),
             });
           }
 
           if (hasComponentProperties) {
             actions.push({
-              label: 'Параметры',
+              label: hasLayerProperties ? 'Параметры' : 'Сбросить',
+              targetName: 'Параметры компонента',
               singleIcon: false,
               onPress: () =>
                 requestCustomizationReset(
@@ -1321,14 +1998,15 @@
                   group.nodeId,
                   [],
                   [],
-                  group.remediations,
+                  componentRemediations,
                 ),
             });
           }
 
           if (hasLayerProperties) {
             actions.push({
-              label: 'Слой',
+              label: hasComponentProperties ? 'Слой' : 'Сбросить',
+              targetName: 'Параметры слоя',
               singleIcon: false,
               onPress: () =>
                 requestCustomizationReset(
@@ -1342,6 +2020,231 @@
           }
 
           return actions;
+        }
+
+        function getLayoutTokenBindingRemediation(diff) {
+          const property = diff?.details?.property;
+          const actual = diff?.details?.actual;
+          if (
+            typeof property !== 'string' ||
+            !/^layout\.padding\.(top|right|bottom|left)$/.test(property) ||
+            typeof actual?.value !== 'number' ||
+            actual?.resourceType === 'token' ||
+            actual?.bindingId ||
+            actual?.binding
+          ) {
+            return null;
+          }
+          const evidenceSource =
+            diff?.assessment?.evidence?.requiredTokenSource ?? null;
+          const ruleSource = Array.isArray(diff?.componentRules)
+            ? diff.componentRules.find(
+                (rule) =>
+                  rule?.severity === 'error' &&
+                  rule?.requiredTokenSource?.collection,
+              )?.requiredTokenSource ?? null
+            : null;
+          const tokenSource = evidenceSource || ruleSource;
+          const collectionName = tokenSource?.collection;
+          if (
+            diff?.assessment?.verdict !== 'violation' ||
+            typeof collectionName !== 'string' ||
+            !collectionName.trim()
+          ) {
+            return null;
+          }
+          return {
+            kind: 'bind-layout-variable',
+            nodeId: diff.nodeId,
+            property,
+            collectionName: collectionName.trim(),
+            value: actual.value,
+          };
+        }
+
+        function findInterpretedCustomizationDiff(nodeId, property) {
+          if (typeof nodeId !== 'string' || typeof property !== 'string') {
+            return null;
+          }
+          const matches = [];
+          resolveViewArray(['changes']).forEach((item) => {
+            prepareChangeDiffs(item).forEach((candidate) => {
+              if (
+                candidate?.nodeId === nodeId &&
+                candidate?.details?.property === property
+              ) {
+                matches.push(candidate);
+              }
+            });
+          });
+          return matches.length === 1 ? matches[0] : null;
+        }
+
+        function buildAgentFindingResetActions(finding) {
+          if (
+            !finding ||
+            finding.verdict !== 'confirmed' ||
+            finding.priority !== 'error' ||
+            typeof finding.nodeId !== 'string' ||
+            typeof finding.factPath !== 'string' ||
+            !currentResults
+          ) {
+            return [];
+          }
+          const matches = [];
+          const items = resolveViewArray(['changesWip']);
+          items.forEach((item) => {
+            prepareBaselineChangeDiffs(item).forEach((diff) => {
+              if (
+                diff?.nodeId === finding.nodeId &&
+                diff?.details?.property === finding.factPath
+              ) {
+                matches.push({ item, diff });
+              }
+            });
+          });
+          if (matches.length !== 1) {
+            return [];
+          }
+
+          const match = matches[0];
+          const diff = match.diff;
+          const interpretedDiff = findInterpretedCustomizationDiff(
+            finding.nodeId,
+            finding.factPath,
+          );
+          const property = diff.details?.property;
+          const isVariantDiff =
+            typeof property === 'string' && property.indexOf('variant.') === 0;
+          const isStructuralCompositionDiff =
+            typeof property === 'string' && property.indexOf('composition.') === 0;
+          let remediation = diff.assessment?.remediation;
+          if (!remediation) {
+            remediation = getLayoutTokenBindingRemediation(
+              interpretedDiff || diff,
+            );
+          }
+          let remediationChoices = [];
+          if (!remediation && isVariantDiff && diff.nodeId) {
+            const variantProperty = property.slice('variant.'.length);
+            remediationChoices = getVariantRemediationChoices(
+              diff,
+              variantProperty,
+            );
+            const referenceValue = diff.details?.reference?.value;
+            const remediationValue = remediationChoices.length === 1
+              ? remediationChoices[0].label
+              : remediationChoices.length
+                ? null
+                : referenceValue;
+            if (
+              variantProperty &&
+              typeof remediationValue === 'string' &&
+              remediationValue.length
+            ) {
+              remediation = {
+                kind: 'set-variant-properties',
+                nodeId: diff.nodeId,
+                properties: { [variantProperty]: remediationValue },
+              };
+            }
+          }
+          if (isStructuralCompositionDiff && !remediation) {
+            return [];
+          }
+          const details = getCustomizationResetDetails(diff, true, remediation);
+          const group = {
+            nodeId: diff.nodeId,
+            messages:
+              !remediation && !remediationChoices.length && !details.length
+                ? [diff.message]
+                : [],
+            details,
+            remediations: remediation ? [remediation] : [],
+            remediationChoices,
+          };
+          return buildCustomizationResetActions(match.item.id, group);
+        }
+
+        function findAgentFindingById(findingId) {
+          if (!findingId) return null;
+          for (const message of agentReportMessages) {
+            const findings = Array.isArray(message.findings) ? message.findings : [];
+            const finding = findings.find((entry) => entry?.id === findingId);
+            if (finding) return finding;
+          }
+          return null;
+        }
+
+        function closeAgentActionMenu() {
+          if (agentActionMenuOutsideHandler) {
+            document.removeEventListener('mousedown', agentActionMenuOutsideHandler);
+            agentActionMenuOutsideHandler = null;
+          }
+          agentActionMenuElement?.remove();
+          agentActionMenuElement = null;
+        }
+
+        function openAgentActionMenu(anchor, actions) {
+          closeAgentActionMenu();
+          const menu = document.createElement('div');
+          menu.className = 'agent-action-menu';
+          menu.setAttribute('role', 'menu');
+          actions.forEach((action) => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'agent-action-menu__item';
+            button.setAttribute('role', 'menuitem');
+            button.textContent = action.targetName || action.label || 'Сбросить';
+            button.addEventListener('click', (event) => {
+              event.stopPropagation();
+              closeAgentActionMenu();
+              action.onPress();
+            });
+            menu.appendChild(button);
+          });
+          document.body.appendChild(menu);
+          const rect = anchor.getBoundingClientRect();
+          const menuRect = menu.getBoundingClientRect();
+          const safeMargin = 24;
+          const top = window.innerHeight - rect.bottom >= menuRect.height + safeMargin
+            ? rect.bottom + 6
+            : Math.max(safeMargin, rect.top - menuRect.height - 6);
+          const left = Math.max(
+            safeMargin,
+            Math.min(
+              rect.right - menuRect.width,
+              window.innerWidth - menuRect.width - safeMargin,
+            ),
+          );
+          menu.style.top = `${top}px`;
+          menu.style.left = `${left}px`;
+          agentActionMenuElement = menu;
+          agentActionMenuOutsideHandler = (event) => {
+            if (!menu.contains(event.target) && !anchor.contains(event.target)) {
+              closeAgentActionMenu();
+            }
+          };
+          setTimeout(() => {
+            if (agentActionMenuOutsideHandler) {
+              document.addEventListener('mousedown', agentActionMenuOutsideHandler);
+            }
+          }, 0);
+          menu.querySelector('button')?.focus();
+        }
+
+        function activateAgentFindingAction(actionCell) {
+          const finding = findAgentFindingById(
+            actionCell.getAttribute('data-agent-finding-action'),
+          );
+          const actions = buildAgentFindingResetActions(finding);
+          if (actions.length === 1) {
+            actions[0].onPress();
+            return;
+          }
+          if (actions.length > 1) {
+            openAgentActionMenu(actionCell, actions);
+          }
         }
 
         function sortCustomizationGroupsByPath(groups) {
@@ -1757,17 +2660,27 @@
                       marker,
                       ruleText,
                     };
-                let remediation = rawBaseline
-                  ? undefined
-                  : diff.assessment?.remediation;
+                const interpretedDiff = rawBaseline
+                  ? findInterpretedCustomizationDiff(
+                      diff.nodeId,
+                      diff.details?.property,
+                    )
+                  : null;
+                const remediationSource = interpretedDiff || diff;
+                let remediation = remediationSource.assessment?.remediation;
+                if (!remediation) {
+                  remediation = getLayoutTokenBindingRemediation(
+                    remediationSource,
+                  );
+                }
                 let remediationChoices = [];
                 const isStructuralCompositionDiff =
                   typeof diff.details?.property === 'string' &&
                   diff.details.property.indexOf('composition.') === 0;
                 const canReset =
-                  !rawBaseline &&
-                  diff.assessment?.verdict !== 'expected' &&
-                  diff.assessment?.verdict !== 'allowed' &&
+                  (rawBaseline ||
+                    (diff.assessment?.verdict !== 'expected' &&
+                      diff.assessment?.verdict !== 'allowed')) &&
                   (!isStructuralCompositionDiff || Boolean(remediation));
                 if (!remediation && canReset && isVariantDiff && diff.nodeId) {
                   const property = diff.details?.property?.slice('variant.'.length);
@@ -1823,8 +2736,7 @@
                       (item) =>
                         item.kind === remediation.kind &&
                         item.nodeId === remediation.nodeId &&
-                        JSON.stringify(item.properties) ===
-                          JSON.stringify(remediation.properties),
+                        JSON.stringify(item) === JSON.stringify(remediation),
                     )
                   ) {
                     existing.remediations.push(remediation);
@@ -1874,11 +2786,13 @@
               });
 
               const groups = sortCustomizationGroupsByPath(Array.from(groupsMap.values()))
-                .map((group) => ({
-                  id: group.id,
-                  name: group.name,
-                  onFocus: group.onFocus,
-                  lines: [
+                .map((group) => {
+                  const actions = buildCustomizationResetActions(item.id, group);
+                  return {
+                    id: group.id,
+                    name: group.name,
+                    onFocus: group.onFocus,
+                    lines: [
                     ...(group.componentLines.length
                       ? [
                           {
@@ -1906,25 +2820,34 @@
                           ...group.layerLines,
                         ]
                       : []),
-                  ],
-                  actions: buildCustomizationResetActions(item.id, group),
-                  actionPickerLabel:
-                    group.remediationChoices.length > 1 ? 'Заменить' : undefined,
-                  onReset:
-                    (group.messages.length ||
-                      group.details.length ||
-                      group.remediations.length) &&
-                    group.nodeId
-                      ? () =>
-                          requestCustomizationReset(
-                            item.id,
-                            group.nodeId,
-                            group.messages,
-                            group.details,
-                            group.remediations,
-                          )
-                      : undefined,
-                }));
+                    ],
+                    actions,
+                    actionPickerLabel:
+                      group.remediationChoices.length > 1
+                        ? 'Заменить'
+                        : actions.length > 1
+                          ? group.remediations.some(
+                              (item) => item?.kind === 'bind-layout-variable',
+                            )
+                            ? 'Привязать'
+                            : 'Сбросить'
+                          : undefined,
+                    onReset:
+                      (group.messages.length ||
+                        group.details.length ||
+                        group.remediations.length) &&
+                      group.nodeId
+                        ? () =>
+                            requestCustomizationReset(
+                              item.id,
+                              group.nodeId,
+                              group.messages,
+                              group.details,
+                              group.remediations,
+                            )
+                        : undefined,
+                  };
+                });
               if (!groups.length) {
                 return null;
               }
@@ -1933,7 +2856,12 @@
                 kind: 'customization',
                 id: item.id,
                 title: item.name ?? 'Без названия',
-                caption: getItemLibraryName(item) ?? undefined,
+                caption: [
+                  getItemLibraryName(item),
+                  rawBaseline && item.id ? `node ${item.id}` : null,
+                ]
+                  .filter(Boolean)
+                  .join(' · ') || undefined,
                 groups,
               };
             })
@@ -2185,11 +3113,21 @@
             setScanningState(true);
             scanCompleted = false;
             agentReportMeta = null;
+            patternReportMeta = null;
+            textReportMeta = null;
             agentRequestInProgress = false;
             agentActiveRequestId = null;
             agentActiveRequestKind = null;
-            agentRequestedReportId = null;
-            agentReportMessages = [];
+            agentRequestedPatternReportId = null;
+            agentRequestedTextReportId = null;
+            agentReportMessages = [createInitialAgentLoadingMessage(
+              'Готовим отчёт по паттернам',
+              'report',
+            )];
+            agentTextMessages = [createInitialAgentLoadingMessage(
+              'Готовим проверку текстов',
+              'texts',
+            )];
             activeApolloView = 'audit';
             if (agentComposerInput) {
               agentComposerInput.value = '';
@@ -2233,8 +3171,14 @@
             showToast(msg.payload?.message ?? 'Не удалось выполнить проверку');
             scanCompleted = false;
             agentReportMeta = null;
+            patternReportMeta = null;
             activeApolloView = 'audit';
             syncAgentViewState();
+            return;
+          }
+
+          if (msg.type === 'apollo-stats-delivery-status') {
+            renderStatsDeliveryStatus(msg.payload || {});
             return;
           }
 
@@ -2264,13 +3208,35 @@
 
           if (msg.type === 'apollo-agent-report-ready') {
             agentReportMeta = msg.payload || null;
+            return;
+          }
+
+          if (msg.type === 'apollo-pattern-report-ready') {
+            patternReportMeta = msg.payload || null;
             syncAgentViewState();
-            requestAgentReportWhenVisible();
+            requestNextPendingAgentReport();
+            return;
+          }
+
+          if (msg.type === 'apollo-text-report-ready') {
+            textReportMeta = msg.payload || null;
+            syncAgentViewState();
+            requestNextPendingAgentReport();
+            return;
+          }
+
+          if (msg.type === 'apollo-agent-source') {
+            setAgentDialogueSource(msg.payload?.source, false);
             return;
           }
 
           if (msg.type === 'apollo-agent-started') {
             handleAgentStarted(msg.payload || {});
+            return;
+          }
+
+          if (msg.type === 'apollo-agent-progress') {
+            handleAgentProgress(msg.payload || {});
             return;
           }
 
@@ -2286,6 +3252,7 @@
             agentActiveRequestKind = null;
             removeAgentLoadingMessage(cancelledKind);
             syncAgentViewState();
+            requestNextPendingAgentReport();
             return;
           }
 
@@ -2343,6 +3310,54 @@
           }, 3000);
         }
 
+        function renderStatsDeliveryStatus(payload) {
+          if (!statsDeliveryStatusEl) {
+            return;
+          }
+          if (statsDeliverySuccessTimerId) {
+            clearTimeout(statsDeliverySuccessTimerId);
+            statsDeliverySuccessTimerId = null;
+          }
+          const phase = String(payload?.phase || 'idle');
+          if (phase === 'idle') {
+            statsDeliveryStatusEl.hidden = true;
+            return;
+          }
+          statsDeliveryStatusEl.hidden = false;
+          statsDeliveryStatusEl.dataset.phase = phase;
+          statsDeliveryStatusEl.disabled = phase !== 'failed';
+          statsDeliveryStatusEl.title = payload?.lastError || '';
+          if (phase === 'failed') {
+            const pendingCount = Number(payload?.pendingCount || 0);
+            statsDeliveryStatusEl.textContent = pendingCount > 0
+              ? `Не отправлено: ${pendingCount} · Повторить`
+              : 'Ошибка отправки · Повторить';
+            return;
+          }
+          statsDeliveryStatusEl.textContent = phase === 'success'
+            ? 'Отчёты отправлены'
+            : 'Отправляем отчёты…';
+          if (phase === 'success') {
+            statsDeliverySuccessTimerId = setTimeout(() => {
+              statsDeliveryStatusEl.hidden = true;
+              statsDeliverySuccessTimerId = null;
+            }, 4000);
+          }
+        }
+
+        statsDeliveryStatusEl?.addEventListener('click', () => {
+          if (statsDeliveryStatusEl.dataset.phase !== 'failed') {
+            return;
+          }
+          statsDeliveryStatusEl.disabled = true;
+          statsDeliveryStatusEl.dataset.phase = 'uploading';
+          statsDeliveryStatusEl.textContent = 'Отправляем отчёты…';
+          parent.postMessage(
+            { pluginMessage: { type: 'retry-stats-upload' } },
+            '*',
+          );
+        });
+
         function downloadJsonDocument(payloadDocument, suggestedFileName) {
           if (!payloadDocument) {
             showToast('Apollo не вернул данные примера');
@@ -2379,11 +3394,65 @@
           return `${text.slice(0, Math.max(0, maxLength - 1))}…`;
         }
 
+        function openAgentDialogue() {
+          if (agentDialogueOpen) {
+            return;
+          }
+          agentDialogueOpen = true;
+          renderAgentMessages();
+          syncAgentViewState();
+          requestAnimationFrame(() => {
+            agentComposerInput?.focus();
+          });
+        }
+
+        function setAgentDialogueSource(value, persistSelection) {
+          if (agentRequestInProgress && persistSelection) {
+            return;
+          }
+          const nextSource = value === 'codex' ? 'codex' : 'langflow';
+          agentDialogueSource = nextSource;
+          syncAgentSourceControl();
+          if (persistSelection) {
+            parent.postMessage(
+              {
+                pluginMessage: {
+                  type: 'set-apollo-agent-source',
+                  payload: { source: nextSource },
+                },
+              },
+              '*',
+            );
+          }
+        }
+
+        function syncAgentSourceControl() {
+          agentSourceButtons.forEach((button) => {
+            const selected = button.dataset.agentSource === agentDialogueSource;
+            button.classList.toggle('selected', selected);
+            button.setAttribute('aria-pressed', selected ? 'true' : 'false');
+            button.disabled = agentRequestInProgress;
+          });
+        }
+
+        function closeAgentDialogue(restoreLauncherFocus) {
+          if (!agentDialogueOpen) {
+            return;
+          }
+          agentDialogueOpen = false;
+          renderAgentMessages();
+          syncAgentViewState();
+          requestNextPendingAgentReport();
+          if (restoreLauncherFocus) {
+            agentChatLauncher?.focus();
+          }
+        }
+
         function setActiveApolloView(nextView) {
           if (
             nextView !== 'audit' &&
             nextView !== 'report' &&
-            nextView !== 'dialogue'
+            nextView !== 'texts'
           ) {
             return;
           }
@@ -2391,22 +3460,31 @@
           activeApolloView = nextView;
           renderAgentMessages();
           syncAgentViewState();
-          requestAgentReportWhenVisible();
+          requestNextPendingAgentReport();
         }
 
-        function requestAgentReportWhenVisible() {
-          const reportId = agentReportMeta?.reportId || null;
-          if (
-            activeApolloView !== 'report' ||
-            !reportId ||
-            agentRequestInProgress ||
-            agentRequestedReportId === reportId
-          ) {
+        function requestNextPendingAgentReport() {
+          if (agentDialogueOpen || agentRequestInProgress) {
             return;
           }
-
-          agentRequestedReportId = reportId;
-          sendAgentReportToProxy();
+          const patternReportId = patternReportMeta?.reportId || null;
+          if (
+            patternReportId &&
+            agentRequestedPatternReportId !== patternReportId
+          ) {
+            agentRequestedPatternReportId = patternReportId;
+            sendAgentReportToProxy('', 'report');
+            return;
+          }
+          const textReportId = textReportMeta?.reportId || null;
+          if (
+            activeApolloView === 'texts' &&
+            textReportId &&
+            agentRequestedTextReportId !== textReportId
+          ) {
+            agentRequestedTextReportId = textReportId;
+            sendAgentReportToProxy('', 'texts');
+          }
         }
 
         function retryActiveAgentRequest() {
@@ -2414,22 +3492,27 @@
             return;
           }
 
+          if (agentDialogueOpen && agentLastQuestion) {
+            sendAgentReportToProxy(agentLastQuestion);
+            return;
+          }
+
           if (activeApolloView === 'report') {
-            if (agentReportMeta) {
-              sendAgentReportToProxy();
+            if (patternReportMeta) {
+              sendAgentReportToProxy('', 'report');
             }
             return;
           }
 
-          if (activeApolloView === 'dialogue' && agentLastQuestion) {
-            sendAgentReportToProxy(agentLastQuestion);
+          if (activeApolloView === 'texts' && textReportMeta) {
+            sendAgentReportToProxy('', 'texts');
           }
         }
 
         function handleAgentComposerSubmit(event) {
           event?.preventDefault?.();
 
-          if (activeApolloView !== 'dialogue') {
+          if (!agentDialogueOpen) {
             return;
           }
 
@@ -2488,16 +3571,23 @@
           agentComposerInput.style.height = `${height}px`;
         }
 
-        function sendAgentReportToProxy(userMessage) {
+        function sendAgentReportToProxy(userMessage, requestedKind) {
           const normalizedUserMessage =
             typeof userMessage === 'string' ? userMessage.trim() : '';
-          const requestKind = normalizedUserMessage ? 'question' : 'report';
+          const requestKind = normalizedUserMessage
+            ? 'question'
+            : requestedKind === 'texts'
+              ? 'texts'
+              : 'report';
 
           if (agentRequestInProgress) {
             return;
           }
 
-          if (requestKind === 'report' && !agentReportMeta) {
+          if (requestKind === 'report' && !patternReportMeta) {
+            return;
+          }
+          if (requestKind === 'texts' && !textReportMeta) {
             return;
           }
 
@@ -2510,19 +3600,61 @@
             agentDialogueMessages = [];
             renderAgentMessages();
           }
+          if (requestKind === 'texts' && hasAgentSystemState('texts')) {
+            agentTextMessages = [];
+            renderAgentMessages();
+          }
 
           agentMessageSequence += 1;
           const requestId = `apollo-agent-${Date.now()}-${agentMessageSequence}`;
           agentActiveRequestId = requestId;
           agentActiveRequestKind = requestKind;
           agentRequestInProgress = true;
+          replaceAgentLoadingMessage({
+            role: 'assistant',
+            variant: 'loading',
+            text:
+              requestKind === 'texts'
+                ? 'Агент проверяет тексты'
+                : requestKind === 'question'
+                  ? 'Apollo думает'
+                  : 'Проверяем паттерны',
+          }, requestKind);
           syncAgentViewState();
+
+          const dialogueContext = requestKind === 'question'
+            ? agentDialogueMessages
+                .filter((message) =>
+                  (message.role === 'user' || message.role === 'assistant') &&
+                  message.variant !== 'loading' &&
+                  typeof message.text === 'string' &&
+                  message.text.trim(),
+                )
+                .slice(0, -1)
+                .slice(-12)
+                .map((message) => ({
+                  role: message.role,
+                  text: message.text,
+                }))
+            : [];
 
           parent.postMessage(
             {
               pluginMessage: {
                 type: 'send-apollo-agent-report',
-                payload: { requestId, userMessage: normalizedUserMessage },
+                payload: {
+                  requestId,
+                  userMessage: normalizedUserMessage,
+                  reportType:
+                    requestKind === 'report'
+                      ? 'patterns'
+                      : requestKind === 'texts'
+                        ? 'texts'
+                        : null,
+                  agentSource:
+                    requestKind === 'question' ? agentDialogueSource : null,
+                  dialogue: dialogueContext,
+                },
               },
             },
             '*',
@@ -2545,6 +3677,30 @@
                 ? 'Apollo думает'
                 : 'Агент анализирует отчёт',
           }, agentActiveRequestKind);
+        }
+
+        function handleAgentProgress(payload) {
+          if (
+            payload.requestId &&
+            agentActiveRequestId &&
+            payload.requestId !== agentActiveRequestId
+          ) {
+            return;
+          }
+          const requestKind =
+            payload.requestKind || agentActiveRequestKind || 'report';
+          const message =
+            typeof payload.message === 'string' && payload.message.trim()
+              ? payload.message.trim()
+              : 'Агент анализирует отчёт';
+          const progress = Number(payload.progress);
+          replaceAgentLoadingMessage({
+            role: 'assistant',
+            variant: 'loading',
+            text: Number.isFinite(progress)
+              ? `${message} · ${Math.round(progress)}%`
+              : message,
+          }, requestKind);
         }
 
         function handleAgentResult(payload) {
@@ -2571,7 +3727,10 @@
                 id: `agent-message-${agentMessageSequence}`,
                 role: 'error',
                 text:
-                  'Агент сейчас недоступен\nПроверь подключение прокси и попробуй ещё раз',
+                  `Агент сейчас недоступен\n${
+                    payload.error ||
+                    'Проверь подключение прокси и попробуй ещё раз'
+                  }`,
               },
             ]);
             renderAgentMessages();
@@ -2579,20 +3738,36 @@
             addAgentMessage({
               role: 'assistant',
               text: payload.text || 'Агент вернул пустой ответ.',
+              findings: Array.isArray(payload.findings) ? payload.findings : [],
             }, requestKind);
           }
 
           syncAgentViewState();
+          requestNextPendingAgentReport();
+        }
+
+        function createInitialAgentLoadingMessage(text, requestKind) {
+          return {
+            id: `agent-loading-${requestKind}`,
+            role: 'assistant',
+            variant: 'loading',
+            text,
+          };
         }
 
         function getAgentMessages(requestKind) {
+          if (requestKind === 'texts') {
+            return agentTextMessages;
+          }
           return requestKind === 'question'
             ? agentDialogueMessages
             : agentReportMessages;
         }
 
         function setAgentMessages(requestKind, messages) {
-          if (requestKind === 'question') {
+          if (requestKind === 'texts') {
+            agentTextMessages = messages;
+          } else if (requestKind === 'question') {
             agentDialogueMessages = messages;
           } else {
             agentReportMessages = messages;
@@ -2600,7 +3775,10 @@
         }
 
         function getVisibleAgentRequestKind() {
-          return activeApolloView === 'dialogue' ? 'question' : 'report';
+          if (agentDialogueOpen) {
+            return 'question';
+          }
+          return activeApolloView === 'texts' ? 'texts' : 'report';
         }
 
         function addAgentMessage(message, requestKind) {
@@ -2630,15 +3808,27 @@
           if (!agentConversationInner) {
             return;
           }
+          closeAgentActionMenu();
 
           const visibleMessages =
-            activeApolloView === 'audit'
+            !agentDialogueOpen && activeApolloView === 'audit'
               ? []
               : getAgentMessages(getVisibleAgentRequestKind());
           const hasSystemState = hasAgentSystemState();
+          const hasLoadingState =
+            visibleMessages.length === 1 &&
+            visibleMessages[0]?.variant === 'loading';
           agentConversationInner.classList.toggle(
             'system-state-visible',
             hasSystemState,
+          );
+          agentConversationInner.classList.toggle(
+            'loading-state-visible',
+            hasLoadingState,
+          );
+          agentConversationInner.classList.toggle(
+            'report-visible',
+            !agentDialogueOpen && activeApolloView !== 'audit' && !hasSystemState,
           );
           agentConversationInner.innerHTML = visibleMessages
             .map((message) => renderAgentMessage(message))
@@ -2656,10 +3846,15 @@
         }
 
         function updateAgentRetryTimer() {
+          const visibleRequestKind = getVisibleAgentRequestKind();
+          const visibleReportMeta = activeApolloView === 'report'
+            ? patternReportMeta
+            : activeApolloView === 'texts'
+              ? textReportMeta
+              : null;
           const shouldRetry =
-            activeApolloView === 'report' &&
-            hasAgentSystemState('report') &&
-            Boolean(agentReportMeta) &&
+            Boolean(visibleReportMeta) &&
+            hasAgentSystemState(visibleRequestKind) &&
             !agentRequestInProgress;
 
           if (!shouldRetry) {
@@ -2676,9 +3871,9 @@
 
           agentRetryTimerId = setInterval(() => {
             if (
-              activeApolloView === 'report' &&
-              hasAgentSystemState('report') &&
-              agentReportMeta &&
+              (activeApolloView === 'report' || activeApolloView === 'texts') &&
+              hasAgentSystemState(getVisibleAgentRequestKind()) &&
+              (activeApolloView === 'report' ? patternReportMeta : textReportMeta) &&
               !agentRequestInProgress
             ) {
               retryActiveAgentRequest();
@@ -2694,7 +3889,15 @@
           }
 
           if (message.role === 'error') {
-            return `<article class="message-card system-state"><div class="agent-system-state"><div class="agent-system-state__graphic" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.5 10C7.32843 10 8 10.6716 8 11.5C8 12.3284 7.32843 13 6.5 13C5.67157 13 5 12.3284 5 11.5C5 10.6716 5.67157 10 6.5 10Z" fill="currentColor"/><path d="M13.5 10C14.3284 10 15 10.6716 15 11.5C15 12.3284 14.3284 13 13.5 13C12.6716 13 12 12.3284 12 11.5C12 10.6716 12.6716 10 13.5 10Z" fill="currentColor"/><path d="M10 2C10.8284 2 11.5 2.67157 11.5 3.5C11.5 4.05495 11.198 4.5384 10.75 4.79785V6.9502H14.4512C16.1078 6.95041 17.4512 8.29347 17.4512 9.9502V15C17.4512 16.6567 16.1078 17.9998 14.4512 18H5.55078C3.89393 18 2.55078 16.6569 2.55078 15V9.9502C2.55078 8.29334 3.89393 6.9502 5.55078 6.9502H9.25V4.79785C8.802 4.5384 8.5 4.05495 8.5 3.5C8.5 2.67157 9.17157 2 10 2ZM5.55078 8.4502C4.72236 8.4502 4.05078 9.12177 4.05078 9.9502V15C4.05078 15.8284 4.72235 16.5 5.55078 16.5H14.4512C15.2794 16.4998 15.9512 15.8283 15.9512 15V9.9502C15.9512 9.1219 15.2794 8.45041 14.4512 8.4502H5.55078Z" fill="currentColor"/></svg></div><div class="agent-system-state__title">Агент сейчас недоступен</div><div class="agent-system-state__subtitle">Проверь подключение прокси и попробуй ещё раз</div><button class="agent-system-state__retry" type="button" data-agent-retry-button>Попробовать ещё раз</button></div></article>`;
+            const errorLines = String(message.text || '')
+              .split('\n')
+              .map((line) => line.trim())
+              .filter(Boolean);
+            const errorTitle = errorLines.shift() || 'Агент сейчас недоступен';
+            const errorDetails =
+              errorLines.join(' · ') ||
+              'Проверь подключение прокси и попробуй ещё раз';
+            return `<article class="message-card system-state"><div class="agent-system-state"><div class="agent-system-state__graphic" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.5 10C7.32843 10 8 10.6716 8 11.5C8 12.3284 7.32843 13 6.5 13C5.67157 13 5 12.3284 5 11.5C5 10.6716 5.67157 10 6.5 10Z" fill="currentColor"/><path d="M13.5 10C14.3284 10 15 10.6716 15 11.5C15 12.3284 14.3284 13 13.5 13C12.6716 13 12 12.3284 12 11.5C12 10.6716 12.6716 10 13.5 10Z" fill="currentColor"/><path d="M10 2C10.8284 2 11.5 2.67157 11.5 3.5C11.5 4.05495 11.198 4.5384 10.75 4.79785V6.9502H14.4512C16.1078 6.95041 17.4512 8.29347 17.4512 9.9502V15C17.4512 16.6567 16.1078 17.9998 14.4512 18H5.55078C3.89393 18 2.55078 16.6569 2.55078 15V9.9502C2.55078 8.29334 3.89393 6.9502 5.55078 6.9502H9.25V4.79785C8.802 4.5384 8.5 4.05495 8.5 3.5C8.5 2.67157 9.17157 2 10 2ZM5.55078 8.4502C4.72236 8.4502 4.05078 9.12177 4.05078 9.9502V15C4.05078 15.8284 4.72235 16.5 5.55078 16.5H14.4512C15.2794 16.4998 15.9512 15.8283 15.9512 15V9.9502C15.9512 9.1219 15.2794 8.45041 14.4512 8.4502H5.55078Z" fill="currentColor"/></svg></div><div class="agent-system-state__title">${escapeHtml(errorTitle)}</div><div class="agent-system-state__subtitle">${escapeHtml(errorDetails)}</div><button class="agent-system-state__retry" type="button" data-agent-retry-button>Попробовать ещё раз</button></div></article>`;
           }
 
           if (message.variant === 'loading') {
@@ -2706,11 +3909,13 @@
 
           return `<article class="message-card assistant"><div class="assistant-msg"><div class="assistant-msg__container"><div class="assistant-copy">${buildMarkdownMessageMarkup(
             message.text || '',
+            message.findings,
           )}</div></div></div></article>`;
         }
 
         function syncAgentViewState() {
-          const agentViewActive = activeApolloView !== 'audit';
+          const reportViewActive = activeApolloView !== 'audit';
+          const agentViewVisible = reportViewActive || agentDialogueOpen;
           if (agentTableFab) {
             agentTableFab.classList.toggle('active', activeApolloView === 'audit');
             agentTableFab.setAttribute(
@@ -2733,34 +3938,64 @@
             agentChatFab.disabled = false;
             agentChatFab.classList.toggle(
               'active',
-              activeApolloView === 'dialogue',
+              activeApolloView === 'texts',
             );
             agentChatFab.setAttribute(
               'aria-pressed',
-              activeApolloView === 'dialogue' ? 'true' : 'false',
+              activeApolloView === 'texts' ? 'true' : 'false',
             );
           }
           if (agentChatOverlay) {
-            agentChatOverlay.classList.toggle('visible', agentViewActive);
+            agentChatOverlay.classList.toggle('visible', agentViewVisible);
+            agentChatOverlay.classList.toggle(
+              'report-visible',
+              !agentDialogueOpen && reportViewActive,
+            );
+            agentChatOverlay.classList.toggle(
+              'dialogue-visible',
+              agentDialogueOpen,
+            );
             agentChatOverlay.setAttribute(
               'aria-hidden',
-              agentViewActive ? 'false' : 'true',
+              agentViewVisible ? 'false' : 'true',
+            );
+          }
+          if (agentChatPanel) {
+            agentChatPanel.setAttribute(
+              'role',
+              agentDialogueOpen ? 'dialog' : 'region',
+            );
+            agentChatPanel.setAttribute(
+              'aria-label',
+              agentDialogueOpen ? 'Чат с Apollo' : 'Apollo agent',
+            );
+            if (agentDialogueOpen) {
+              agentChatPanel.setAttribute('aria-modal', 'true');
+            } else {
+              agentChatPanel.removeAttribute('aria-modal');
+            }
+          }
+          if (agentChatLauncher) {
+            agentChatLauncher.setAttribute(
+              'aria-expanded',
+              agentDialogueOpen ? 'true' : 'false',
             );
           }
           if (mainEl) {
-            mainEl.classList.toggle('agent-active', agentViewActive);
+            mainEl.classList.toggle('agent-active', reportViewActive);
           }
           if (workspaceEl) {
-            workspaceEl.classList.toggle('agent-active', agentViewActive);
+            workspaceEl.classList.toggle('agent-active', reportViewActive);
           }
           if (agentComposerInput) {
             agentComposerInput.disabled = agentRequestInProgress;
           }
           if (agentComposer) {
-            agentComposer.classList.toggle(
-              'hidden',
-              activeApolloView !== 'dialogue',
-            );
+            if (agentDialogueOpen) {
+              agentComposer.classList.remove('hidden');
+            } else {
+              agentComposer.classList.add('hidden');
+            }
           }
           if (agentComposerSubmit) {
             const hasDraft = Boolean(agentComposerInput?.value?.trim());
@@ -2778,17 +4013,482 @@
               canStopQuestion ? 'Остановить ответ' : 'Отправить агенту',
             );
           }
+          syncAgentSourceControl();
           updateAgentRetryTimer();
         }
 
-        function buildMarkdownMessageMarkup(source) {
+        function buildMarkdownMessageMarkup(source, findings) {
           const normalized = normalizeMarkdownSource(source);
           if (!normalized) {
             return '';
           }
-          return `<div class="markdown-root">${parseMarkdownBlocks(normalized)
-            .map(renderMarkdownBlock)
+          const parsedBlocks = parseMarkdownBlocks(normalized);
+          const structuredBlocks = !agentDialogueOpen && activeApolloView === 'report'
+            ? mergePatternReportTables(parsedBlocks, findings)
+            : groupCollapsibleMarkdownSections(parsedBlocks);
+          const blocks = structuredBlocks.map(normalizeAgentReportBlock);
+          attachAgentFindingRows(blocks, findings);
+          return `<div class="markdown-root">${blocks
+            .map((block) => renderMarkdownBlock(
+              block,
+              block.findingRows || [],
+            ))
             .join('')}</div>`;
+        }
+
+        function mergePatternReportTables(blocks, findings) {
+          const output = [];
+          const rowsByScope = {
+            general: [],
+            'page-specific': [],
+          };
+          let insertAt = null;
+          let allowedSection = false;
+          let currentScope = 'general';
+
+          for (const block of blocks) {
+            if (block?.type === 'heading') {
+              const title = String(block.text || '').trim();
+              currentScope = getPatternReportScope(title) || currentScope;
+              allowedSection = /^Допустимые кастомизации(?:\s*·\s*\d+)?$/i.test(
+                title,
+              );
+              if (isPatternReportGroupHeading(title)) {
+                continue;
+              }
+            }
+
+            if (
+              block?.type === 'paragraph' &&
+              /^Не выполнялись:\s*тип страницы не выбран\.?$/i.test(
+                String(block.text || '').trim(),
+              )
+            ) {
+              continue;
+            }
+
+            if (isAgentFindingTable(block)) {
+              if (insertAt === null) insertAt = output.length;
+              const rows = normalizeAgentFindingRows(block);
+              rowsByScope[currentScope].push(...rows);
+              allowedSection = false;
+              continue;
+            }
+
+            if (allowedSection && block?.type === 'table') {
+              if (insertAt === null) insertAt = output.length;
+              rowsByScope[currentScope].push(...normalizeAllowedPatternRows(block));
+              allowedSection = false;
+              continue;
+            }
+
+            output.push(block);
+          }
+
+          if (insertAt !== null) {
+            Object.values(rowsByScope).forEach((rows) => {
+              rows.sort(
+                (left, right) =>
+                  getMarkdownStatusSortOrder(left[0]) -
+                  getMarkdownStatusSortOrder(right[0]),
+              );
+            });
+            const createTable = (scope) => ({
+              type: 'table',
+              patternScope: scope,
+              headers: ['Статус', 'Причина', 'Ожидание', 'Действие'],
+              rows: rowsByScope[scope],
+            });
+            output.splice(insertAt, 0, {
+              type: 'tabs',
+              tabs: [
+                {
+                  id: 'base',
+                  label: 'База',
+                  blocks: [createTable('general')],
+                },
+                {
+                  id: 'section',
+                  label: 'Раздел',
+                  blocks: [createTable('page-specific')],
+                },
+              ],
+            });
+          }
+
+          return output;
+        }
+
+        function isPatternReportGroupHeading(value) {
+          return /^(?:Общие(?:\s+компонентные)?\s+паттерны|Специализированные паттерны страницы|Паттерны страницы|Подтвержд[её]нные нарушения|Предположения агента|Допустимые кастомизации)(?:\s*·\s*\d+)?$/i.test(
+            String(value || '').trim(),
+          );
+        }
+
+        function getPatternReportScope(value) {
+          const title = String(value || '')
+            .trim()
+            .replace(/\s*·\s*\d+\s*$/, '')
+            .toLowerCase();
+          if (
+            /^специализированные паттерны страницы/.test(title) ||
+            /^паттерны страницы/.test(title) ||
+            /^раздел/.test(title)
+          ) {
+            return 'page-specific';
+          }
+          if (
+            /^общие(?:\s+компонентные)?\s+паттерны/.test(title) ||
+            /^компонентные паттерны/.test(title) ||
+            /^база/.test(title)
+          ) {
+            return 'general';
+          }
+          return null;
+        }
+
+        function normalizeAgentReportBlock(block) {
+          if (block?.type === 'tabs') {
+            return {
+              ...block,
+              tabs: (block.tabs || []).map((tab) => ({
+                ...tab,
+                blocks: (tab.blocks || []).map(normalizeAgentReportBlock),
+              })),
+            };
+          }
+          if (block?.type === 'collapsible') {
+            return {
+              ...block,
+              children: (block.children || []).map(normalizeAgentReportBlock),
+            };
+          }
+          if (!isAgentFindingTable(block)) {
+            return block;
+          }
+          return {
+            ...block,
+            headers: ['Статус', 'Причина', 'Ожидание', 'Действие'],
+            rows: normalizeAgentFindingRows(block),
+          };
+        }
+
+        function normalizeAgentFindingRows(block) {
+          const headers = block.headers.map((header) =>
+            String(header || '').trim().toLowerCase(),
+          );
+          const indexOf = (...labels) => headers.findIndex((header) =>
+            labels.some((label) => header === label),
+          );
+          const statusIndex = indexOf('приоритет', 'статус');
+          const reasonIndex = indexOf('нарушение', 'причина ошибки', 'причина');
+          const factIndex = indexOf('факт');
+          const expectationIndex = indexOf('ожидание');
+          const sourceIndex = indexOf('источник');
+          const actionIndex = indexOf('исправление', 'действие');
+          return block.rows.map((row) => {
+            const reason = reasonIndex >= 0 ? row[reasonIndex] || '' : '';
+            const fact = factIndex >= 0 ? row[factIndex] || '' : '';
+            return [
+              statusIndex >= 0 ? row[statusIndex] || '' : '',
+              [reason, fact].filter(Boolean).join('<br>'),
+              [
+                expectationIndex >= 0 ? row[expectationIndex] || '' : '',
+                sourceIndex >= 0
+                  ? getCompactAgentSource(row[sourceIndex] || '')
+                  : '',
+              ].filter(Boolean).join('<br>'),
+              actionIndex >= 0 ? row[actionIndex] || '' : '',
+            ];
+          });
+        }
+
+        function getCompactAgentSource(value) {
+          const source = String(value || '').trim();
+          if (!source) {
+            return '';
+          }
+          const linkMatch = source.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+          if (linkMatch) {
+            return `[${getCompactAgentSourcePath(linkMatch[1])}](${linkMatch[2]})`;
+          }
+          return getCompactAgentSourcePath(source);
+        }
+
+        function getCompactAgentSourcePath(value) {
+          const path = String(value || '')
+            .split(/\s+—\s+/)[0]
+            .trim()
+            .replace(/\\/g, '/');
+          if (!path.includes('/')) {
+            return path;
+          }
+          return path.split('/').filter(Boolean).slice(-2).join('/');
+        }
+
+        function normalizeAllowedPatternRows(block) {
+          const headers = block.headers.map((header) =>
+            String(header || '').trim().toLowerCase(),
+          );
+          const indexOf = (...labels) => headers.findIndex((header) =>
+            labels.some((label) => header === label),
+          );
+          const titleIndex = indexOf('кастомизация', 'изменение');
+          const factIndex = indexOf('факт');
+          const rationaleIndex = indexOf('обоснование', 'ожидание');
+          const sourceIndex = indexOf('источник');
+          return block.rows.map((row) => [
+            'Ок',
+            [
+              titleIndex >= 0 ? row[titleIndex] || '' : '',
+              factIndex >= 0 ? row[factIndex] || '' : '',
+            ].filter(Boolean).join('<br>'),
+            [
+              rationaleIndex >= 0 ? row[rationaleIndex] || '' : '',
+              sourceIndex >= 0
+                ? getCompactAgentSource(row[sourceIndex] || '')
+                : '',
+            ].filter(Boolean).join('<br>'),
+            '',
+          ]);
+        }
+
+        function getMarkdownStatusSortOrder(value) {
+          const type = getMarkdownStatusType(value);
+          if (type === 'error') return 0;
+          if (type === 'success') return 2;
+          return 1;
+        }
+
+        function attachAgentFindingRows(blocks, findings) {
+          const validFindings = Array.isArray(findings)
+            ? findings.filter(
+                (finding) =>
+                  finding &&
+                  typeof finding.nodeId === 'string' &&
+                  finding.nodeId,
+              )
+            : [];
+          const hasPatternScopes = validFindings.some(
+            (finding) =>
+              finding.patternScope === 'general' ||
+              finding.patternScope === 'page-specific',
+          );
+          const findingGroups = getAgentFindingGroups(validFindings);
+          const findingTables = collectAgentFindingTables(blocks);
+          const scopedTables = findingTables.filter(
+            (table) =>
+              table.patternScope === 'general' ||
+              table.patternScope === 'page-specific',
+          );
+          if (scopedTables.length) {
+            scopedTables.forEach((table) => {
+              const scope = table.patternScope;
+              const tableFindings = sortAgentFindingsByPriority(
+                validFindings.filter((finding) => {
+                  const findingScope = finding.patternScope === 'page-specific'
+                    ? 'page-specific'
+                    : 'general';
+                  return findingScope === scope;
+                }),
+              );
+              table.findingRows = tableFindings.slice(0, table.rows.length);
+            });
+            return;
+          }
+          if (findingTables.length === 1) {
+            const tableBlock = findingTables[0];
+            const tableFindings = hasPatternScopes
+              ? sortAgentFindingsByPriority(validFindings)
+              : validFindings;
+            tableBlock.findingRows = tableFindings.slice(
+              0,
+              tableBlock.rows.length,
+            );
+            return;
+          }
+          findingTables
+            .slice(-findingGroups.length)
+            .forEach((table, index) => {
+              table.findingRows = findingGroups[index] || [];
+            });
+        }
+
+        function collectAgentFindingTables(blocks, tables = []) {
+          (blocks || []).forEach((block) => {
+            if (isAgentFindingTable(block)) {
+              tables.push(block);
+              return;
+            }
+            if (block?.type === 'tabs') {
+              (block.tabs || []).forEach((tab) =>
+                collectAgentFindingTables(tab.blocks || [], tables),
+              );
+              return;
+            }
+            if (block?.type === 'collapsible') {
+              collectAgentFindingTables(block.children || [], tables);
+            }
+          });
+          return tables;
+        }
+
+        function groupPatternMarkdownTabs(blocks) {
+          const markers = [];
+          blocks.forEach((block, index) => {
+            const meta = getPatternTabMeta(block);
+            if (meta) {
+              markers.push({ index, depth: block.depth, ...meta });
+            }
+          });
+          const distinctTabIds = new Set(markers.map((marker) => marker.id));
+          if (markers.length < 2 || distinctTabIds.size < 2) {
+            return blocks;
+          }
+
+          const tabs = markers.map((marker, markerIndex) => {
+            const nextMarker = markers[markerIndex + 1];
+            let end = nextMarker ? nextMarker.index : blocks.length;
+            if (!nextMarker) {
+              for (let index = marker.index + 1; index < blocks.length; index += 1) {
+                const candidate = blocks[index];
+                if (
+                  candidate?.type === 'heading' &&
+                  candidate.depth <= marker.depth
+                ) {
+                  end = index;
+                  break;
+                }
+              }
+            }
+            return {
+              id: marker.id,
+              label: marker.label,
+              blocks: blocks.slice(marker.index + 1, end),
+              end,
+            };
+          });
+          const groupEnd = tabs[tabs.length - 1].end;
+          return [
+            ...blocks.slice(0, markers[0].index),
+            { type: 'tabs', tabs },
+            ...blocks.slice(groupEnd),
+          ];
+        }
+
+        function getPatternTabMeta(block) {
+          if (block?.type !== 'heading') {
+            return null;
+          }
+          const title = String(block.text || '')
+            .trim()
+            .replace(/\s*·\s*\d+\s*$/, '')
+            .toLowerCase();
+          if (/^общие(?:\s+компонентные)?\s+паттерны/.test(title)) {
+            return { id: 'general', label: 'Общие паттерны' };
+          }
+          if (
+            /^компонентные(?:\s+паттерны)?/.test(title) ||
+            /^паттерны страницы/.test(title)
+          ) {
+            return { id: 'component', label: 'Паттерны страницы' };
+          }
+          return null;
+        }
+
+        function groupCollapsibleMarkdownSections(blocks) {
+          const grouped = [];
+          let index = 0;
+          while (index < blocks.length) {
+            const block = blocks[index];
+            const isAllowedSection =
+              block?.type === 'heading' &&
+              block.depth === 2 &&
+              /^Допустимые кастомизации(?:\s*·\s*\d+)?$/i.test(
+                String(block.text || '').trim(),
+              );
+            if (!isAllowedSection) {
+              grouped.push(block);
+              index += 1;
+              continue;
+            }
+            const children = [];
+            index += 1;
+            while (index < blocks.length) {
+              const candidate = blocks[index];
+              if (candidate?.type === 'heading' && candidate.depth <= 2) {
+                break;
+              }
+              children.push(candidate);
+              index += 1;
+            }
+            grouped.push({
+              type: 'collapsible',
+              title: block.text,
+              children,
+            });
+          }
+          return grouped;
+        }
+
+        function getAgentFindingGroups(findings) {
+          if (!Array.isArray(findings)) {
+            return [];
+          }
+          const validFindings = findings.filter(
+            (finding) => finding && typeof finding.nodeId === 'string' && finding.nodeId,
+          );
+          const hasPatternScopes = validFindings.some(
+            (finding) =>
+              finding.patternScope === 'general' ||
+              finding.patternScope === 'page-specific',
+          );
+          if (hasPatternScopes) {
+            return ['general', 'page-specific']
+              .map((scope) =>
+                sortAgentFindingsByPriority(
+                  validFindings.filter(
+                    (finding) => finding.patternScope === scope,
+                  ),
+                ),
+              )
+              .filter((group) => group.length > 0);
+          }
+          const confirmed = validFindings.filter(
+            (finding) => finding.verdict === 'confirmed',
+          );
+          const assumptions = validFindings.filter(
+            (finding) => finding.verdict === 'assumption',
+          );
+          return [confirmed, assumptions].filter((group) => group.length > 0);
+        }
+
+        function sortAgentFindingsByPriority(findings) {
+          const priorityOrder = {
+            error: 0,
+            warning: 1,
+            human_review: 1,
+            allowed: 2,
+          };
+          return findings.slice().sort(
+            (left, right) =>
+              (priorityOrder[left?.priority] ?? 3) -
+              (priorityOrder[right?.priority] ?? 3),
+          );
+        }
+
+        function isAgentFindingTable(block) {
+          if (block?.type !== 'table' || !Array.isArray(block.headers)) {
+            return false;
+          }
+          const headers = block.headers.map((header) => String(header).trim());
+          const hasStatus =
+            headers.includes('Приоритет') || headers.includes('Статус');
+          const hasReason =
+            headers.includes('Нарушение') ||
+            headers.includes('Причина ошибки') ||
+            headers.includes('Причина');
+          return hasStatus && hasReason;
         }
 
         function parseMarkdownBlocks(source) {
@@ -2919,7 +4619,37 @@
           return blocks;
         }
 
-        function renderMarkdownBlock(block) {
+        function renderMarkdownBlock(block, findingRows) {
+          if (block.type === 'tabs') {
+            const tabs = block.tabs || [];
+            const tabButtons = tabs
+              .map(
+                (tab, index) =>
+                  `<button type="button" class="md-tabs__tab" role="tab" aria-selected="${index === 0 ? 'true' : 'false'}" tabindex="${index === 0 ? '0' : '-1'}" data-md-tab-index="${index}">${escapeHtml(tab.label)}</button>`,
+              )
+              .join('');
+            const tabPanels = tabs
+              .map((tab, index) => {
+                const content = tab.blocks
+                  .map((child) =>
+                    renderMarkdownBlock(child, child.findingRows || []),
+                  )
+                  .join('');
+                return `<div class="md-tabs__panel" role="tabpanel" data-md-tab-panel="${index}"${index === 0 ? '' : ' hidden'}>${content}</div>`;
+              })
+              .join('');
+            return `<div class="md-block md-tabs" data-md-tabs><div class="md-tabs__list" role="tablist">${tabButtons}</div>${tabPanels}</div>`;
+          }
+          if (block.type === 'collapsible') {
+            const content = block.children
+              .map((child) =>
+                renderMarkdownBlock(child, child.findingRows || []),
+              )
+              .join('');
+            return `<details class="md-block md-collapsible"><summary class="md-collapsible__summary">${renderInlineMarkdown(
+              block.title,
+            )}</summary><div class="md-collapsible__content">${content}</div></details>`;
+          }
           if (block.type === 'heading') {
             return `<div class="md-block md-block--h${block.depth}"><div class="md-h${block.depth}">${renderInlineMarkdown(
               block.text,
@@ -2944,15 +4674,41 @@
             )}</code></pre></div>`;
           }
           if (block.type === 'table') {
-            const head = block.headers
+            const tableHeaders = getMarkdownTableHeaders(block);
+            const head = tableHeaders
               .map((header) => `<th class="md-th">${renderInlineMarkdown(header)}</th>`)
               .join('');
             const body = block.rows
               .map(
-                (row) =>
-                  `<tr class="md-tr">${row
-                    .map((cell) => `<td class="md-td">${renderInlineMarkdown(cell)}</td>`)
-                    .join('')}</tr>`,
+                (row, rowIndex) => {
+                  const finding = findingRows[rowIndex] || null;
+                  const resetActions = finding
+                    ? buildAgentFindingResetActions(finding)
+                    : [];
+                  const interactiveAttributes = finding
+                    ? ` class="md-tr md-tr--interactive" data-node-id="${escapeHtml(finding.nodeId)}" tabindex="0" role="button" aria-label="Перейти к ${escapeHtml(finding.title || 'элементу')}"`
+                    : ' class="md-tr"';
+                  const cells = row.map((cell, cellIndex) => {
+                    const isLastCell = cellIndex === row.length - 1;
+                    const renderedCell = renderMarkdownTableCell(
+                      cell,
+                      cellIndex,
+                      tableHeaders,
+                    );
+                    if (
+                      isLastCell &&
+                      resetActions.length &&
+                      typeof finding?.id === 'string'
+                    ) {
+                      const actionLabel = resetActions.length > 1
+                        ? 'Выбрать вариант'
+                        : resetActions[0].label || 'Применить';
+                      return `<td class="md-td"><button type="button" class="md-action-cell" data-agent-finding-action="${escapeHtml(finding.id)}">${renderedCell}<span class="md-action-cell__label">${escapeHtml(actionLabel)}</span></button></td>`;
+                    }
+                    return `<td class="md-td">${renderedCell}</td>`;
+                  });
+                  return `<tr${interactiveAttributes}>${cells.join('')}</tr>`;
+                },
               )
               .join('');
             return `<div class="md-block md-block--table"><div class="md-table-wrap"><div class="md-table-scroll"><table class="md-table"><thead><tr class="md-tr">${head}</tr></thead><tbody>${body}</tbody></table></div></div></div>`;
@@ -2972,9 +4728,115 @@
           return `<div class="md-block md-block--list"><div class="md-list">${items}</div></div>`;
         }
 
+        function renderMarkdownTableCell(cell, cellIndex, headers) {
+          const header = String(headers?.[cellIndex] || '').trim();
+          if (cellIndex === 0 && (header === 'Статус' || header === 'Приоритет')) {
+            const statusType = getMarkdownStatusType(cell);
+            const statusLabel = statusType === 'error'
+              ? 'Ошибка'
+              : statusType === 'success'
+                ? 'Ок'
+                : 'Зови ДС';
+            return `<span class="md-status md-status--${statusType}">${statusLabel}</span>`;
+          }
+          if (
+            header === 'Причина' ||
+            header === 'Причина ошибки' ||
+            header === 'Ожидание'
+          ) {
+            return renderStackedMarkdownTableCell(cell);
+          }
+          return renderInlineMarkdown(cell);
+        }
+
+        function renderStackedMarkdownTableCell(value) {
+          const lines = String(value || '')
+            .split(/<br\s*\/?>/i)
+            .map((line) => line.trim())
+            .filter(Boolean);
+          if (lines.length < 2) {
+            return renderInlineMarkdown(lines[0] || '');
+          }
+          const [primary, ...secondary] = lines;
+          return `<span class="md-cell-stack"><span class="md-cell-primary">${renderInlineMarkdown(primary)}</span><span class="md-cell-secondary">${secondary.map(renderInlineMarkdown).join('<br>')}</span></span>`;
+        }
+
+        function getMarkdownTableHeaders(block) {
+          if (isAgentFindingTable(block)) {
+            return ['Статус', 'Причина', 'Ожидание', 'Действие'];
+          }
+          return block.headers;
+        }
+
+        function getMarkdownStatusType(value) {
+          const normalized = String(value || '').trim().toLowerCase();
+          if (/^ок$|allowed|допуст|success|разреш[её]н/.test(normalized)) {
+            return 'success';
+          }
+          if (
+            /warning|предупреж|human|manual|review|провер|зови\s+дс|требу.*подтверж|assumption/.test(
+              normalized,
+            )
+          ) {
+            return 'warning';
+          }
+          if (/ошиб|error|critical|критич|confirmed|подтвержд[её]н/.test(normalized)) {
+            return 'error';
+          }
+          return 'warning';
+        }
+
+        function activateMarkdownTab(tab) {
+          const root = tab.closest('[data-md-tabs]');
+          if (!root) {
+            return;
+          }
+          const targetIndex = tab.getAttribute('data-md-tab-index');
+          const tabs = Array.from(root.querySelectorAll('[data-md-tab-index]'))
+            .filter((candidate) => candidate.closest('[data-md-tabs]') === root);
+          const panels = Array.from(root.querySelectorAll('[data-md-tab-panel]'))
+            .filter((candidate) => candidate.closest('[data-md-tabs]') === root);
+          tabs.forEach((candidate) => {
+            const active =
+              candidate.getAttribute('data-md-tab-index') === targetIndex;
+            candidate.setAttribute('aria-selected', active ? 'true' : 'false');
+            candidate.setAttribute('tabindex', active ? '0' : '-1');
+          });
+          panels.forEach((panel) => {
+            panel.hidden =
+              panel.getAttribute('data-md-tab-panel') !== targetIndex;
+          });
+        }
+
+        function moveMarkdownTabFocus(tab, key) {
+          const root = tab.closest('[data-md-tabs]');
+          if (!root) {
+            return;
+          }
+          const tabs = Array.from(root.querySelectorAll('[data-md-tab-index]'))
+            .filter((candidate) => candidate.closest('[data-md-tabs]') === root);
+          const currentIndex = tabs.indexOf(tab);
+          if (currentIndex < 0 || tabs.length === 0) {
+            return;
+          }
+          let nextIndex = currentIndex;
+          if (key === 'Home') {
+            nextIndex = 0;
+          } else if (key === 'End') {
+            nextIndex = tabs.length - 1;
+          } else if (key === 'ArrowLeft') {
+            nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+          } else if (key === 'ArrowRight') {
+            nextIndex = (currentIndex + 1) % tabs.length;
+          }
+          const nextTab = tabs[nextIndex];
+          activateMarkdownTab(nextTab);
+          nextTab.focus();
+        }
+
         function renderInlineMarkdown(source) {
           const pattern =
-            /(\[[^\]]+\]\([^)]+\)|`[^`]+`|\*\*[^*]+\*\*|\*[^*]+\*)/g;
+            /(\[[^\]]+\]\([^)]+\)|`[^`]+`|\*\*[^*]+\*\*|\*[^*]+\*|<br\s*\/?>)/gi;
           let cursor = 0;
           let html = '';
           pattern.lastIndex = 0;
@@ -3015,6 +4877,9 @@
         }
 
         function renderInlineToken(token) {
+          if (/^<br\s*\/?>$/i.test(token)) {
+            return '<br class="md-line-break">';
+          }
           const linkMatch = token.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
           if (linkMatch) {
             const href = escapeHtml(linkMatch[2]);
@@ -3194,6 +5059,7 @@
                   payload: {
                     channelId: currentChannelId,
                     pickerLabel: currentPickerLabel,
+                    pageType: currentPageTypeId,
                     shellAuditEnabled,
                     experimentalContractV2Enabled,
                   },
@@ -3233,6 +5099,20 @@
           );
         }
 
+        function handlePageTypeChange(nextPageTypeId) {
+          if (typeof nextPageTypeId !== 'string') {
+            return;
+          }
+
+          const normalizedPageTypeId = nextPageTypeId.trim();
+          if (!normalizedPageTypeId) {
+            return;
+          }
+
+          currentPageTypeId = normalizedPageTypeId;
+          syncChromeState();
+        }
+
         function handleChannelChange(nextChannelId) {
           if (typeof nextChannelId !== 'string') {
             return;
@@ -3258,6 +5138,18 @@
 
         function handleShowExpectedToggle() {
           showExpectedCustomizations = !showExpectedCustomizations;
+          renderTabs();
+          renderList();
+        }
+
+        function handleHideCustomizationsToggle() {
+          hideCustomizations = !hideCustomizations;
+          const visibleTabs = getVisibleTabs();
+
+          if (!visibleTabs.some((tab) => tab.id === currentTab)) {
+            currentTab = visibleTabs[0]?.id ?? currentTab;
+          }
+
           renderTabs();
           renderList();
         }
@@ -3349,12 +5241,13 @@
 
           const chromeState = {
             title: 'Apollo',
+            pageTypeId: currentPageTypeId,
             channelId: currentChannelId,
             pickerLabel: currentPickerLabel,
             actionLabel: isActionScanning
               ? 'Остановить'
               : isActionCatalogLoading
-                ? 'Загрузка каталогов...'
+                ? 'Загрузка'
                 : 'Проверить',
             actionDisabled: isActionCatalogLoading,
             actionLoading: isActionScanning || isActionCatalogLoading,
@@ -3365,6 +5258,7 @@
             compact: isCompact,
             shellAuditEnabled,
             showExpectedCustomizations,
+            hideCustomizations,
             experimentalContractV2Enabled,
             tabs,
           };
@@ -3424,7 +5318,12 @@
 
         function getVisibleTabs() {
           const hiddenIds = new Set(getHiddenTabIds());
-          return tabConfig.filter((tab) => !hiddenIds.has(tab.id));
+          return tabConfig.filter(
+            (tab) =>
+              !hiddenIds.has(tab.id) &&
+              (!hideCustomizations ||
+                (tab.id !== 'changes' && tab.id !== 'changesWip')),
+          );
         }
       })();
     </script>

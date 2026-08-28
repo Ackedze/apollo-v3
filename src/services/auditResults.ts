@@ -5,9 +5,12 @@ import {
   buildApolloBaselineCustomizationReport,
   buildApolloStatsReport,
 } from '../stats/report';
+import { buildApolloPatternAuditReport } from '../stats/patternReport';
 import type {
   ApolloAgentReport,
   ApolloBaselineCustomizationReport,
+  ApolloLayoutRelation,
+  ApolloPatternAuditReport,
   ApolloStatsReport,
   ApolloStatsViews,
   StatsResource,
@@ -16,6 +19,7 @@ import {
   computeBaselineChangeResults,
   computeChangesResults,
 } from './auditViewBuilder';
+import type { ApolloPageType } from '../types/pageContext';
 
 export interface AuditResultViews {
   visibleViews: {
@@ -52,6 +56,7 @@ export interface PrepareAuditReportInput<TNode extends AuditReportSelectionNode>
   };
   scan: {
     channel: string;
+    pageType: ApolloPageType | null;
     startedAt: Date;
     finishedAt: Date;
     shellAuditEnabled: boolean;
@@ -61,6 +66,7 @@ export interface PrepareAuditReportInput<TNode extends AuditReportSelectionNode>
   checkState: CheckState;
   views: AuditResultViews;
   resolveNodePath: (node: TNode) => string;
+  layoutRelations?: ApolloLayoutRelation[];
   resolveComponentKey: (node: TNode) => Promise<string | null>;
   resolveStyleResource: (
     id: string,
@@ -76,6 +82,7 @@ export interface AuditReportBundle {
   report: ApolloStatsReport;
   agentReport: ApolloAgentReport;
   baselineCustomizationReport: ApolloBaselineCustomizationReport;
+  patternReport: ApolloPatternAuditReport;
 }
 
 export function buildAuditResultViews(checkState: CheckState): AuditResultViews {
@@ -161,6 +168,7 @@ export async function prepareAuditReport<TNode extends AuditReportSelectionNode>
     figma: input.figma,
     scan: {
       channel: input.scan.channel,
+      pageType: input.scan.pageType,
       startedAt: input.scan.startedAt,
       finishedAt: input.scan.finishedAt,
       selection,
@@ -185,6 +193,7 @@ export async function prepareAuditReport<TNode extends AuditReportSelectionNode>
       figma: input.figma,
       scan: {
         channel: input.scan.channel,
+        pageType: input.scan.pageType,
         startedAt: input.scan.startedAt,
         finishedAt: input.scan.finishedAt,
         selection,
@@ -199,10 +208,16 @@ export async function prepareAuditReport<TNode extends AuditReportSelectionNode>
       resolveTokenResource: input.resolveTokenResource,
     },
   );
+  const patternReport = buildApolloPatternAuditReport(
+    report,
+    baselineCustomizationReport,
+    input.layoutRelations ?? [],
+  );
 
   return {
     report,
     agentReport,
     baselineCustomizationReport,
+    patternReport,
   };
 }

@@ -45,13 +45,22 @@ async function main() {
       calls.push(['captureGenerationExample', payload]);
     },
     cancelScan: () => calls.push(['cancelScan']),
-    sendAgentReport: async (requestId, userMessage) => {
-      calls.push(['sendAgentReport', requestId, userMessage]);
+    sendAgentReport: async (requestId, userMessage, reportType, agentSource, dialogue) => {
+      calls.push([
+        'sendAgentReport',
+        requestId,
+        userMessage,
+        reportType,
+        agentSource,
+        dialogue,
+      ]);
     },
+    setAgentSource: async (source) => calls.push(['setAgentSource', source]),
     cancelAgentReport: (requestId) => {
       calls.push(['cancelAgentReport', requestId]);
       return requestId !== 'stale-request';
     },
+    retryStatsUpload: async () => calls.push(['retryStatsUpload']),
     resizeUi: (compact) => calls.push(['resizeUi', compact]),
     focusNode: async (nodeId) => calls.push(['focusNode', nodeId]),
     resetCustomizationGroup: async (payload) =>
@@ -88,8 +97,17 @@ async function main() {
   routeApolloPluginMessage(
     {
       type: 'send-apollo-agent-report',
-      payload: { requestId: 'request-1', userMessage: 'Проверь отчёт' },
+      payload: {
+        requestId: 'request-1',
+        userMessage: 'Проверь отчёт',
+        agentSource: 'codex',
+        dialogue: [{ role: 'user', text: 'Предыдущий вопрос' }],
+      },
     },
+    dependencies,
+  );
+  routeApolloPluginMessage(
+    { type: 'set-apollo-agent-source', payload: { source: 'codex' } },
     dependencies,
   );
   routeApolloPluginMessage(
@@ -110,6 +128,7 @@ async function main() {
     { type: 'set-ui-compact', payload: { compact: true } },
     dependencies,
   );
+  routeApolloPluginMessage({ type: 'retry-stats-upload' }, dependencies);
   routeApolloPluginMessage(
     { type: 'focus-node', payload: { id: '3:4' } },
     dependencies,
@@ -150,7 +169,14 @@ async function main() {
       (call) =>
         call[0] === 'sendAgentReport' &&
         call[1] === 'request-1' &&
-        call[2] === 'Проверь отчёт',
+        call[2] === 'Проверь отчёт' &&
+        call[4] === 'codex' &&
+        call[5]?.[0]?.text === 'Предыдущий вопрос',
+    ),
+  );
+  assert.ok(
+    calls.some(
+      (call) => call[0] === 'setAgentSource' && call[1] === 'codex',
     ),
   );
   assert.ok(
@@ -171,6 +197,7 @@ async function main() {
     'A stale request must not cancel the active agent request',
   );
   assert.ok(calls.some((call) => call[0] === 'resizeUi' && call[1] === true));
+  assert.ok(calls.some((call) => call[0] === 'retryStatsUpload'));
   assert.ok(calls.some((call) => call[0] === 'focusNode' && call[1] === '3:4'));
   assert.ok(calls.some((call) => call[0] === 'resetCustomizationGroup'));
   assert.ok(calls.some((call) => call[0] === 'applyThemizationAction'));

@@ -884,15 +884,27 @@ function compareLayoutDimensions(
   diffs: DiffEntry[],
 ) {
   const fields = [
-    { property: 'width' as const, label: 'Ширина' },
-    { property: 'height' as const, label: 'Высота' },
-    { property: 'minWidth' as const, label: 'Минимальная ширина' },
-    { property: 'maxWidth' as const, label: 'Максимальная ширина' },
-    { property: 'minHeight' as const, label: 'Минимальная высота' },
-    { property: 'maxHeight' as const, label: 'Максимальная высота' },
+    { property: 'width' as const, label: 'Ширина', axis: 'horizontal' as const },
+    { property: 'height' as const, label: 'Высота', axis: 'vertical' as const },
+    { property: 'minWidth' as const, label: 'Минимальная ширина', axis: null },
+    { property: 'maxWidth' as const, label: 'Максимальная ширина', axis: null },
+    { property: 'minHeight' as const, label: 'Минимальная высота', axis: null },
+    { property: 'maxHeight' as const, label: 'Максимальная высота', axis: null },
   ];
 
-  for (const { property, label } of fields) {
+  for (const { property, label, axis } of fields) {
+    // Physical width/height of Hug and Fill nodes is derived from their
+    // contents or parent layout. Figma can still expose that recalculation as
+    // InstanceNode.overrides, but it is not an independent customization.
+    // Numeric contract constraints are evaluated separately by
+    // createNumericConstraintRuleDiffs, so baseline comparison only emits a
+    // physical dimension when the actual node has an explicit Fixed sizing.
+    if (
+      axis &&
+      normalizeLayoutSizing(actualLayout.sizing?.[axis] ?? null) !== 'FIXED'
+    ) {
+      continue;
+    }
     const referenceValue = referenceLayout[property];
     const actualValue = actualLayout[property];
     if (

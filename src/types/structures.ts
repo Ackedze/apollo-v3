@@ -61,6 +61,12 @@ interface DSPaintInfo {
 
 interface DSStrokeInfo extends DSPaintInfo {
   weight?: number | null;
+  weights?: {
+    top: number | null;
+    right: number | null;
+    bottom: number | null;
+    left: number | null;
+  } | null;
   align?: string | null;
 }
 
@@ -135,6 +141,28 @@ export interface DSStructureNode {
   referenceOwnerRelativePath?: string | null;
   referenceOwnerVariantProperties?: Record<string, string> | null;
   referenceVariantOwnedProperties?: string[];
+  /**
+   * Property-level provenance for a fully materialized effective baseline.
+   *
+   * Nested component composition cannot be merged safely at node level: a
+   * wrapper may own the paint while the nested component still owns layout,
+   * typography, or another property on the same Figma node. These entries
+   * record the component that supplied each effective property so later,
+   * deeper materialization can merge properties without inferring ownership
+   * from component names or path decoration.
+   */
+  referencePropertyOwners?: Record<string, DSReferencePropertyOwner>;
+}
+
+export interface DSReferencePropertyOwner {
+  componentKey: string | null;
+  ownerPath: string | null;
+  ownerRelativePath: string | null;
+  origin:
+    | 'host-baseline'
+    | 'nested-baseline'
+    | 'host-override'
+    | 'variant-patch';
 }
 
 export interface DSNormalizedElement {

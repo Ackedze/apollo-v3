@@ -1,3 +1,5 @@
+import type { ApolloPageType } from '../types/pageContext';
+
 export type ChromeTabItem = {
   id: string;
   title: string;
@@ -8,8 +10,11 @@ export type ChromeTabItem = {
 
 export type ChromeButtonType = 'primary' | 'secondary';
 
+export type PageTypeId = ApolloPageType;
+
 export type ChromeState = {
   title: string;
+  pageTypeId: PageTypeId | null;
   channelId: string;
   pickerLabel: string;
   actionLabel: string;
@@ -19,6 +24,7 @@ export type ChromeState = {
   compact: boolean;
   shellAuditEnabled: boolean;
   showExpectedCustomizations: boolean;
+  hideCustomizations: boolean;
   experimentalContractV2Enabled: boolean;
   tabs: ChromeTabItem[];
 };
@@ -50,8 +56,10 @@ export type ChromeBridgeOptions = {
   onToggleCompact: () => void;
   onChannelChange: (channelId: string) => void;
   onPickerChange: (pickerLabel: string) => void;
+  onPageTypeChange: (pageTypeId: PageTypeId) => void;
   onShellAuditToggle: () => void;
   onShowExpectedToggle: () => void;
+  onHideCustomizationsToggle: () => void;
   onExperimentalContractV2Toggle: () => void;
   onExampleCapture: (request: GenerationExampleCaptureRequest) => void;
 };

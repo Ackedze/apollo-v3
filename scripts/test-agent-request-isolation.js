@@ -17,8 +17,12 @@ function assertExcludes(value, message) {
 }
 
 assertIncludes(
-  "? createApolloAgentDialogueSessionId()\n        : createApolloAgentSessionId(report!)",
-  'Dialogue questions and audit reports must use isolated Langflow sessions.',
+  "session_id: createApolloAgentDialogueSessionId()",
+  'Dialogue questions must keep their isolated Langflow session.',
+);
+assertIncludes(
+  'APOLLO_CODEX_REPORT_RUNS_URL',
+  'WIP reports must use the isolated Codex report endpoint.',
 );
 assertIncludes(
   "function buildDialogueApolloAgentInput(question: string): string",
