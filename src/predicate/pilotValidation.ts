@@ -56,6 +56,9 @@ export type ApolloPredicateEvaluation = {
   severity: 'error' | 'warning' | 'info';
   trace: ApolloPredicateTrace;
   actionId?: string | null;
+  rootFindingId?: string;
+  derivedFindingIds?: string[];
+  causalGroupingReason?: string;
 };
 
 export type ApolloPredicateRuleManifestEntry = {
@@ -114,6 +117,10 @@ export type ApolloPredicateUiFinding = {
   observed: string;
   factPath: string;
   patternScope: 'general' | 'page-specific';
+  rootFindingId?: string;
+  derivedFindingIds?: string[];
+  isConsequence?: boolean;
+  causalGroupingReason?: string;
 };
 
 export type ApolloPredicateUiValidation = {
@@ -579,8 +586,11 @@ function markdownCell(value: string): string {
 
 function priorityFor(
   classification: ApolloPredicateEvaluation['classification'],
+  severity: ApolloPredicateEvaluation['severity'],
 ): ApolloPredicateUiFinding['priority'] | null {
-  if (classification === 'violation') return 'error';
+  if (classification === 'violation') {
+    return severity === 'warning' ? 'warning' : 'error';
+  }
   if (classification === 'human-review' || classification === 'not-evaluable') {
     return 'human_review';
   }
@@ -590,6 +600,7 @@ function priorityFor(
 
 function statusLabel(priority: ApolloPredicateUiFinding['priority']): string {
   if (priority === 'error') return 'Ошибка';
+  if (priority === 'warning') return 'Предупреждение';
   if (priority === 'allowed') return 'Ок';
   return 'Зови ДС';
 }
@@ -775,7 +786,7 @@ export function buildApolloPredicateUiValidation(
     )
     .map((evaluation) => ({
       evaluation,
-      priority: priorityFor(evaluation.classification),
+      priority: priorityFor(evaluation.classification, evaluation.severity),
     }))
     .filter(
       (entry): entry is {
@@ -785,6 +796,13 @@ export function buildApolloPredicateUiValidation(
     )
     .sort((left, right) => {
       const order = { error: 0, warning: 1, human_review: 1, allowed: 2 };
+      const leftRoot = left.evaluation.rootFindingId || left.evaluation.evaluationId;
+      const rightRoot = right.evaluation.rootFindingId || right.evaluation.evaluationId;
+      if (leftRoot === rightRoot) {
+        const leftIsRoot = left.evaluation.evaluationId === leftRoot ? 0 : 1;
+        const rightIsRoot = right.evaluation.evaluationId === rightRoot ? 0 : 1;
+        if (leftIsRoot !== rightIsRoot) return leftIsRoot - rightIsRoot;
+      }
       return (
         order[left.priority] - order[right.priority] ||
         left.evaluation.focusNodeId.localeCompare(
@@ -819,6 +837,13 @@ export function buildApolloPredicateUiValidation(
     const observed = presentation.observed
       ? presentation.observed(evaluation)
       : `${factPath}: ${actual}`;
+    const isConsequence = Boolean(
+      evaluation.rootFindingId
+      && evaluation.rootFindingId !== evaluation.evaluationId,
+    );
+    const renderedObserved = isConsequence
+      ? `Следствие корневой ошибки. ${observed}`
+      : observed;
     const source = compactSourcePath(manifest?.source.path || evaluation.ruleId);
     findings.push({
       id: evaluation.evaluationId,
@@ -826,13 +851,17 @@ export function buildApolloPredicateUiValidation(
       priority,
       verdict: priority === 'human_review' ? 'assumption' : 'confirmed',
       title: presentation.title,
-      observed,
+      observed: renderedObserved,
       factPath,
       patternScope,
+      rootFindingId: evaluation.rootFindingId,
+      derivedFindingIds: evaluation.derivedFindingIds,
+      isConsequence,
+      causalGroupingReason: evaluation.causalGroupingReason,
     });
     rowsByScope[patternScope].push([
       statusLabel(priority),
-      `${presentation.title}<br>${observed}`,
+      `${presentation.title}<br>${renderedObserved}`,
       `${presentation.expectation(evaluation)}<br>${source}`,
       presentation.action(evaluation),
     ].map(markdownCell));

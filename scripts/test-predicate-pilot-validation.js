@@ -1470,6 +1470,114 @@ assert.match(
   /Проверить контракт и generated baseline TitleView\./,
 );
 
+const causalRootId = 'causal-root';
+const causalConsequenceId = 'causal-consequence';
+const causalValidation = buildApolloPredicateUiValidation({
+  rules: [{
+    ruleId: 'rule:z-root',
+    revision: 1,
+    severity: 'error',
+    source: titleViewSource,
+  }, {
+    ruleId: 'rule:a-consequence',
+    revision: 1,
+    severity: 'error',
+    source: titleViewSource,
+  }],
+  result: {
+    schemaVersion: 'apollo.predicate-result.v1',
+    snapshotHash: 'snapshot',
+    ruleRelease: 'release',
+    coverage: {
+      total: 2,
+      byClassification: { violation: 2 },
+      unclassified: 0,
+      duplicateEvaluationIds: 0,
+    },
+    evaluations: [Object.assign({}, base, {
+      evaluationId: causalConsequenceId,
+      ruleId: 'rule:a-consequence',
+      ruleRevision: 1,
+      subjectNodeId: '1:2',
+      focusNodeId: '1:2',
+      classification: 'violation',
+      rootFindingId: causalRootId,
+      derivedFindingIds: [],
+      causalGroupingReason: 'the root variant determines the dependent layout',
+      trace: {
+        predicate: 'equals',
+        truth: 'false',
+        reason: 'values differ',
+        actual: 2,
+        expected: 1,
+        factPaths: ['composition.columns'],
+      },
+    }), Object.assign({}, base, {
+      evaluationId: causalRootId,
+      ruleId: 'rule:z-root',
+      ruleRevision: 1,
+      subjectNodeId: '1:2',
+      focusNodeId: '1:2',
+      classification: 'violation',
+      rootFindingId: causalRootId,
+      derivedFindingIds: [causalConsequenceId],
+      causalGroupingReason: 'explicit source-rule causal relation',
+      trace: {
+        predicate: 'equals',
+        truth: 'false',
+        reason: 'values differ',
+        actual: 'foreign-row',
+        expected: 'canonical-row',
+        factPaths: ['component.identity'],
+      },
+    })],
+  },
+});
+assert.equal(causalValidation.findings[0].id, causalRootId);
+assert.equal(causalValidation.findings[1].id, causalConsequenceId);
+assert.equal(causalValidation.findings[0].isConsequence, false);
+assert.equal(causalValidation.findings[1].isConsequence, true);
+assert.match(causalValidation.responseMarkdown, /Следствие корневой ошибки\./);
+
+const warningValidation = buildApolloPredicateUiValidation({
+  rules: [{
+    ruleId: 'component:web.benefit-card-secondary-surface-not-recommended',
+    revision: 1,
+    severity: 'warning',
+    source,
+  }],
+  result: {
+    schemaVersion: 'apollo.predicate-result.v1',
+    snapshotHash: 'snapshot',
+    ruleRelease: 'release',
+    coverage: {
+      total: 1,
+      byClassification: { violation: 1 },
+      unclassified: 0,
+      duplicateEvaluationIds: 0,
+    },
+    evaluations: [Object.assign({}, base, {
+      evaluationId: 'benefit-card-secondary-warning',
+      ruleId: 'component:web.benefit-card-secondary-surface-not-recommended',
+      ruleRevision: 1,
+      subjectNodeId: '10:1',
+      focusNodeId: '10:1',
+      classification: 'violation',
+      severity: 'warning',
+      trace: {
+        predicate: 'one-of',
+        truth: 'false',
+        reason: 'value is outside allowed set',
+        actual: 'Secondary',
+        expected: ['Primary', 'Colored', 'Border'],
+        factPaths: ['component.properties.Type'],
+      },
+    })],
+  },
+});
+assert.equal(warningValidation.findings[0].priority, 'warning');
+assert.match(warningValidation.responseMarkdown, /Предупреждение/);
+
 const persistedValidation = {
   rules: [],
   repeatability: {
