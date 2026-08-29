@@ -1,5 +1,17 @@
 # Apollo Architecture Backlog
 
+## 1. Supporting package field verification (2026-08-29)
+
+- [x] Complete the Apollo v3 field checks for the three supporting packages:
+  - `Amount`, section `12606:59315` — exactly two deterministic violations;
+  - `TagGroup`, report `22-03-52_predicates.json` — exactly one nested Tag
+    `Size 40 != 56` violation; the `RightAddon` icon replacement remains
+    allowed;
+  - `PaymentMaskedNumber`, report `22-03-31_predicates.json` — exactly two
+    text-fill violations on `Major` and `Minor`.
+- All three report sets have complete classifications, no unexpected findings
+  and stable deterministic output. The supporting-package field gate is closed.
+
 ## Architecture reset: deterministic Predicate Engine MVP (2026-08-22)
 
 The current Semantic Fact Model / faceted-agent verdict path is frozen as a
@@ -356,7 +368,7 @@ normalizers or agent prompt rules.
     wrong style failed the effective baseline and the raw text failed the
     binding requirement. The PASS control remained compliant, coverage had
     zero unclassified/duplicate evaluations and the ten-run output was stable.
-  - [ ] Add a source-rule balancer before release compilation. It must compare
+  - [x] Add a source-rule balancer before release compilation. It must compare
     rule contours by collection boundary, member selector, property paths and
     predicate semantics rather than component name, then propose reuse of an
     existing generic contour when a new rule has the same shape. First
@@ -381,6 +393,13 @@ normalizers or agent prompt rules.
       `SingleIcon=True` Tag are separate violations, the compatibility trace
       records `reuse` with the Benefits precedent, coverage has no unclassified
       or duplicate evaluations, and the ten-run result hash is stable.
+    - [x] Close the release-compilation gate. `loadPredicateRelease` runs the
+      balancer before `compileContourRule`, preserves each authoritative source
+      definition, and publishes the selected contour id, compatibility
+      signature, matched precedent rule ids and exact configured selector in
+      `sourceRuleBalance.traces`. The focused release, balancer and pilot suite
+      passes 71/71, including the Benefits -> TabsView cross-family acceptance
+      case.
   - [ ] Add causal finding prioritization after deterministic evaluation and
     before UI sorting. Preserve every predicate verdict in the debug report,
     but group findings with the same failing object when one violated rule
@@ -389,6 +408,18 @@ normalizers or agent prompt rules.
     violation. Store `rootFindingId`, `derivedFindingIds` and the deterministic
     grouping reason. An agent may explain or rank the group, but must not create,
     remove or change predicate verdicts.
+    - [x] Add the generic RuleIR/result capability. An authoritative source rule
+      may declare explicit `same-subject`, `same-focus` or
+      `descendant-subject` causal edges. The engine preserves both verdicts,
+      adds `rootFindingId`, `derivedFindingIds` and
+      `causalGroupingReason`, and the Apollo UI orders the root first while
+      marking downstream rows as consequences. Invalid or implicit relations
+      fail closed. Proxy tests pass 255/255 and Apollo validation passes all 80
+      regression suites.
+    - [ ] Add the first real source-authored causal edge and field-prove it on a
+      component where an invalid nested identity deterministically causes a
+      downstream structural violation. Confirm exact focus, unchanged coverage,
+      stable ten-run output and visible root-before-consequence ordering.
 - [ ] Compile deterministic form rules 1, 4, 5, 6, 7, 9, 12, 13 and 18 to RuleIR.
 - [x] Pass the P01–P19 mixed canonical-section regression. Public-instance-root
   ownership gates removed 239 inherited implementation evaluations while all
@@ -401,29 +432,30 @@ normalizers or agent prompt rules.
 
 ## Current execution order
 
-1. Ratify Predicate Engine snapshot v2, RuleIR v1, trace, coverage and result contracts.
-2. Implement the complete closed predicate registry as a pure engine with four-state fixtures.
-3. Audit and minimally extend the plugin snapshot for the facts required by the registry.
-4. Build the predicate-by-predicate Figma contour in section `12161:122197`.
-5. Compile and field-test the pilot component rules, then the deterministic form rules.
-6. Cut over only after repeatability, coverage, focus and action gates pass.
+The Predicate model is the target architecture. Engine readiness and migrated
+knowledge coverage are tracked separately. The detailed ratification plan,
+package Definition of Done and current inventory baseline are in
+`docs/PREDICATE_SCALE_PLAN.md`.
 
-Contract v2 publications remain a source of normalized component knowledge,
-but their current runtime and the faceted-agent/SFM path are no longer the
-primary execution architecture. Do not expand either while the replacement is
-being built.
+Current order:
 
-Current replacement milestone: the isolated synchronous endpoint
-`POST /v1/validate/predicates` accepts only the registered
-`buttons-group-pilot` compatibility rule-set id. It resolves only component
-packages referenced by the frozen evidence bundle, pins the component index,
-ButtonsGroup composition contract plus TitleView, BackgroundPlate, Benefits
-and TableView rules checksums, builds Snapshot v2 and evaluates the active
-P01–P19 pilot rules without starting Codex. Apollo v3 now routes the Patterns pilot to
-this endpoint and renders the machine result with exact focus node ids; the
-text report remains on the frozen agent path for now. Every predicate request
-passes an in-process ten-run repeatability gate before the result reaches the
-plugin.
+1. S0 — merge useful Contract v2 packaging/compiler behaviour into the one
+   canonical Predicate release and prove Benefits, BackgroundPlate and
+   ButtonStack parity without an experimental toggle.
+2. S1 — migrate the 215 currently executable rules in dependency-aware
+   batches, starting with reusable Core boundaries.
+3. S2 — obtain reviewed typed authoring for 126 deterministic source gaps.
+4. S3 — review seven genuine capability gaps as versioned, portable engine
+   proposals rather than component-specific branches.
+5. S4 — route the 138 agent-required, 202 human-review and 162 unresolved
+   rules explicitly without allowing either route to alter deterministic
+   verdicts.
+6. S5 — pass the curated real-screen regression corpus and only then remove
+   duplicate legacy, experimental and faceted-agent verdict paths.
+
+Do not expand the experimental Contract v2 verdict runtime as a second product
+architecture. It remains a shadow/parity workbench until its package compiler
+and fixtures are represented in the canonical Predicate pipeline.
 
 ## P0: runtime integrity
 
@@ -467,7 +499,14 @@ plugin.
 - [ ] Triage all 315 unsupported deterministic rules across the 25 Ready packages: re-author recurring rule families as typed assertions or explicitly downgrade them to `manual`/`llm`; never infer runtime behavior from `ruleText`.
 - [x] Re-audit the original 315 unsupported rules by source shape: 124 already contained structured assertion fields that the compiler did not normalize, while 191 were prose-only. Do not classify runtime gaps from rule-id substrings: the original discovery heuristic confused `border` with `order` and generic `*-required` rules with `requiredChild`.
 - [x] Normalize the first evidence-safe field wave in the isolated compiler: `requiredVariant`, direct variant-only `requiredState`, direct `requiredLayout`, `requiredOrder`, `forbiddenWidthOverride` and `*-component-property`. This promotes 14 deterministic rules without new runtime operators, raising coverage from 161/476 (33.82%) to 175/476 (36.76%) and reducing unsupported rules from 315 to 301.
-- [ ] Normalize the remaining 106 structured-field rules that do not currently identify a missing runtime operator; group the observed source fields into typed aliases instead of adding field-name branches to Apollo.
+- [x] Replace the proposed bulk normalization step with a source-authority
+  classification pass. The current Ready inventory contains 839 rules: 337
+  are confirmed deterministic, 138 explicitly require an agent, 201 require
+  human review, 1 is policy-only and 162 remain unresolved. Of the deterministic
+  rules, 204 compile now, 126 require typed authoring and 7 require a
+  versioned capability. See `docs/CONTRACT_V2_READY_RULE_CLASSIFICATION.md`;
+  no prose-only rule was promoted from its text and `authority` metadata alone
+  is not treated as an executable assertion.
 - [ ] Re-author the 20 prose-only rules that conservatively map to existing operators; require explicit selectors, facts, assertion parameters, unknown-evidence behavior and source-rule traceability.
 - [ ] Specify the 15 currently identifiable runtime-operator gaps as versioned contracts and fixtures before implementation: 7 already have structured fields and 8 remain prose-only. Define exact inputs, pass/fail/unknown semantics, evidence requirements and remediation boundaries for `statePolicy`, `numericFormat` and `visibilityPolicy`.
 - [ ] Add generic conditional RuleIR composition (`when -> assert`) rather than component-specific state branches; conditions must support fact-to-value and fact-to-fact comparison with three-valued unknown propagation.
@@ -515,6 +554,30 @@ plugin.
 - [ ] Preserve compatible package semantics across `design-system_ab`,
   `ds-ai-hub` and split repositories; source routing may differ, predicate
   meaning and capability versions may not.
+- [ ] Introduce stable descendant identity for the `ds-ai-hub -> Athena ->
+  Apollo` conversion pipeline. This is the canonical solution for renamed
+  Figma layers; do not accumulate component-specific name aliases in runtime:
+  - Athena must publish an authored `semanticRole` or generated
+    `contractNodeKey` for every descendant that can be selected by an
+    executable rule. The identifier must be independent of the visible Figma
+    layer name, emoji/decorated prefixes and localization;
+  - the generated release mapping binds that stable identity to the current
+    Figma evidence (`componentKey`, owner/ancestry, relative node path and
+    property reference). Display names remain diagnostics only;
+  - Ready RuleIR selectors use component identity plus stable descendant
+    identity and explicit ownership/ancestry. A literal layer name must never
+    be the sole selector for an enforcing rule;
+  - the converter rejects name-only deterministic rules or publishes the
+    package as `unsupported`/Draft. Temporary rename aliases belong to a
+    versioned generated migration map, not to authored rule predicates;
+  - an active required selector resolving zero targets is an explicit coverage
+    failure (`not_evaluable` during audit and a blocking error in release
+    checks), never silent `not_applicable` or success;
+  - preserve source traceability from human-readable `ds-ai-hub` guidance to
+    the stable role, compiled RuleIR id and exact executable source revision;
+  - add rename regressions using `PaymentMaskedNumber` and `TagGroup`: changing
+    only the visible layer name must not change the verdict; removing the role
+    mapping must fail compilation/publication rather than suppress a finding.
 
 ## P0: Contract v2 compiler and publication
 
@@ -568,7 +631,12 @@ plugin.
 - [x] Add the first evidence-safe relational predicates: ButtonsGroup member Size follows host Size and TitleStatus Type follows visible StatusPreset Type. Missing source evidence remains non-enforcing.
 - [x] Migrate and regression-test the schema-v1-safe packages: ButtonsGroup, BackgroundPlate and TitleView.
 - [ ] Complete the Contract v2 pilot wave for TitleView, BackgroundPlate, ButtonsGroup and AmountStyles after the P0 parity gate; preserve their existing Figma-visible behavior and agent-report evidence.
-- [ ] Select the next migration wave by capability coverage, not component popularity: prefer packages requiring no new operators, then add one operator family at a time with fixtures.
+- [x] Select the first migration wave by computed capability coverage, not
+  component popularity. `migration-wave-1.json` contains Ready packages with
+  100% deterministic compilation and zero unsupported rules: Benefits,
+  BackgroundPlate and ButtonStack. Core Amount, TagGroup and
+  PaymentMaskedNumber are tracked separately as supporting packages. The wave
+  remains default-off and `ready-for-shadow-parity`, not production-enforcing.
 - [ ] Migrate Button, CardImage, FAQ and TableBulkActions only when their host-dependent selectors and evidence are represented exactly; advisory guidance must not become a hard violation.
 - [ ] Publish a migration dashboard with package schema version, deterministic coverage, unsupported rules, last parity result and legacy dependency count.
 - [ ] Forbid new component-name conditionals in Apollo runtime; a missing capability becomes an explicit engine task or leaves the rule `unsupported`.
