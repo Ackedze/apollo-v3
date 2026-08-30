@@ -83,7 +83,7 @@ import {
   buildApolloPredicateStatsReport,
   buildApolloPredicateUiValidation,
   type ApolloPredicatePilotValidation,
-} from './predicate/pilotValidation';
+} from './predicate/predicateValidation';
 import {
   ensureContractPackageIndexLoaded,
   ensureContractArtifactsForHints,
@@ -1249,7 +1249,6 @@ async function requestPredicatePatternReport(
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      ruleSet: 'buttons-group-pilot',
       auditId: report.sourceReportId,
       pageType: report.scan.pageType,
       evidenceBundle: report.evidenceBundle,

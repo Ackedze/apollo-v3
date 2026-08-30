@@ -192,6 +192,36 @@ never broaden applicability.
 9. Pinned source path, anchor, checksum and revision.
 10. Figma PASS/FAIL field fixtures and UI-copy review before enforcement.
 
+## Mandatory proxy knowledge-bundle preflight
+
+Every Figma field test that depends on a new, changed or removed executable
+rule must use a freshly embedded proxy knowledge bundle. A source change in
+`design-system_ab` is not available to Apollo merely because the source file
+was edited, validated or pushed: ApolloProxyControl runs against the knowledge
+snapshot packaged into the application.
+
+Before starting the Figma test, always perform this sequence:
+
+1. Finish and validate the rule package in its source repository.
+2. Synchronize the updated `design-system_ab` and/or `ds-ai-hub` artifacts into
+   the Apollo proxy knowledge inputs.
+3. Rebuild ApolloProxyControl so the current artifacts are embedded into the
+   application bundle.
+4. Compare the checksum of every changed normative artifact in the source tree
+   with the corresponding file inside the built application. The checksums
+   must match.
+5. Verify through the release loader or manifest inspection that the expected
+   rule ids and predicate contours are present in the embedded release.
+6. Restart the rebuilt ApolloProxyControl, start the proxy and reload the
+   rebuilt Apollo plugin when plugin runtime code also changed.
+7. Only then run PASS/FAIL/UNKNOWN/NOT-APPLICABLE fixtures in Figma.
+
+If any of these checks fails, stop the field test. A report produced from a
+stale embedded bundle is not evidence about the new rules and must not be used
+to accept, reject or debug the migration. Record the proxy build identity and
+source checksums together with the field report so the tested rule revision is
+reproducible.
+
 The complete proxy regression suite must remain green. A field run is required
 when a new snapshot fact, Figma ownership interpretation or UI remediation is
 introduced.
@@ -381,6 +411,8 @@ or a declared context fact must return UNKNOWN rather than infer a default.
 4. Specify a new capability only when no existing contour represents the rule.
 5. Add only the missing generic snapshot facts required by that capability.
 6. Add closure, compiler, four-state, focus and repeatability tests.
-7. Publish source data before a Figma field run.
+7. Publish source data and complete the mandatory proxy knowledge-bundle
+   preflight before a Figma field run.
 8. Review the report for truth, copy, routing, focus, duplicates and coverage.
-9. Record the field fixture and source checksum in the architecture backlog.
+9. Record the field fixture, proxy build identity and source checksum in the
+   architecture backlog.

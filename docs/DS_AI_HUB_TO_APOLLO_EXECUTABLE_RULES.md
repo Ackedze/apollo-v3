@@ -294,6 +294,17 @@ If no contour expresses the semantic rule, first add an identity-agnostic
 operator/contour with synthetic fixtures. Do not add a BenefitCard-specific
 runtime `if`.
 
+Cross-component-property dependencies do not require a new operator when the
+Snapshot already exposes owner facts. Select the affected nested instance with
+`fact-assertion`, constrain it by stable component identity and property value,
+then assert the required owner fact through
+`ownership.owner.component.properties.*`. Keep independent semantics atomic:
+for ButtonsGroup the composition contract proves that SingleIcon is unique and
+last, while a separate source contour proves `SingleIcon=True -> Overflow=true`.
+Do not hide this dependency inside `when`: a conditional position rule becomes
+not-applicable when the prerequisite is false and therefore cannot report the
+missing prerequisite itself.
+
 ### Step 10. Keep predicates atomic
 
 One source rule may compile into several atomic RuleIR rules. For example,
@@ -529,7 +540,6 @@ universal contours:
 | `opacity-is-forbidden` | `baseline-set` | leaf opacity versus effective baseline |
 | `opacity-property-is-forbidden` | `fact-assertion` | Core Amount `Opacity` property under the Corp host |
 | `geometry-follows-effective-baseline` | `baseline-set` | spacing, sizing, height and wrap baseline |
-| `platform-preset-matches-breakpoint` | `breakpoint-map` | viewport width and preset platform |
 | `platform-preset-matches-channel` | `platform-match` | selected page channel and public preset platform |
 | `minor-has-one-or-two-digits` | `fact-assertion` | visible Minor text |
 | `major-max-13-digits` | `fact-assertion` | visible Major digit count |
@@ -583,8 +593,7 @@ The minimum matrix is:
 
 - public AmountHeadline and AmountParagraph PASS roots;
 - standalone internal Operation FAIL;
-- desktop/mobile channel PASS and cross-channel FAIL;
-- widths 767 and 768 px for the breakpoint boundary;
+- desktop/mobile channel PASS and cross-channel FAIL for each platform-specific preset;
 - missing/hidden Major FAIL;
 - hyphen or dash instead of U+2212 FAIL;
 - Minor with one/two digits PASS and three digits FAIL;
@@ -596,7 +605,7 @@ The minimum matrix is:
   than manufactured as deterministic failures.
 
 The report must focus the exact failing leaf for text, opacity and baseline
-rules, while root-level structure and breakpoint rules focus the public
+rules, while root-level structure and channel rules focus the public
 AmountStyles instance.
 
 ## Release checklist

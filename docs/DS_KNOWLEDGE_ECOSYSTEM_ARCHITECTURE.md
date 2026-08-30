@@ -934,9 +934,9 @@ Distributed ApolloProxyControl должен уметь отдельно пока
 | Общий анализ контракта знаний | `projects/Apollo-v3/docs/DS_KNOWLEDGE_CONTRACT_ANALYSIS.md` |
 | Predicate MVP и границы движка | `projects/Apollo-v3/docs/PREDICATE_ENGINE_MVP.md`, `projects/Apollo-v3/docs/EXECUTABLE_RULE_PACKAGE_MIGRATION.md` |
 | Snapshot и plugin-side evidence | `projects/Apollo-v3/src/stats/evidenceBundle.ts`, `projects/Apollo-v3/src/stats/evidenceTypes.ts`, `projects/Apollo-v3/src/stats/patternReport.ts`, `projects/Apollo-v3/src/stats/layoutRelations.ts` |
-| Вызов predicate API | `projects/Apollo-v3/src/predicate/pilotValidation.ts` |
+| Вызов predicate API | `projects/Apollo-v3/src/predicate/predicateValidation.ts` |
 | Remote knowledge bootstrap плагина | `projects/Apollo-v3/src/reference/referenceList.ts`, `projects/Apollo-v3/src/reference/library.ts` |
-| Predicate orchestration | `services/apollo-proxy/src/predicate-engine/pilot-service.js`, `services/apollo-proxy/src/predicate-engine/index.js` |
+| Predicate orchestration | `services/apollo-proxy/src/predicate-engine/release-service.js`, `services/apollo-proxy/src/predicate-engine/index.js` |
 | Snapshot Adapter и semantic facts | `services/apollo-proxy/src/predicate-engine/snapshot-adapter.js` |
 | Release discovery и RuleIR | `services/apollo-proxy/src/predicate-engine/release-loader.js`, `services/apollo-proxy/src/predicate-engine/contour-rules.js`, `services/apollo-proxy/src/predicate-engine/composition-compiler.js` |
 | Балансировка source rules | `services/apollo-proxy/src/predicate-engine/source-rule-balancer.js` |

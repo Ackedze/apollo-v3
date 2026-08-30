@@ -150,8 +150,6 @@ function report(pageType) {
 }
 
 const {
-  FORM_PATTERN_RULE_IDS,
-  GENERAL_PATTERN_RULE_IDS,
   buildApolloPatternAuditReport,
   parseVariantProperties,
 } = loadModule();
@@ -163,7 +161,7 @@ assert.deepEqual(
 
 const formReport = buildApolloPatternAuditReport(report('form'));
 assert.equal(formReport.reportKind, 'apollo-pattern-audit-report');
-assert.deepEqual(formReport.requestedRuleIds, [...FORM_PATTERN_RULE_IDS]);
+assert.deepEqual(formReport.requestedRuleIds, []);
 assert.equal(formReport.summary.generalChangeCount, 0);
 assert.equal(formReport.category.changeCount, 0);
 assert.deepEqual(formReport.category.items, []);
@@ -217,10 +215,7 @@ const architectureReport = buildApolloPatternAuditReport(
   undefined,
   layoutRelations,
 );
-assert.deepEqual(
-  architectureReport.requestedRuleIds,
-  [...GENERAL_PATTERN_RULE_IDS],
-);
+assert.deepEqual(architectureReport.requestedRuleIds, []);
 assert.equal(architectureReport.summary.layoutRelationCount, 1);
 assert.equal(architectureReport.facts.layoutRelations, layoutRelations);
 

@@ -3,7 +3,7 @@ import type {
   ApolloStatsReport,
 } from './types';
 import { buildApolloAgentReport } from './agentReport';
-import type { ApolloPredicateStatsReport } from '../predicate/pilotValidation';
+import type { ApolloPredicateStatsReport } from '../predicate/predicateValidation';
 
 const DEFAULT_COLLECTOR_URL =
   'https://dwjnndpxzqizrcwpasrs.supabase.co/functions/v1/apollo-stats';

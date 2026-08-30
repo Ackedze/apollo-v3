@@ -7,14 +7,6 @@ import type {
   StatsComponentItem,
 } from './types';
 
-export const FORM_PATTERN_RULE_IDS = [
-  'rule:forms.construction-rules.title-medium-one-per-plate',
-] as const;
-
-export const GENERAL_PATTERN_RULE_IDS = [
-  'rule:components.title-view.external-spacing',
-] as const;
-
 export function buildApolloPatternAuditReport(
   report: ApolloStatsReport,
   baselineCustomizationReport?: ApolloBaselineCustomizationReport,
@@ -22,10 +14,7 @@ export function buildApolloPatternAuditReport(
 ): ApolloPatternAuditReport {
   const items = collectUniqueComponentItems(report);
   const occurrences = buildOccurrences(items);
-  const requestedRuleIds = [
-    ...(layoutRelations.length ? GENERAL_PATTERN_RULE_IDS : []),
-    ...(report.scan.pageType === 'form' ? FORM_PATTERN_RULE_IDS : []),
-  ];
+  const requestedRuleIds: string[] = [];
 
   return {
     schemaVersion: 1,

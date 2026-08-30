@@ -46,14 +46,22 @@ predicate, exact focus, repeatability, authority и сохранности manua
 
 ## Получение полевого отчёта
 
+Если прогон зависит от новых, изменённых или удалённых правил, до запуска Figma
+обязательно синхронизируйте их в knowledge inputs ApolloProxyControl,
+пересоберите приложение и подтвердите совпадение checksum исходных и встроенных
+нормативных файлов. Дополнительно проверьте, что ожидаемые RuleID и predicate
+contours присутствуют во встроенном release manifest. Прогон на старом
+knowledge bundle недействителен и не используется для оценки новых правил.
+
 После каждого автоматизированного прогона в Figma используйте один и тот же
 порядок действий:
 
-1. Дождитесь стадии `completed` для нужного `runId` в ApolloProxyControl.
-2. Выполните `git pull --ff-only` в `shared/design-system_stats`.
-3. Выберите отчёт из обновлённой локальной копии по времени прогона и
+1. Зафиксируйте identity сборки proxy и checksum проверяемых правил.
+2. Дождитесь стадии `completed` для нужного `runId` в ApolloProxyControl.
+3. Выполните `git pull --ff-only` в `shared/design-system_stats`.
+4. Выберите отчёт из обновлённой локальной копии по времени прогона и
    проверяемой области; не анализируйте JSON, который был доступен до pull.
-4. Сопоставьте строки отчёта с predicate evaluation id, source node id и
+5. Сопоставьте строки отчёта с predicate evaluation id, source node id и
    ожидаемым Figma fixture.
 
 Если `git pull --ff-only` не может быть выполнен из-за локальных изменений или

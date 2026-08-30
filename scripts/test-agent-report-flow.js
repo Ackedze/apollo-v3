@@ -23,7 +23,7 @@ assert.doesNotMatch(
   /requestedRuleIds/,
   'Missing pageType must not skip the general pattern audit request.',
 );
-assert.match(patternRequestFunction, /ruleSet: 'buttons-group-pilot'/);
+assert.doesNotMatch(patternRequestFunction, /ruleSet/);
 assert.match(patternRequestFunction, /report\.evidenceBundle/);
 assert.match(code, /buildApolloPredicateUiValidation/);
 assert.match(code, /buildApolloPredicateStatsReport/);

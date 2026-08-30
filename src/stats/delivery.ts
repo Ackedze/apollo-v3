@@ -10,7 +10,7 @@ import type {
   ApolloBaselineCustomizationReport,
   ApolloStatsReport,
 } from './types';
-import type { ApolloPredicateStatsReport } from '../predicate/pilotValidation';
+import type { ApolloPredicateStatsReport } from '../predicate/predicateValidation';
 
 export const APOLLO_STATS_OUTBOX_STORAGE_KEY = 'apollo.stats.outbox.v1';
 

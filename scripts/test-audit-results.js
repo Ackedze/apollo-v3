@@ -206,9 +206,7 @@ async function main() {
   assert.equal(baselineCustomizationReport.scan.pageType, 'form');
   assert.equal(patternReport.scan.pageType, 'form');
   assert.equal(patternReport.reportKind, 'apollo-pattern-audit-report');
-  assert.deepEqual(patternReport.requestedRuleIds, [
-    'rule:forms.construction-rules.title-medium-one-per-plate',
-  ]);
+  assert.deepEqual(patternReport.requestedRuleIds, []);
   assert.equal(patternReport.summary.generalChangeCount, 1);
   assert.equal(patternReport.category.count, 1);
   assert.equal(patternReport.category.changeCount, 1);
