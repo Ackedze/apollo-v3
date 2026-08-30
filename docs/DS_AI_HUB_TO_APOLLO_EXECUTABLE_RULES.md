@@ -608,6 +608,44 @@ The report must focus the exact failing leaf for text, opacity and baseline
 rules, while root-level structure and channel rules focus the public
 AmountStyles instance.
 
+## TableView follow-up: split compound prose by evidence
+
+TableView confirmed that a human paragraph may contain multiple rules with
+different execution routes. The Compact instruction combines a structural
+claim (one data column) with a semantic claim (the information is read in one
+logical direction). Apollo executes only the structural claim. The semantic
+claim has its own RuleID and remains in `contextOnlyRules` until
+`content.reading-direction` and `user.task` become observable facts.
+
+Reusable findings from this migration:
+
+1. Add atomic executable rules rather than weakening broad human prose. The
+   minimum of two data columns is deterministic; the meaning of those columns
+   is contextual.
+2. Derive expected facts from the public owner. Row Compact and
+   `↕ SpacingVertical` are compared with owner-derived facts rather than a
+   TableView branch in the evaluator.
+3. Normalize structural aliases at the evidence boundary. `Row` and
+   `Row :: SidePanel` remain distinct contract families (`row` and
+   `row-side-panel`) but expose the same owner, column and spacing fact schema.
+4. Declare causality between primary and derivative violations. A mismatching
+   Row Compact is the primary cause of the resulting Compact column-count
+   finding on the same subject.
+5. Do not infer semantics from mutable layer names. Reading direction,
+   primary data, action meaning, Divider intent and ShowMore policy stay
+   context-only.
+6. Baseline checks may cover visual properties, but width/height/sizing remain
+   excluded until an exact manual-width fact distinguishes an override from
+   normal responsive layout.
+7. Close the package before publication. TableView records each source RuleID
+   exactly once as predicate, policy or context-only and lists effects/blend
+   mode and surface semantics as explicit coverage gaps.
+
+The first executable TableView revision remains `draft` until its Figma
+PASS/FAIL/ALLOW/UNKNOWN matrix is confirmed. Unit tests already prove
+source-only compilation, execution-policy closure and `Row :: SidePanel`
+fact parity.
+
 ## Release checklist
 
 - [ ] Source file list and revisions are recorded.

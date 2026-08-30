@@ -37,11 +37,28 @@ Apollo v3 исполняет только правила, объявленные
 - Плагин не передаёт список RuleID. Применимость определяется scope/select/when исполняемого release.
 - Правила клиента и произвольный rule set запрещены.
 
-## Выявленный coverage gap
+## TableView в боевом контуре
 
-`component:web-corp.table-view.compact-is-consistent-across-rows` описан в `TableView/rules.json`, но пока не имеет `predicateContour`. Сейчас его исполняет только удаляемый `pilot-rules.js`. После очистки правило намеренно перестанет давать автоматический verdict до корректной миграции в source package.
+TableView больше не зависит от удалённого `pilot-rules.js`. Его пакет закрыт
+`manual.executionPolicy`, а исполняемые проверки компилируются из
+`TableView/rules.json` универсальными contour-операторами.
 
-Четыре исходных ButtonsGroup pilot-проверки уже имеют эквивалентные source-derived composition rules и не зависят от hardcode.
+Детерминированы: граница публичных корней и платформ, структура Compact и
+multi-column Row, согласованность Compact строки с корнем, вертикальный
+spacing строки, обязательный Header, Vertical и SidePanel-контуры, а также
+effective-baseline визуальных свойств. `Row :: SidePanel` нормализуется как
+семейство `row-side-panel` и получает те же owner/column/spacing facts без
+ветки по имени компонента в evaluator.
+
+Контекстными остаются правила, которым не хватает продуктового смысла или
+явных наблюдаемых фактов: направление чтения, рекомендуемая ширина, семантика
+данных/действий, скрытые строки и ShowMore, Divider последней строки,
+заголовочные сигнатуры, surface context и ручное изменение ширины колонок.
+Они перечислены в `contextOnlyRules` с конкретными `missingFacts` и не создают
+автоматических ошибок.
+
+Четыре исходных ButtonsGroup pilot-проверки также имеют эквивалентные
+source-derived composition rules и не зависят от hardcode.
 
 ## Gate перед Figma-тестом
 

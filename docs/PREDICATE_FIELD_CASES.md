@@ -16,6 +16,31 @@ result hashes match; the gate metadata is stored in the predicate report. The
 
 Fixture root: `12164:14353`.
 
+## Next field gate — TableView package revision 1
+
+Status: prepared in the source package and proxy tests; Figma field
+verification is still required before changing TableView from `draft` to
+`ready`.
+
+The field matrix must cover:
+
+1. Horizontal `Compact=true`: PASS with one data column and FAIL with two.
+2. Horizontal `Compact=false`: PASS with at least two data columns and FAIL
+   with one.
+3. Row Compact equal to the owner and one mismatching Row with exact focus.
+4. `↕ SpacingVertical`: 12 for Compact and 16 for non-Compact, including an
+   UNKNOWN fixture without readable spacing metadata.
+5. Vertical TableView: exactly one data column per Body Row.
+6. Horizontal SidePanel: `Row :: SidePanel`, Compact=true, one data column and
+   12 px spacing; mutate each fact independently.
+7. Internal Row, Column, Caption and ShowMore used standalone.
+8. Root platform mismatch and valid universal Vertical root.
+9. Visual baseline PASS/FAIL for fill, stroke, radius, typography and opacity;
+   normal responsive width must not produce a finding.
+
+Every Figma card must include the complete human-readable rule and stable
+RuleID as required by `AGENTS.md`.
+
 ## P01 — `one-of`: ButtonsGroup allowed views
 
 Normative source:
