@@ -77,7 +77,7 @@ export type ApolloEvidenceNode = {
   path: string;
   type: string;
   name: string;
-  visible: true;
+  visible: boolean;
   bounds: ApolloEvidenceBounds | null;
   layout: {
     mode: string | null;
@@ -102,6 +102,7 @@ export type ApolloEvidenceNode = {
     characters: string;
     length: number;
     textStyleId: string | null;
+    lineHeight: number | null;
   } | null;
   styles: {
     fillStyleId: string | null;

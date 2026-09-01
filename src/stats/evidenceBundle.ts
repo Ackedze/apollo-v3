@@ -237,7 +237,7 @@ function createEvidenceNode(
     path,
     type: node.type,
     name: node.name,
-    visible: true,
+    visible: node.visible !== false,
     bounds: readBounds(node),
     layout: {
       mode: readStringProperty(node, 'layoutMode'),
@@ -258,6 +258,7 @@ function createEvidenceNode(
           characters: node.characters,
           length: node.characters.length,
           textStyleId: readStyleId(node, 'textStyleId'),
+          lineHeight: readTextLineHeight(node),
         }
       : null,
     styles: {
@@ -274,6 +275,12 @@ function createEvidenceNode(
     },
     variableBindings,
   };
+}
+
+function readTextLineHeight(node: SceneNode): number | null {
+  if (node.type !== 'TEXT' || node.lineHeight === figma.mixed) return null;
+  if (!node.lineHeight || node.lineHeight.unit !== 'PIXELS') return null;
+  return Number.isFinite(node.lineHeight.value) ? node.lineHeight.value : null;
 }
 
 function readPaintAppearance(
