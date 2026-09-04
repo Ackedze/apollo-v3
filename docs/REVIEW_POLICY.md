@@ -13,9 +13,7 @@
 | R2 | Audit classification, snapshot/diff, assessment, filters, policies, reference loading, contracts, stats, Agent | 1 актуальный trusted approval от code owner |
 | R3 | Manifest permissions/domains, network transport, dependencies, workflows, build/release и privacy boundary | 1 актуальный trusted approval от code owner и явная security-проверка |
 
-Workflow `Review policy` вычисляет риск по изменённым путям. Approval считается актуальным, только если он относится к текущему head commit PR и оставлен участником с `write`, `maintain` или `admin` permission. Более строгая классификация имеет приоритет.
-
-Сейчас Apollo работает в single-maintainer mode: для любого уровня риска требуется один актуальный trusted approval. После назначения второго независимого maintainer с `write`, `maintain` или `admin` требование для R2/R3 должно быть возвращено к двум approvals; до этого порог `2` делает policy технически невыполнимой и вынуждает использовать admin bypass.
+Автоматический workflow для вычисления риска и проверки approvals не используется. Таблица выше служит ориентиром для ручного ревью внешних pull request и не блокирует прямую публикацию владельца в `main`.
 
 ## Проверка автором
 
@@ -47,7 +45,7 @@ Workflow `Review policy` вычисляет риск по изменённым �
 
 ### Проверки
 
-- `npm run validate` проходит локально и в GitHub Actions.
+- `npm run validate` проходит локально, если автор запускает полный набор проверок перед публикацией.
 - Для UI приложено состояние до/после в Figma.
 - Для audit logic приложен минимальный fixture или обезличенный отчёт.
 - Для R3 описаны threat model, новые данные, endpoint и поведение при отказе.

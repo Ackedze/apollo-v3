@@ -493,14 +493,14 @@ Web, token/style и contract catalogs загружаются из `Ackedze/desig
 
 ## Внешний контрибьютинг
 
-Apollo принимает внешние изменения через fork и pull request. Прямые изменения `main` не являются штатным способом разработки.
+Apollo принимает внешние изменения через fork и pull request. Владелец репозитория может публиковать собственные изменения напрямую в `main`.
 
 - Полный процесс подготовки изменения описан в [`CONTRIBUTING.md`](./CONTRIBUTING.md).
-- Уровни риска, требуемые approvals и критерии code review заданы в [`docs/REVIEW_POLICY.md`](./docs/REVIEW_POLICY.md).
+- Уровни риска и критерии ручного code review заданы в [`docs/REVIEW_POLICY.md`](./docs/REVIEW_POLICY.md).
 - Автоматические и ручные Figma-проверки описаны в [`docs/TESTING.md`](./docs/TESTING.md).
 - Уязвимости передаются приватно по правилам [`SECURITY.md`](./SECURITY.md).
-- `CODEOWNERS` требует участия владельца Apollo, а workflow `Review policy` в текущем single-maintainer mode требует один актуальный trusted approval от code owner для любого уровня риска. После назначения второго maintainer порог R2/R3 должен быть возвращён к двум approvals.
-- Каждый PR обязан пройти `npm run validate`, содержать regression coverage для исправлений и раскрывать использование AI.
+- `CODEOWNERS` указывает владельца для внешних PR, но автоматический approval gate не используется.
+- Для каждого PR рекомендуется локально выполнить `npm run validate`, добавить regression coverage для исправлений и раскрыть использование AI.
 - Плановые Dependabot version updates отключены, чтобы не создавать массовые PR без продуктового контекста. Автоматически создаются только security updates; обычное обновление зависимостей выполняется отдельной согласованной задачей.
 
 Внешним контрибьюторам не нужны release credentials и доступ к пользовательской статистике. Изменения каталогов и cross-repo contracts оформляются отдельно в Athena/design-system_ab и связываются с Apollo PR.
