@@ -18,8 +18,17 @@ export interface ApolloPluginMessageRouterDependencies {
     agentSource: string | null | undefined,
     dialogue: unknown,
   ): Promise<void>;
+  generateLayout(
+    requestId: string | null | undefined,
+    prompt: string | null | undefined,
+    dialogue: unknown,
+    brief: string | null | undefined,
+    clarificationRound: unknown,
+  ): Promise<void>;
+  getProxyStatus(): Promise<void>;
   setAgentSource(source: string | null | undefined): Promise<void>;
   cancelAgentReport(requestId: string | null | undefined): boolean;
+  cancelLayoutGeneration(requestId: string | null | undefined): boolean;
   retryStatsUpload(): Promise<void>;
   resizeUi(compact: boolean): void;
   focusNode(nodeId: string | undefined): Promise<void>;
@@ -95,6 +104,34 @@ export function routeApolloPluginMessage(
           });
         });
       return true;
+    case 'generate-apollo-layout':
+      void dependencies
+        .generateLayout(
+          message.payload?.requestId,
+          message.payload?.prompt,
+          message.payload?.dialogue,
+          message.payload?.brief,
+          message.payload?.clarificationRound,
+        )
+        .catch((error) => {
+          dependencies.logError('[Apollo][generation] unhandled error', error);
+          dependencies.postMessage({
+            type: 'apollo-generation-result',
+            payload: {
+              requestId: message.payload?.requestId ?? null,
+              error:
+                error instanceof Error
+                  ? error.message
+                  : 'Не удалось создать макет.',
+            },
+          });
+        });
+      return true;
+    case 'get-apollo-proxy-status':
+      void dependencies.getProxyStatus().catch((error) => {
+        dependencies.logError('[Apollo] failed to get proxy status', error);
+      });
+      return true;
     case 'set-apollo-agent-source':
       void dependencies
         .setAgentSource(message.payload?.source)
@@ -107,6 +144,16 @@ export function routeApolloPluginMessage(
       if (dependencies.cancelAgentReport(requestId)) {
         dependencies.postMessage({
           type: 'apollo-agent-cancelled',
+          payload: { requestId: requestId ?? null },
+        });
+      }
+      return true;
+    }
+    case 'cancel-apollo-layout-generation': {
+      const requestId = message.payload?.requestId;
+      if (dependencies.cancelLayoutGeneration(requestId)) {
+        dependencies.postMessage({
+          type: 'apollo-generation-cancelled',
           payload: { requestId: requestId ?? null },
         });
       }

@@ -188,9 +188,38 @@ function isUnavailableTraceValue(value: unknown): boolean {
   );
 }
 
-function formatValue(value: unknown): string {
+function isBindingFact(value: unknown): value is {
+  bound: boolean;
+  value?: unknown;
+} {
+  return Boolean(
+    value &&
+    typeof value === 'object' &&
+    !Array.isArray(value) &&
+    typeof (value as { bound?: unknown }).bound === 'boolean' &&
+    'value' in value,
+  );
+}
+
+function factUsesPixelUnit(factPath?: string): boolean {
+  return Boolean(
+    factPath &&
+    /(?:^|\.)(?:layout|geometry)(?:\.|$)|(?:padding|spacing|gap|radius|width|height)/i.test(
+      factPath,
+    ),
+  );
+}
+
+function formatValue(value: unknown, factPath?: string): string {
   if (value === undefined) return 'неизвестно';
   if (value === null) return 'null';
+  if (isBindingFact(value)) {
+    const rawValue = value.value;
+    const formattedValue = formatValue(rawValue, factPath);
+    return typeof rawValue === 'number' && factUsesPixelUnit(factPath)
+      ? `${formattedValue} px`
+      : formattedValue;
+  }
   if (isUnavailableTraceValue(value)) {
     const state = (value as { state: string }).state;
     if (state === 'absent') return 'отсутствует';
@@ -262,31 +291,32 @@ function presentationFromManifest(
           ['false', 'unknown'],
         )
       : undefined;
-    const context = formatValue(contextTrace?.actual);
+    const context = formatValue(
+      contextTrace?.actual,
+      contextTrace?.factPaths[0],
+    );
     const contextLabel = declaration.contextLabels?.[String(contextTrace?.actual)]
       || context;
-    const formatDeclaredValue = (value: unknown): string => {
+    const formatDeclaredValue = (value: unknown, factPath?: string): string => {
       if (Array.isArray(value)) {
         return value
           .map((entry) => (
-            declaration.valueLabels?.[String(entry)] || formatValue(entry)
+            declaration.valueLabels?.[String(entry)] || formatValue(entry, factPath)
           ))
           .join(', ');
       }
-      return declaration.valueLabels?.[String(value)] || formatValue(value);
+      return declaration.valueLabels?.[String(value)] || formatValue(value, factPath);
     };
+    const targetValue = targetTrace?.actual ?? evaluation.trace.actual;
+    const targetFactPath = targetTrace?.factPaths[0] || evaluation.trace.factPaths[0];
+    const expectedValue = targetTrace?.expected ?? evaluation.trace.expected;
     const values: Record<string, string> = {
-      actual: formatDeclaredValue(
-        targetTrace?.actual ?? evaluation.trace.actual,
-      ),
+      actual: formatDeclaredValue(targetValue, targetFactPath),
       duplicates: formatDeclaredValue(
-        duplicatePresentationValues(
-          targetTrace?.actual ?? evaluation.trace.actual,
-        ),
+        duplicatePresentationValues(targetValue),
+        targetFactPath,
       ),
-      expected: formatDeclaredValue(
-        targetTrace?.expected ?? evaluation.trace.expected,
-      ),
+      expected: formatDeclaredValue(expectedValue, targetFactPath),
       context,
       contextLabel,
       measured: formatDeclaredValue(
@@ -295,6 +325,7 @@ function presentationFromManifest(
         !Array.isArray(evaluation.trace.expected)
           ? (evaluation.trace.expected as { measured?: unknown }).measured
           : undefined,
+        evaluation.trace.factPaths[0],
       ),
       targetFact: declaration.targetFact || '',
       contextFact: declaration.contextFact || '',

@@ -1885,3 +1885,49 @@ real StatusPreset and Core Status catalogs and proves both directions:
 
 The field rerun passed and is the canonical UI/report evidence for this
 invariant.
+
+### CUTOVER C24 — ContentCardWrapper human-rule projection
+
+Purpose: field-prove that a component package can be derived from one
+human-readable pattern without restoring the retired hard-coded pattern audit.
+The source of truth is
+`ds-ai-hub/products/ab/patterns/content-card-wrapper.md`; every source rule is
+linked to the executable package through
+`apollo/rule-crosswalk.json`.
+
+Source package:
+`JSONS/web/components/web-corp/ContentCardWrapper/rules.json`, status
+`generated-draft`. The package deliberately distinguishes three enforcement
+routes:
+
+1. **predicate now** — public root, valid `State`/`Skeleton` values, immutable
+   edge padding, nested BackgroundPlate level by platform, text baseline,
+   non-text layer baseline and token-bound inter-item gaps;
+2. **delegated now** — platform typography is evaluated by the generic text
+   effective-baseline predicate, so it does not emit a duplicate finding;
+3. **context/agent later** — collection semantics, interaction, flow,
+   semantic slots and desktop/mobile meaning. Each rule lists the missing facts
+   in `manual.executionPolicy.contextOnlyRules`; absence of a predicate is not
+   silent coverage loss.
+
+Build a dedicated Figma section with published library instances only. Every
+case label must contain the human `Rule N` wording, stable Apollo RuleID and
+the expected PASS/FAIL result.
+
+Minimum field cases:
+
+1. PASS `[D] ContentCardWrapper` unchanged — R14, R16 and R23.
+2. FAIL `[D] ContentCardWrapper` with one edge-padding override —
+   `component:web-corp.content-card-wrapper.edge-padding-immutable`.
+3. FAIL `[D] ContentCardWrapper` with one text-style override —
+   `component:web-corp.content-card-wrapper.text-style-immutable`.
+4. FAIL one owned auto-layout gap changed to a raw value —
+   `component:web-corp.content-card-wrapper.inter-item-gap-tokenized`.
+5. PASS `[M] ContentCardWrapper` unchanged — platform baseline and R15.
+6. FAIL a published internal ContentCardWrapper part used as an independent
+   root — `component:web-corp.content-card-wrapper.public-root-only`.
+
+Run `Паттерны` twice: Desktop for the desktop cases and MobileWeb for the
+mobile control. Expected output contains only the declared FAIL rows, points to
+the exact modified node, has no duplicate evaluations and is stable for ten
+runs. Do not mark C24 ready until this field result is recorded.

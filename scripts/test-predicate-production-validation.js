@@ -87,14 +87,29 @@ const validation = buildApolloPredicateUiValidation({
       path: 'design-system_ab/JSONS/test/rules.json',
       checksum: 'c'.repeat(64),
     },
+  }, {
+    ruleId: 'component:test.raw-binding-presentation',
+    revision: 1,
+    severity: 'error',
+    source: {
+      path: 'design-system_ab/JSONS/test/rules.json',
+      checksum: 'd'.repeat(64),
+    },
+    presentation: {
+      schemaVersion: 'apollo.predicate-presentation.v1',
+      title: 'Интервал задан без токена',
+      observed: 'Интервал MiddleSlot имеет значение {{actual}} без token binding.',
+      expectation: 'Интервал должен быть привязан к токену Spacing.',
+      action: 'Привязать текущее значение к токену Spacing.',
+    },
   }],
   result: {
     schemaVersion: 'apollo.predicate-result.v1',
     snapshotHash: 'production-renderer-snapshot',
     ruleRelease: 'release',
     coverage: {
-      total: 3,
-      byClassification: { violation: 3 },
+      total: 4,
+      byClassification: { violation: 4 },
       unclassified: 0,
       duplicateEvaluationIds: 0,
     },
@@ -147,11 +162,35 @@ const validation = buildApolloPredicateUiValidation({
           factPaths: ['component.properties.Value'],
         },
       }),
+      evaluation({
+        evaluationId: 'raw-binding-presentation',
+        ruleId: 'component:test.raw-binding-presentation',
+        subjectNodeId: '50:1',
+        subjectNodeName: 'MiddleSlot',
+        focusNodeId: '50:1',
+        focusNodeName: 'MiddleSlot',
+        trace: {
+          predicate: 'binding-satisfies',
+          truth: 'false',
+          reason: 'token binding is absent',
+          actual: {
+            bound: false,
+            value: 12,
+            variableIds: [],
+            variables: [],
+            collection: null,
+            token: null,
+            variableId: null,
+          },
+          expected: { collection: 'Spacing', bound: true },
+          factPaths: ['layout.itemSpacing'],
+        },
+      }),
     ],
   },
 });
 
-assert.equal(validation.findings.length, 3);
+assert.equal(validation.findings.length, 4);
 assert.match(
   validation.responseMarkdown,
   /У компонента «Minor» свойство Opacity имеет значение True./,
@@ -166,6 +205,11 @@ assert.match(
   /Исполняемое правило не содержит presentation/,
 );
 assert.match(validation.responseMarkdown, /RuleID: component:test\.missing-presentation/);
+assert.match(
+  validation.responseMarkdown,
+  /Интервал MiddleSlot имеет значение 12 px без token binding\./,
+);
+assert.doesNotMatch(validation.responseMarkdown, /"bound":false/);
 
 const amountFinding = validation.findings.find(
   (finding) => finding.id === 'amount-opacity',

@@ -59,6 +59,7 @@ export async function buildApolloAuditEvidenceBundle(
 ): Promise<ApolloAuditEvidenceBundle> {
   const baselineResult = buildBaselineEvidence(
     input.baselineCustomizationReport,
+    input.report,
   );
   const changedNodeIds = new Set(
     baselineResult.changes.map((change) => change.nodeId),
@@ -550,7 +551,8 @@ function addContainerPaddingRelations(
 }
 
 function buildBaselineEvidence(
-  report: ApolloBaselineCustomizationReport,
+  baselineReport: ApolloBaselineCustomizationReport,
+  sourceReport: ApolloStatsReport,
 ): {
   baselines: ApolloEvidenceBaselineReference[];
   changes: ApolloEvidenceChangeFact[];
@@ -558,20 +560,26 @@ function buildBaselineEvidence(
 } {
   const baselineById = new Map<string, ApolloEvidenceBaselineReference>();
   const ruleById = new Map<string, ApolloEvidenceRuleCandidate>();
-  const changes: ApolloEvidenceChangeFact[] = [];
-  for (const item of report.category.items) {
+  const changeById = new Map<string, ApolloEvidenceChangeFact>();
+  const items = baselineReport.category.items.concat(
+    sourceReport.categories?.customizations?.items ?? [],
+  );
+  for (const item of items) {
     for (const change of item.changes) {
       const baseline = toBaselineReference(change);
       baselineById.set(baseline.id, baseline);
       for (const rule of change.componentRules) {
         if (!ruleById.has(rule.ruleId)) ruleById.set(rule.ruleId, toRuleCandidate(rule));
       }
-      changes.push(toChangeFact(change, item.component.key, baseline.id));
+      const evidenceChange = toChangeFact(change, item.component.key, baseline.id);
+      if (!changeById.has(evidenceChange.id)) {
+        changeById.set(evidenceChange.id, evidenceChange);
+      }
     }
   }
   return {
     baselines: [...baselineById.values()].sort((left, right) => left.id.localeCompare(right.id)),
-    changes: changes.sort((left, right) => left.id.localeCompare(right.id)),
+    changes: [...changeById.values()].sort((left, right) => left.id.localeCompare(right.id)),
     ruleCandidates: [...ruleById.values()].sort((left, right) => left.ruleId.localeCompare(right.ruleId)),
   };
 }

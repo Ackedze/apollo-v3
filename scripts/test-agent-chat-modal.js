@@ -58,6 +58,36 @@ assertIncludes(
 );
 assertIncludes(
   uiSource,
+  'id="agent-proxy-version"',
+  'Generation mode must expose the local Apollo Proxy version.',
+);
+assertIncludes(
+  uiSource,
+  "type: 'get-apollo-proxy-status'",
+  'Opening generation chat must refresh the Apollo Proxy version.',
+);
+assertIncludes(
+  uiSource,
+  'generationOriginalBrief',
+  'Generation chat must preserve the original brief across clarification rounds.',
+);
+assertIncludes(
+  uiSource,
+  'clarificationRound: generationClarificationRound',
+  'Generation chat must send a bounded clarification round counter.',
+);
+assertIncludes(
+  uiSource,
+  'payload.blocked === true',
+  'Generation chat must render a terminal blocked outcome without automatic retry.',
+);
+assertIncludes(
+  uiSource,
+  "msg.type === 'apollo-proxy-status'",
+  'The chat must render Apollo Proxy health responses.',
+);
+assertIncludes(
+  uiSource,
   "type: 'set-apollo-agent-source'",
   'The selected source must be persisted through the plugin runtime.',
 );
@@ -83,8 +113,8 @@ assertIncludes(
 );
 assertIncludes(
   uiSource,
-  "if (agentDialogueOpen) {\n            return 'question';",
-  'Open dialogue messages must use the isolated question channel.',
+  "return agentDialogueMode === 'generation'\n              ? 'generation'\n              : 'question';",
+  'Open dialogue messages must use isolated question and generation channels.',
 );
 assertIncludes(
   uiSource,

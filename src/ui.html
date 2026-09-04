@@ -317,7 +317,10 @@
         padding-left: 12px;
       }
       .agent-chat-overlay.dialogue-visible .agent-conversation {
-        padding: 72px 12px 16px;
+        padding: 120px 12px 16px;
+      }
+      .agent-chat-overlay.dialogue-visible.generation-mode .agent-conversation {
+        padding-top: 72px;
       }
       .agent-conversation-inner {
         min-height: 100%;
@@ -598,6 +601,58 @@
       .agent-chat-overlay.dialogue-visible .agent-source-control {
         position: absolute;
         z-index: 3;
+        top: 67px;
+        left: 19px;
+        height: 40px;
+        padding: 4px;
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.04);
+      }
+      .agent-chat-overlay.dialogue-visible.generation-mode .agent-source-control {
+        display: none;
+      }
+      .agent-proxy-version {
+        display: none;
+      }
+      .agent-chat-overlay.dialogue-visible.generation-mode .agent-proxy-version {
+        position: absolute;
+        z-index: 3;
+        top: 67px;
+        left: 19px;
+        min-height: 32px;
+        padding: 0 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.04);
+        color: rgba(3, 3, 6, 0.64);
+        font-size: 12px;
+        line-height: 16px;
+        white-space: nowrap;
+      }
+      .agent-proxy-version::before {
+        width: 6px;
+        height: 6px;
+        flex: 0 0 auto;
+        border-radius: 999px;
+        background: #16a34a;
+        content: '';
+      }
+      .agent-proxy-version.unavailable::before {
+        background: rgba(3, 3, 6, 0.32);
+      }
+      .agent-dialogue-mode-control {
+        display: none;
+      }
+      .agent-chat-overlay.dialogue-visible .agent-dialogue-mode-control {
+        position: absolute;
+        z-index: 3;
         top: 19px;
         left: 19px;
         height: 40px;
@@ -608,6 +663,35 @@
         border: 1px solid rgba(0, 0, 0, 0.04);
         border-radius: 999px;
         background: rgba(0, 0, 0, 0.04);
+      }
+      .agent-dialogue-mode-control__option {
+        height: 32px;
+        padding: 0 12px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: rgba(3, 3, 6, 0.64);
+        font: inherit;
+        font-size: 13px;
+        line-height: 18px;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+      .agent-dialogue-mode-control__option:hover:not(.selected):not(:disabled) {
+        background: rgba(0, 0, 0, 0.06);
+        color: rgba(3, 3, 6, 0.88);
+      }
+      .agent-dialogue-mode-control__option.selected {
+        background: #000;
+        color: rgba(255, 255, 255, 0.94);
+      }
+      .agent-dialogue-mode-control__option:focus-visible {
+        outline: 2px solid #196cff;
+        outline-offset: 2px;
+      }
+      .agent-dialogue-mode-control__option:disabled {
+        cursor: default;
+        opacity: 0.48;
       }
       .agent-source-control__option {
         height: 32px;
@@ -1218,6 +1302,25 @@
               aria-label="Apollo agent"
             >
               <div
+                id="agent-dialogue-mode-control"
+                class="agent-dialogue-mode-control"
+                role="group"
+                aria-label="Режим чата"
+              >
+                <button
+                  class="agent-dialogue-mode-control__option"
+                  type="button"
+                  data-agent-dialogue-mode="generation"
+                  aria-pressed="false"
+                >Генерация</button>
+                <button
+                  class="agent-dialogue-mode-control__option selected"
+                  type="button"
+                  data-agent-dialogue-mode="question"
+                  aria-pressed="true"
+                >Задать вопрос</button>
+              </div>
+              <div
                 id="agent-source-control"
                 class="agent-source-control"
                 role="group"
@@ -1236,6 +1339,12 @@
                   aria-pressed="false"
                 >Локальный Codex</button>
               </div>
+              <div
+                id="agent-proxy-version"
+                class="agent-proxy-version unavailable"
+                aria-live="polite"
+                title="Версия локального Apollo Proxy"
+              >Proxy —</div>
               <button
                 id="agent-chat-close"
                 class="agent-chat-close"
@@ -1457,6 +1566,7 @@
         let textReportMeta = null;
         let activeApolloView = 'audit';
         let agentDialogueOpen = false;
+        let agentDialogueMode = 'question';
         let agentDialogueSource = 'langflow';
         let agentRequestInProgress = false;
         let agentActiveRequestId = null;
@@ -1466,7 +1576,17 @@
         let agentReportMessages = [];
         let agentTextMessages = [];
         let agentDialogueMessages = [];
+        let agentGenerationMessages = [{
+          id: 'apollo-generation-intro',
+          role: 'assistant',
+          text: 'Опишите макет. Агент прочитает подходящие паттерны и рецепты ds-ai-hub. Если данных для решения недостаточно, он задаст уточняющий вопрос.',
+        }];
         let agentLastQuestion = '';
+        let agentLastGenerationPrompt = '';
+        let generationRequestInProgress = false;
+        let generationActiveRequestId = null;
+        let generationOriginalBrief = '';
+        let generationClarificationRound = 0;
         let agentMessageSequence = 0;
         let agentRetryTimerId = null;
         let statsDeliverySuccessTimerId = null;
@@ -1495,8 +1615,14 @@
         const agentChatPanel = document.getElementById('agent-chat-panel');
         const agentChatLauncher = document.getElementById('agent-chat-launcher');
         const agentChatClose = document.getElementById('agent-chat-close');
+        const agentProxyVersion = document.getElementById(
+          'agent-proxy-version',
+        );
         const agentSourceButtons = Array.from(
           document.querySelectorAll('[data-agent-source]'),
+        );
+        const agentDialogueModeButtons = Array.from(
+          document.querySelectorAll('[data-agent-dialogue-mode]'),
         );
         const agentConversation = document.getElementById('agent-conversation');
         const agentConversationInner = document.getElementById(
@@ -1567,6 +1693,11 @@
             setAgentDialogueSource(button.dataset.agentSource, true);
           });
         });
+        agentDialogueModeButtons.forEach((button) => {
+          button.addEventListener('click', () => {
+            setAgentDialogueMode(button.dataset.agentDialogueMode);
+          });
+        });
         agentChatOverlay?.addEventListener('click', (event) => {
           if (agentDialogueOpen && event.target === agentChatOverlay) {
             closeAgentDialogue(true);
@@ -1585,6 +1716,7 @@
             return;
           }
           const focusableElements = [
+            ...agentDialogueModeButtons,
             ...agentSourceButtons,
             agentChatClose,
             agentComposerInput,
@@ -3230,6 +3362,11 @@
             return;
           }
 
+          if (msg.type === 'apollo-proxy-status') {
+            renderApolloProxyStatus(msg.payload || {});
+            return;
+          }
+
           if (msg.type === 'apollo-agent-started') {
             handleAgentStarted(msg.payload || {});
             return;
@@ -3253,6 +3390,33 @@
             removeAgentLoadingMessage(cancelledKind);
             syncAgentViewState();
             requestNextPendingAgentReport();
+            return;
+          }
+
+          if (msg.type === 'apollo-generation-started') {
+            handleGenerationStarted(msg.payload || {});
+            return;
+          }
+
+          if (msg.type === 'apollo-generation-progress') {
+            handleGenerationProgress(msg.payload || {});
+            return;
+          }
+
+          if (msg.type === 'apollo-generation-result') {
+            handleGenerationResult(msg.payload || {});
+            return;
+          }
+
+          if (msg.type === 'apollo-generation-cancelled') {
+            generationRequestInProgress = false;
+            generationActiveRequestId = null;
+            removeAgentLoadingMessage('generation');
+            addAgentMessage({
+              role: 'assistant',
+              text: 'Генерация остановлена.',
+            }, 'generation');
+            syncAgentViewState();
             return;
           }
 
@@ -3399,6 +3563,7 @@
             return;
           }
           agentDialogueOpen = true;
+          requestApolloProxyStatus();
           renderAgentMessages();
           syncAgentViewState();
           requestAnimationFrame(() => {
@@ -3424,6 +3589,65 @@
               '*',
             );
           }
+        }
+
+        function setAgentDialogueMode(value) {
+          if (agentRequestInProgress || generationRequestInProgress) {
+            return;
+          }
+          agentDialogueMode = value === 'generation' ? 'generation' : 'question';
+          if (agentDialogueMode === 'generation') {
+            requestApolloProxyStatus();
+          }
+          renderAgentMessages();
+          syncAgentViewState();
+          requestAnimationFrame(() => agentComposerInput?.focus());
+        }
+
+        function syncAgentDialogueModeControl() {
+          const requestInProgress =
+            agentRequestInProgress || generationRequestInProgress;
+          agentDialogueModeButtons.forEach((button) => {
+            const selected =
+              button.dataset.agentDialogueMode === agentDialogueMode;
+            button.classList.toggle('selected', selected);
+            button.setAttribute('aria-pressed', selected ? 'true' : 'false');
+            button.disabled = requestInProgress;
+          });
+          agentChatOverlay?.classList.toggle(
+            'generation-mode',
+            agentDialogueOpen && agentDialogueMode === 'generation',
+          );
+        }
+
+        function requestApolloProxyStatus() {
+          parent.postMessage(
+            {
+              pluginMessage: {
+                type: 'get-apollo-proxy-status',
+              },
+            },
+            '*',
+          );
+        }
+
+        function renderApolloProxyStatus(payload) {
+          if (!agentProxyVersion) {
+            return;
+          }
+          const available = payload?.available === true;
+          const version = typeof payload?.version === 'string'
+            ? payload.version.trim()
+            : '';
+          agentProxyVersion.textContent = available
+            ? version
+              ? `Proxy v${version}`
+              : 'Proxy подключён'
+            : 'Proxy недоступен';
+          agentProxyVersion.classList.toggle('unavailable', !available);
+          agentProxyVersion.title = available && version
+            ? `Локальный Apollo Proxy, версия ${version}`
+            : 'Локальный Apollo Proxy недоступен';
         }
 
         function syncAgentSourceControl() {
@@ -3488,12 +3712,16 @@
         }
 
         function retryActiveAgentRequest() {
-          if (agentRequestInProgress) {
+          if (agentRequestInProgress || generationRequestInProgress) {
             return;
           }
 
-          if (agentDialogueOpen && agentLastQuestion) {
-            sendAgentReportToProxy(agentLastQuestion);
+          if (agentDialogueOpen) {
+            if (agentDialogueMode === 'generation' && agentLastGenerationPrompt) {
+              sendApolloLayoutGeneration(agentLastGenerationPrompt);
+            } else if (agentDialogueMode === 'question' && agentLastQuestion) {
+              sendAgentReportToProxy(agentLastQuestion);
+            }
             return;
           }
 
@@ -3516,7 +3744,12 @@
             return;
           }
 
-          if (agentRequestInProgress) {
+          if (agentDialogueMode === 'generation' && generationRequestInProgress) {
+            cancelApolloLayoutGeneration();
+            return;
+          }
+
+          if (agentDialogueMode === 'question' && agentRequestInProgress) {
             if (agentActiveRequestKind === 'question') {
               cancelAgentReportRequest();
             }
@@ -3528,18 +3761,26 @@
             return;
           }
 
-          agentLastQuestion = userMessage;
+          if (agentDialogueMode === 'generation') {
+            agentLastGenerationPrompt = userMessage;
+          } else {
+            agentLastQuestion = userMessage;
+          }
           addAgentMessage({
             role: 'user',
             text: userMessage,
-          }, 'question');
+          }, agentDialogueMode === 'generation' ? 'generation' : 'question');
 
           if (agentComposerInput) {
             agentComposerInput.value = '';
             resizeAgentComposerInput();
           }
 
-          sendAgentReportToProxy(userMessage);
+          if (agentDialogueMode === 'generation') {
+            sendApolloLayoutGeneration(userMessage);
+          } else {
+            sendAgentReportToProxy(userMessage);
+          }
         }
 
         function cancelAgentReportRequest() {
@@ -3552,6 +3793,21 @@
               pluginMessage: {
                 type: 'cancel-apollo-agent-report',
                 payload: { requestId: agentActiveRequestId },
+              },
+            },
+            '*',
+          );
+        }
+
+        function cancelApolloLayoutGeneration() {
+          if (!generationRequestInProgress) {
+            return;
+          }
+          parent.postMessage(
+            {
+              pluginMessage: {
+                type: 'cancel-apollo-layout-generation',
+                payload: { requestId: generationActiveRequestId },
               },
             },
             '*',
@@ -3661,6 +3917,163 @@
           );
         }
 
+        function buildGenerationDialogue(currentPrompt) {
+          const dialogue = agentGenerationMessages
+            .filter((message) =>
+              message.id !== 'apollo-generation-intro' &&
+              message.variant !== 'loading' &&
+              (message.role === 'user' || message.role === 'assistant') &&
+              typeof message.text === 'string' &&
+              message.text.trim()
+            )
+            .map((message) => ({
+              role: message.role,
+              text: message.text.trim(),
+            }));
+          const lastMessage = dialogue[dialogue.length - 1];
+          if (
+            lastMessage &&
+            lastMessage.role === 'user' &&
+            lastMessage.text === currentPrompt
+          ) {
+            dialogue.pop();
+          }
+          if (dialogue.length <= 16) {
+            return dialogue;
+          }
+          const firstUser = dialogue.find((entry) => entry.role === 'user');
+          const recent = dialogue.slice(firstUser ? -15 : -16);
+          if (firstUser && !recent.includes(firstUser)) {
+            return [firstUser, ...recent];
+          }
+          return recent;
+        }
+
+        function sendApolloLayoutGeneration(prompt) {
+          const normalizedPrompt =
+            typeof prompt === 'string' ? prompt.trim() : '';
+          if (!normalizedPrompt || generationRequestInProgress) {
+            return;
+          }
+
+          if (hasAgentSystemState('generation')) {
+            agentGenerationMessages = [];
+            generationOriginalBrief = '';
+            generationClarificationRound = 0;
+            renderAgentMessages();
+          }
+
+          if (!generationOriginalBrief) {
+            const firstUserMessage = agentGenerationMessages.find((message) =>
+              message.role === 'user' &&
+              typeof message.text === 'string' &&
+              message.text.trim()
+            );
+            generationOriginalBrief = firstUserMessage?.text?.trim() || normalizedPrompt;
+          }
+
+          agentMessageSequence += 1;
+          const requestId =
+            `apollo-generation-${Date.now()}-${agentMessageSequence}`;
+          generationActiveRequestId = requestId;
+          generationRequestInProgress = true;
+          replaceAgentLoadingMessage({
+            role: 'assistant',
+            variant: 'loading',
+            text: 'Подбираем паттерн или рецепт и компоненты',
+          }, 'generation');
+          syncAgentViewState();
+
+          parent.postMessage(
+            {
+              pluginMessage: {
+                type: 'generate-apollo-layout',
+                payload: {
+                  requestId,
+                  prompt: normalizedPrompt,
+                  brief: generationOriginalBrief,
+                  dialogue: buildGenerationDialogue(normalizedPrompt),
+                  clarificationRound: generationClarificationRound,
+                },
+              },
+            },
+            '*',
+          );
+        }
+
+        function handleGenerationStarted(payload) {
+          if (
+            payload.requestId &&
+            generationActiveRequestId &&
+            payload.requestId !== generationActiveRequestId
+          ) {
+            return;
+          }
+          generationActiveRequestId =
+            payload.requestId || generationActiveRequestId;
+          generationRequestInProgress = true;
+          replaceAgentLoadingMessage({
+            role: 'assistant',
+            variant: 'loading',
+            text: payload.message || 'Подбираем паттерн или рецепт и компоненты',
+          }, 'generation');
+          syncAgentViewState();
+        }
+
+        function handleGenerationProgress(payload) {
+          if (
+            payload.requestId &&
+            generationActiveRequestId &&
+            payload.requestId !== generationActiveRequestId
+          ) {
+            return;
+          }
+          replaceAgentLoadingMessage({
+            role: 'assistant',
+            variant: 'loading',
+            text: payload.message || 'Собираем макет в Figma',
+          }, 'generation');
+        }
+
+        function handleGenerationResult(payload) {
+          if (
+            payload.requestId &&
+            generationActiveRequestId &&
+            payload.requestId !== generationActiveRequestId
+          ) {
+            return;
+          }
+          generationRequestInProgress = false;
+          generationActiveRequestId = null;
+          removeAgentLoadingMessage('generation');
+
+          if (payload.error) {
+            agentMessageSequence += 1;
+            setAgentMessages('generation', [{
+              id: `agent-message-${agentMessageSequence}`,
+              role: 'error',
+              text: `Не удалось создать макет\n${payload.error}`,
+            }]);
+          } else {
+            if (payload.clarificationRequired) {
+              generationClarificationRound = Math.min(
+                4,
+                generationClarificationRound + 1,
+              );
+            } else {
+              generationClarificationRound = 0;
+            }
+            addAgentMessage({
+              role: 'assistant',
+              text: payload.text || 'Макет создан и выделен на странице.',
+              clarificationRequired: payload.clarificationRequired === true,
+              blocked: payload.blocked === true,
+            }, 'generation');
+          }
+          renderAgentMessages();
+          syncAgentViewState();
+        }
+
         function handleAgentStarted(payload) {
           if (payload.requestId && payload.requestId !== agentActiveRequestId) {
             agentActiveRequestId = payload.requestId;
@@ -3756,6 +4169,9 @@
         }
 
         function getAgentMessages(requestKind) {
+          if (requestKind === 'generation') {
+            return agentGenerationMessages;
+          }
           if (requestKind === 'texts') {
             return agentTextMessages;
           }
@@ -3765,7 +4181,9 @@
         }
 
         function setAgentMessages(requestKind, messages) {
-          if (requestKind === 'texts') {
+          if (requestKind === 'generation') {
+            agentGenerationMessages = messages;
+          } else if (requestKind === 'texts') {
             agentTextMessages = messages;
           } else if (requestKind === 'question') {
             agentDialogueMessages = messages;
@@ -3776,7 +4194,9 @@
 
         function getVisibleAgentRequestKind() {
           if (agentDialogueOpen) {
-            return 'question';
+            return agentDialogueMode === 'generation'
+              ? 'generation'
+              : 'question';
           }
           return activeApolloView === 'texts' ? 'texts' : 'report';
         }
@@ -3988,7 +4408,13 @@
             workspaceEl.classList.toggle('agent-active', reportViewActive);
           }
           if (agentComposerInput) {
-            agentComposerInput.disabled = agentRequestInProgress;
+            const dialogueRequestInProgress = agentDialogueMode === 'generation'
+              ? generationRequestInProgress
+              : agentRequestInProgress;
+            agentComposerInput.disabled = dialogueRequestInProgress;
+            agentComposerInput.placeholder = agentDialogueMode === 'generation'
+              ? 'Опишите макет'
+              : 'Задай вопрос';
           }
           if (agentComposer) {
             if (agentDialogueOpen) {
@@ -4001,18 +4427,28 @@
             const hasDraft = Boolean(agentComposerInput?.value?.trim());
             const canStopQuestion =
               agentRequestInProgress && agentActiveRequestKind === 'question';
-            agentComposerSubmit.classList.toggle('is-stop', canStopQuestion);
+            const canStopGeneration =
+              generationRequestInProgress && agentDialogueMode === 'generation';
+            const canStopDialogue = canStopQuestion || canStopGeneration;
+            agentComposerSubmit.classList.toggle('is-stop', canStopDialogue);
             agentComposerSubmit.classList.toggle(
               'hidden',
-              !canStopQuestion && !hasDraft,
+              !canStopDialogue && !hasDraft,
             );
             agentComposerSubmit.disabled =
-              agentRequestInProgress ? !canStopQuestion : !hasDraft;
+              (agentRequestInProgress || generationRequestInProgress)
+                ? !canStopDialogue
+                : !hasDraft;
             agentComposerSubmit.setAttribute(
               'aria-label',
-              canStopQuestion ? 'Остановить ответ' : 'Отправить агенту',
+              canStopDialogue
+                ? 'Остановить'
+                : agentDialogueMode === 'generation'
+                  ? 'Создать макет'
+                  : 'Отправить агенту',
             );
           }
+          syncAgentDialogueModeControl();
           syncAgentSourceControl();
           updateAgentRetryTimer();
         }

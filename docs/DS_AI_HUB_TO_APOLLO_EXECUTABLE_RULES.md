@@ -457,6 +457,44 @@ Early selectors were broad enough to classify unrelated or internal nodes.
 The final selectors use canonical identity, family, platform, public-root and
 ownership facts. Visible names remain presentation only.
 
+**Field finding — ContentCardWrapper, 2026-09-01.** Package identity is
+inherited by nested slots and can also be present on an internal slot selected
+as a standalone instance. Therefore a predicate about a public root property
+must select both `component.family=<public-family>` and
+`ownership.contour.isRoot=true`. A predicate about a nested layer must bind to
+`ownership.contour.root.component.family=<public-family>`, rather than only to
+the inherited root identity. This is a selector-safety invariant: never cure
+an over-broad selector by hiding its duplicated findings in the report.
+
+For a token-binding rule on a designer-controlled nested layout property, do
+not inspect every layer merely because it has `layout.itemSpacing`. Select the
+owned contour **and** require the corresponding
+`directOverride.fields.itemSpacing=true` fact. Figma stores an override of a
+raw nested layer on its owning instance, so the snapshot adapter must project
+that owner evidence back to the affected layer. This confines the rule to an
+observed customization even when no effective baseline is available: raw
+values fail, a tokenized override passes, and an unchanged internal auto-layout
+does not become a duplicate finding.
+
+**Field finding — atomic placeholder facet, 2026-09-01.** A human rule can
+combine two different assertions: an exact mechanical ban and a contextual
+choice. For example, ContentCardWrapper prose defines which final components
+belong in `LeftSlot`, `ContentPresets` and `StatusSlot`, while the shared
+mechanical part is simply that a visible slot cannot retain `SwapMe`. Model
+these as two routes: keep the semantic selection in `contextOnlyRules` (or
+agent review), and create one source-backed atomic predicate for the
+mechanical facet. The generic `slot-contract` contour accepts one `family` or
+several `families` and can apply only to visible slots; it does not name a
+specific component in the engine. This preserves a truthful deterministic
+error without pretending that the runtime can infer the product-semantic
+replacement.
+
+Do not add `minNestedComponents` to this atomic contour unless the source rule
+explicitly requires a final **component instance**. A slot can contain direct
+text or another non-component node; the placeholder predicate must classify
+only the observable `SwapMe`, while validation of allowed content stays in the
+context/agent route.
+
 ### Secondary was reclassified from finding to allowed guidance
 
 The human rule says Secondary is allowed. A finding that told the designer to

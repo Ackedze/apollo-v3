@@ -420,6 +420,16 @@ normalizers or agent prompt rules.
       component where an invalid nested identity deterministically causes a
       downstream structural violation. Confirm exact focus, unchanged coverage,
       stable ten-run output and visible root-before-consequence ordering.
+    - [ ] Add universal applicability suppression for dependent slot predicates.
+      When a public-root / ownership predicate proves that an internal component
+      is used standalone, predicates that require its valid owner or slot
+      context must be classified `not-applicable` and omitted from the UI. Keep
+      their raw traces for debugging with `suppressedBy`, `suppressionReason`
+      and the root finding id. Do not hide independent violations. First field
+      proof: standalone `PaymentMaskedNumber.RightAddon` must render only
+      `public-root-only`, while `addon-uses-final-component` and both
+      `addon-geometry` checks are suppressed. This is a generic dependency /
+      applicability capability, not a PaymentMaskedNumber-specific exception.
 - [ ] Compile deterministic form rules 1, 4, 5, 6, 7, 9, 12, 13 and 18 to RuleIR.
 - [x] Pass the P01–P19 mixed canonical-section regression. Public-instance-root
   ownership gates removed 239 inherited implementation evaluations while all

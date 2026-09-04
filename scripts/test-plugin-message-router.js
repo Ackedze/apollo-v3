@@ -55,10 +55,25 @@ async function main() {
         dialogue,
       ]);
     },
+    generateLayout: async (requestId, prompt, dialogue, brief, clarificationRound) => {
+      calls.push([
+        'generateLayout',
+        requestId,
+        prompt,
+        dialogue,
+        brief,
+        clarificationRound,
+      ]);
+    },
     setAgentSource: async (source) => calls.push(['setAgentSource', source]),
+    getProxyStatus: async () => calls.push(['getProxyStatus']),
     cancelAgentReport: (requestId) => {
       calls.push(['cancelAgentReport', requestId]);
       return requestId !== 'stale-request';
+    },
+    cancelLayoutGeneration: (requestId) => {
+      calls.push(['cancelLayoutGeneration', requestId]);
+      return requestId !== 'stale-generation';
     },
     retryStatsUpload: async () => calls.push(['retryStatsUpload']),
     resizeUi: (compact) => calls.push(['resizeUi', compact]),
@@ -108,6 +123,30 @@ async function main() {
   );
   routeApolloPluginMessage(
     { type: 'set-apollo-agent-source', payload: { source: 'codex' } },
+    dependencies,
+  );
+  routeApolloPluginMessage(
+    { type: 'get-apollo-proxy-status' },
+    dependencies,
+  );
+  routeApolloPluginMessage(
+    {
+      type: 'generate-apollo-layout',
+      payload: {
+        requestId: 'generation-1',
+        prompt: 'Добавь пять карточек',
+        brief: 'Собери десктопный лендинг',
+        dialogue: [{ role: 'assistant', text: 'Какой формат?' }],
+        clarificationRound: 2,
+      },
+    },
+    dependencies,
+  );
+  routeApolloPluginMessage(
+    {
+      type: 'cancel-apollo-layout-generation',
+      payload: { requestId: 'generation-1' },
+    },
     dependencies,
   );
   routeApolloPluginMessage(
@@ -177,6 +216,31 @@ async function main() {
   assert.ok(
     calls.some(
       (call) => call[0] === 'setAgentSource' && call[1] === 'codex',
+    ),
+  );
+  assert.ok(calls.some((call) => call[0] === 'getProxyStatus'));
+  assert.ok(
+    calls.some(
+      (call) =>
+        call[0] === 'generateLayout' &&
+        call[1] === 'generation-1' &&
+        call[2] === 'Добавь пять карточек' &&
+        call[3]?.[0]?.text === 'Какой формат?' &&
+        call[4] === 'Собери десктопный лендинг' &&
+        call[5] === 2,
+    ),
+  );
+  assert.ok(
+    calls.some(
+      (call) => call[0] === 'cancelLayoutGeneration' && call[1] === 'generation-1',
+    ),
+  );
+  assert.ok(
+    calls.some(
+      (call) =>
+        call[0] === 'postMessage' &&
+        call[1].type === 'apollo-generation-cancelled' &&
+        call[1].payload.requestId === 'generation-1',
     ),
   );
   assert.ok(

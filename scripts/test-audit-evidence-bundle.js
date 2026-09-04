@@ -4,6 +4,8 @@ const os = require('node:os');
 const path = require('node:path');
 const esbuild = require('esbuild');
 
+globalThis.figma = { mixed: Symbol('mixed') };
+
 function loadModule() {
   const outfile = path.join(
     os.tmpdir(),
@@ -112,6 +114,18 @@ const body = node('FRAME', '1:4', 'Fields', { x: 24, y: 104, width: 352, height:
     color: { r: 1, g: 1, b: 1 },
   }],
 });
+const promoButton = node(
+  'INSTANCE',
+  '1:9',
+  '[D] Button',
+  { x: 24, y: 120, width: 120, height: 56 },
+  {
+    componentProperties: {
+      'View#1:0': { type: 'VARIANT', value: 'Transparent' },
+    },
+  },
+);
+attach(body, [promoButton]);
 const hidden = node('FRAME', '1:5', 'Hidden', { x: 0, y: 0, width: 10, height: 10 }, {
   visible: false,
 });
@@ -228,6 +242,61 @@ const baselineReport = {
           matchKind: 'baseline',
           ruleText: 'Shape radius is fixed by the effective baseline.',
           remediation: 'Reset the radius.',
+        }],
+      }],
+    }],
+  },
+};
+
+sourceReport.categories = {
+  customizations: {
+    items: [{
+      component: { key: 'component:promo-main-block' },
+      changes: [{
+        node: {
+          id: '1:9',
+          name: 'Primary',
+          path: 'Form/[D] PromoMainBlock/ButtonGroup/Primary',
+        },
+        kind: 'other',
+        property: 'variant.View',
+        signature: 'promo-primary-view',
+        reference: {
+          value: 'Primary',
+          resource: null,
+          binding: null,
+        },
+        actual: {
+          value: 'Transparent',
+          resource: null,
+          binding: null,
+        },
+        bindingStatus: null,
+        context: {
+          actualComponentKey: 'component:button-transparent',
+          referenceComponentKey: null,
+          referenceOrigin: 'host',
+          actualNestedOwnerComponentKey: 'component:promo-actions',
+          actualNestedOwnerRelativePath: 'ButtonGroup/Primary',
+          nestedOwnerComponentKey: null,
+          nestedOwnerRelativePath: null,
+          referenceVariantProperties: { View: 'Primary' },
+        },
+        componentRules: [{
+          ruleId: 'component:promo-main-block.desktop-actions-follow-baseline',
+          severity: 'error',
+          source: 'PromoMainBlock/rules.json',
+          ruleKind: 'design-rule',
+          authority: {
+            status: 'active',
+            provenance: 'design-system',
+            revision: 1,
+          },
+          appliesTo: 'desktop.actions.View',
+          checkType: 'deterministic',
+          matchKind: 'exact_component_rule',
+          ruleText: 'Desktop button View follows the effective baseline.',
+          remediation: 'Reset View.',
         }],
       }],
     }],
@@ -375,8 +444,11 @@ const { buildApolloAuditEvidenceBundle } = loadModule();
   ));
   assert.equal(topPadding.measurement.actualPx, 24);
 
-  assert.equal(bundle.baselines.length, 1);
-  assert.equal(bundle.changes.length, 2);
+  assert.equal(bundle.baselines.length, 2);
+  assert.equal(bundle.changes.length, 3);
+  const promoButtonView = bundle.changes.find((entry) => entry.property === 'variant.View');
+  assert.equal(promoButtonView.baseline.value, 'Primary');
+  assert.equal(promoButtonView.actual.value, 'Transparent');
   assert.deepEqual(bundle.changes[0].candidateRuleIds, [
     'component:title-view.fixed-title-style',
   ]);

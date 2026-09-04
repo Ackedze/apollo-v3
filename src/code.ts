@@ -116,6 +116,7 @@ import { createCustomizationResetMutations } from './actions/customizationResetM
 import { applyPageThemeMode } from './actions/pageThemizationAction';
 import { executeFindingAction } from './actions/findingAction';
 import { createApolloPluginMessageRouter } from './plugin/messageRouter';
+import { createApolloLayoutGenerator } from './generation/service';
 import {
   AuditCancelledError,
   AuditLifecycle,
@@ -235,6 +236,11 @@ let lastGenerationExampleAuditEvidence: GenerationExampleAuditEvidence | null =
 let generationExampleCaptureInProgress = false;
 const MAX_GENERATION_EXAMPLE_SOURCE_NODES = 25000;
 const findingActionRegistry = new FindingActionRegistry();
+const apolloLayoutGenerator = createApolloLayoutGenerator({
+  api: figma,
+  request: fetch,
+  postMessage: (message) => figma.ui.postMessage(message),
+});
 // Передаём UI конфигурацию табов из централизованного источника.
 figma.ui.postMessage({
   type: 'tab-config',
@@ -271,6 +277,15 @@ figma.ui.onmessage = createApolloPluginMessageRouter({
     auditLifecycle.requestCancel();
   },
   sendAgentReport: sendApolloAgentReport,
+  generateLayout: (requestId, prompt, dialogue, brief, clarificationRound) =>
+    apolloLayoutGenerator.generate(
+      requestId,
+      prompt,
+      dialogue,
+      brief,
+      clarificationRound,
+    ),
+  getProxyStatus: () => apolloLayoutGenerator.getProxyStatus(),
   setAgentSource: saveApolloAgentSourcePreference,
   cancelAgentReport: (requestId) => {
     if (!requestId || requestId === activeApolloAgentRequestId) {
@@ -279,6 +294,8 @@ figma.ui.onmessage = createApolloPluginMessageRouter({
     }
     return false;
   },
+  cancelLayoutGeneration: (requestId) =>
+    apolloLayoutGenerator.cancel(requestId),
   retryStatsUpload: () => statsDelivery.flush(),
   resizeUi: (compact) => {
     const targetSize = compact ? COMPACT_UI_SIZE : EXPANDED_UI_SIZE;
