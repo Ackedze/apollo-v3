@@ -1,0 +1,7 @@
+[Apollo] component swapped but overrides were not restored {
+  nodeId: 'nested-button',
+  targetComponentKey: 'base-variant-key',
+  phase: 'direct-variant',
+  error: 'override restore rejected'
+}
+Themization regression checks passed

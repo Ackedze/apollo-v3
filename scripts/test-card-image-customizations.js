@@ -441,14 +441,14 @@ function testFullCatalogNestedOverridesSurviveMaterialization() {
   const contract = JSON.parse(fs.readFileSync(
     path.resolve(
       __dirname,
-      '../../../shared/design-system_ab/JSONS/experiments/component-contract-v2/web-corp/CardImage/compiled/component-contract.v2.json',
+      '../../../shared/design-system_ab/experiments/web-corp/CardImage/compiled/component-contract.v2.json',
     ),
     'utf8',
   ));
   const paymentMaskedNumberContract = JSON.parse(fs.readFileSync(
     path.resolve(
       __dirname,
-      '../../../shared/design-system_ab/JSONS/experiments/component-contract-v2/web-corp/PaymentMaskedNumber/compiled/component-contract.v2.json',
+      '../../../shared/design-system_ab/experiments/web-corp/PaymentMaskedNumber/compiled/component-contract.v2.json',
     ),
     'utf8',
   ));

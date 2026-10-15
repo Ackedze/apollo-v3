@@ -1,0 +1,3166 @@
+{
+  "inspectedAt": "2026-10-07T15:12:25.672Z",
+  "methodology": "TypeScript AST, literal relative runtime imports/exports/require/dynamic import only. Type-only imports are excluded from runtime closure. Package imports, aliases, build transforms and nonliteral imports are outside this analysis; this is not a build inventory.",
+  "tool": {
+    "node": "v22.14.0",
+    "typescript": "5.9.3",
+    "esbuild": "0.28.1"
+  },
+  "closures": {
+    "src/code.ts": [
+      "src/actions/corporateComponentAction.ts",
+      "src/actions/customizationResetAction.ts",
+      "src/actions/customizationResetMutations.ts",
+      "src/actions/findingAction.ts",
+      "src/actions/focusNode.ts",
+      "src/actions/pageThemizationAction.ts",
+      "src/actions/sceneNodeResolver.ts",
+      "src/actions/styleBindingAction.ts",
+      "src/actions/variableBindingAction.ts",
+      "src/assessment/customizationAssessment.ts",
+      "src/assessment/patternRuleLoader.ts",
+      "src/assessment/patternRules.ts",
+      "src/assessment/surfaceContext.ts",
+      "src/code.ts",
+      "src/config/deprecatedStyleSources.ts",
+      "src/config/tabs.ts",
+      "src/contracts/artifactContext.ts",
+      "src/contracts/componentApiContracts.ts",
+      "src/contracts/componentRules.ts",
+      "src/contracts/compositionContractEngine.ts",
+      "src/contracts/compositionContractRegistry.ts",
+      "src/contracts/compositionContracts.ts",
+      "src/contracts/contractArtifactCompiler.ts",
+      "src/contracts/contractAwareDiffs.ts",
+      "src/contracts/contractIndex.ts",
+      "src/contracts/contractIndexResolver.ts",
+      "src/contracts/contractTransport.ts",
+      "src/contracts/experimentalContractV2Engine.ts",
+      "src/contracts/experimentalContractV2Registry.ts",
+      "src/contracts/publicArtifact.ts",
+      "src/contracts/runtimeContractRegistry.ts",
+      "src/create-check-state.ts",
+      "src/examples/generationExampleCandidate.ts",
+      "src/examples/generationExampleSource.ts",
+      "src/filters/allowedCustomizationRules.ts",
+      "src/filters/customStyleFilters.ts",
+      "src/filters/customizationFilters.ts",
+      "src/filters/ignoredComponentFilters.ts",
+      "src/filters/suppressionPolicy.ts",
+      "src/generation/contracts.ts",
+      "src/generation/executePlan.ts",
+      "src/generation/service.ts",
+      "src/plugin/messageRouter.ts",
+      "src/policies/auditPolicyConfig.ts",
+      "src/policies/componentAuditPolicy.ts",
+      "src/policies/shellComponentAuditPolicy.ts",
+      "src/predicate/predicateValidation.ts",
+      "src/reference/library.ts",
+      "src/reference/libraryTypes.ts",
+      "src/reference/nestedReferenceMerge.ts",
+      "src/reference/referenceList.ts",
+      "src/remediation/findingActionRegistry.ts",
+      "src/remediation/findingActionResolver.ts",
+      "src/remediation/remediationConfig.ts",
+      "src/remediation/types.ts",
+      "src/services/asyncResourceLifecycle.ts",
+      "src/services/auditLifecycle.ts",
+      "src/services/auditResults.ts",
+      "src/services/auditTargetCollector.ts",
+      "src/services/auditTraversalContext.ts",
+      "src/services/auditTreeTraversal.ts",
+      "src/services/auditViewBuilder.ts",
+      "src/services/channelAudit.ts",
+      "src/services/colorTokenValueIndex.ts",
+      "src/services/componentClassifier.ts",
+      "src/services/deprecatedStyleAudit.ts",
+      "src/services/detachedComponentSource.ts",
+      "src/services/detachedContractV2Audit.ts",
+      "src/services/libraryComponentFreshness.ts",
+      "src/services/libraryUpdateResults.ts",
+      "src/services/localComponentDependencyAudit.ts",
+      "src/services/nestedReferencePreparation.ts",
+      "src/services/styleMetadata.ts",
+      "src/services/themeAudit.ts",
+      "src/stats/agentReport.ts",
+      "src/stats/collector.ts",
+      "src/stats/delivery.ts",
+      "src/stats/evidenceBundle.ts",
+      "src/stats/layoutRelations.ts",
+      "src/stats/patternReport.ts",
+      "src/stats/report.ts",
+      "src/stats/textReport.ts",
+      "src/structure/diff.ts",
+      "src/structure/layoutSizing.ts",
+      "src/structure/occurrenceKeys.ts",
+      "src/structure/snapshot.ts",
+      "src/structure/strokeAlignment.ts",
+      "src/types/pageContext.ts",
+      "src/utils/auditInstrumentation.ts",
+      "src/utils/componentKeyCache.ts",
+      "src/utils/networkFetch.ts",
+      "src/utils/nodeHelpers.ts",
+      "src/utils/promisePool.ts",
+      "src/utils/variableBindingReset.ts",
+      "src/utils/variableCollectionId.ts",
+      "src/utils/variantProperties.ts"
+    ],
+    "apps/apollo-v4/src/code.ts": [
+      "apps/apollo-v4/src/area-ownership.ts",
+      "apps/apollo-v4/src/area-result.js",
+      "apps/apollo-v4/src/area-scan.ts",
+      "apps/apollo-v4/src/audit-display-resources.js",
+      "apps/apollo-v4/src/authoring-source.js",
+      "apps/apollo-v4/src/code.ts",
+      "apps/apollo-v4/src/contract-profile.js",
+      "apps/apollo-v4/src/design-check/ui-protocol.js",
+      "apps/apollo-v4/src/generation-controller.ts",
+      "apps/apollo-v4/src/generation-figma-capture.ts",
+      "apps/apollo-v4/src/generation-figma-host.ts",
+      "apps/apollo-v4/src/generation-figma-rollback.ts",
+      "apps/apollo-v4/src/generation-frontend-port.ts",
+      "apps/apollo-v4/src/generation-native-bindings.ts",
+      "apps/apollo-v4/src/generation-native-diagnostic-bridge.ts",
+      "apps/apollo-v4/src/generation-native-diagnostic.ts",
+      "apps/apollo-v4/src/generation-native-observer.ts",
+      "apps/apollo-v4/src/generation-native-properties.ts",
+      "apps/apollo-v4/src/generation-proxy-port.ts",
+      "apps/apollo-v4/src/resource-identity.js",
+      "apps/apollo-v4/src/runtime.js",
+      "packages/adapter-figma/src/index.ts",
+      "packages/adapter-frontend/src/index.ts",
+      "packages/adapter-frontend/src/profile.ts",
+      "packages/component-contract-core/src/capabilities.ts",
+      "packages/component-contract-core/src/capture-facts.ts",
+      "packages/component-contract-core/src/capture-representation.ts",
+      "packages/component-contract-core/src/capture-topology.ts",
+      "packages/component-contract-core/src/component-dependencies.ts",
+      "packages/component-contract-core/src/component-property-identity.ts",
+      "packages/component-contract-core/src/declared-target-membership.ts",
+      "packages/component-contract-core/src/dependency-capture-diagnostics.ts",
+      "packages/component-contract-core/src/effect-facts.ts",
+      "packages/component-contract-core/src/figma-capture.ts",
+      "packages/component-contract-core/src/gradient-paint-facts.ts",
+      "packages/component-contract-core/src/host-context-variable-modes.ts",
+      "packages/component-contract-core/src/instance-boundaries.ts",
+      "packages/component-contract-core/src/instance-content-reference.ts",
+      "packages/component-contract-core/src/instance-correspondence.ts",
+      "packages/component-contract-core/src/instance-main-aliases.ts",
+      "packages/component-contract-core/src/instance-source-identity.ts",
+      "packages/component-contract-core/src/instance-validation.ts",
+      "packages/component-contract-core/src/native-slot-capture.ts",
+      "packages/component-contract-core/src/nested-instance-content-reference.ts",
+      "packages/component-contract-core/src/occurrence-address.ts",
+      "packages/component-contract-core/src/property-applicability.ts",
+      "packages/component-contract-core/src/representation-evidence.ts",
+      "packages/component-contract-core/src/root-target.ts",
+      "packages/component-contract-core/src/snapshot-topology.ts",
+      "packages/component-contract-core/src/stable.ts",
+      "packages/component-contract-core/src/text-binding-identity.ts",
+      "packages/component-contract-core/src/text-decoration-facts.ts",
+      "packages/component-contract-core/src/text-style-facts.ts",
+      "packages/component-contract-core/src/transition-capture.ts",
+      "packages/component-contract-core/src/variable-mode-facts.ts",
+      "packages/component-contract-core/src/variant-facts.ts",
+      "packages/component-contract-core/vendor/sha256.ts",
+      "packages/generation-core/src/planning/code-connect.ts",
+      "packages/generation-core/src/planning/diagnostics.ts",
+      "packages/generation-core/src/planning/index.ts",
+      "packages/generation-core/src/planning/preflight.ts",
+      "packages/generation-core/src/planning/projection.ts",
+      "packages/generation-core/src/planning/representation-proof.ts",
+      "packages/generation-core/src/planning/schema.ts",
+      "packages/generation-core/src/planning/static-content-types.ts",
+      "packages/generation-core/src/planning/static-content.ts",
+      "packages/generation-core/src/planning/static-review-binding-transport.ts",
+      "packages/generation-core/src/planning/static-review-transport.ts",
+      "packages/generation-core/src/planning/types.ts",
+      "packages/generation-core/src/planning/verification.ts"
+    ],
+    "apps/apollo-v4/src/ui.js": [
+      "apps/apollo-v4/src/authoring-source.js",
+      "apps/apollo-v4/src/contract-profile.js",
+      "apps/apollo-v4/src/design-check/MarkdownMessage.tsx",
+      "apps/apollo-v4/src/design-check/controller.js",
+      "apps/apollo-v4/src/design-check/definitions.js",
+      "apps/apollo-v4/src/design-check/dialogue-port.js",
+      "apps/apollo-v4/src/design-check/index.tsx",
+      "apps/apollo-v4/src/design-check/integration.css",
+      "apps/apollo-v4/src/design-check/legacy.css",
+      "apps/apollo-v4/src/design-check/markdown-inline.js",
+      "apps/apollo-v4/src/design-check/markdown.js",
+      "apps/apollo-v4/src/design-check/opaque-id.js",
+      "apps/apollo-v4/src/design-check/ui-client.js",
+      "apps/apollo-v4/src/design-check/ui-protocol.js",
+      "apps/apollo-v4/src/design-check/v3/config/tabs.ts",
+      "apps/apollo-v4/src/design-check/v3/shell.css",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/Button.module.css",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/Button.tsx",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/CategoryCard.module.css",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/CategoryCard.tsx",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/CounterBadge.module.css",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/CounterBadge.tsx",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/Divider.module.css",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/Divider.tsx",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/GenerationExampleModal.module.css",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/GenerationExampleModal.tsx",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/IconSlot.module.css",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/IconSlot.tsx",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/LeftSection.module.css",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/LeftSection.tsx",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/OptionList.module.css",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/OptionList.tsx",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/OptionListCell.module.css",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/OptionListCell.tsx",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/OptionListHeader.module.css",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/OptionListHeader.tsx",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/PickerButton.module.css",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/PickerButton.tsx",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/PickerIcons.tsx",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/TopSection.module.css",
+      "apps/apollo-v4/src/design-check/v3/ui-app/components/TopSection.tsx",
+      "apps/apollo-v4/src/finding-details.js",
+      "apps/apollo-v4/src/finding-display.js",
+      "apps/apollo-v4/src/generation-frontend-ui.js",
+      "apps/apollo-v4/src/generation-proxy-ui.js",
+      "apps/apollo-v4/src/generation-static-review-ui.js",
+      "apps/apollo-v4/src/native-diagnostic-ui.js",
+      "apps/apollo-v4/src/resource-identity.js",
+      "apps/apollo-v4/src/ui.js",
+      "packages/component-contract-core/src/diagnostic-values.ts",
+      "packages/component-contract-core/src/representation-evidence.ts",
+      "packages/component-contract-core/src/stable.ts",
+      "packages/component-contract-core/vendor/sha256.ts",
+      "packages/generation-core/src/planning/projection.ts",
+      "packages/generation-core/src/planning/representation-proof.ts",
+      "packages/generation-core/src/planning/static-content-types.ts",
+      "packages/generation-core/src/planning/static-content.ts",
+      "packages/generation-core/src/planning/static-review-binding-transport.ts",
+      "packages/generation-core/src/planning/static-review-transport.ts"
+    ],
+    "src/reference/library.ts": [
+      "src/assessment/patternRuleLoader.ts",
+      "src/assessment/patternRules.ts",
+      "src/contracts/artifactContext.ts",
+      "src/contracts/componentApiContracts.ts",
+      "src/contracts/compositionContracts.ts",
+      "src/contracts/contractArtifactCompiler.ts",
+      "src/contracts/contractIndex.ts",
+      "src/contracts/contractIndexResolver.ts",
+      "src/contracts/contractTransport.ts",
+      "src/contracts/experimentalContractV2Registry.ts",
+      "src/contracts/publicArtifact.ts",
+      "src/contracts/runtimeContractRegistry.ts",
+      "src/policies/auditPolicyConfig.ts",
+      "src/reference/library.ts",
+      "src/reference/referenceList.ts",
+      "src/remediation/remediationConfig.ts",
+      "src/services/asyncResourceLifecycle.ts",
+      "src/utils/auditInstrumentation.ts",
+      "src/utils/networkFetch.ts",
+      "src/utils/promisePool.ts",
+      "src/utils/variantProperties.ts"
+    ],
+    "src/services/themeAudit.ts": [
+      "src/assessment/patternRuleLoader.ts",
+      "src/assessment/patternRules.ts",
+      "src/contracts/artifactContext.ts",
+      "src/contracts/componentApiContracts.ts",
+      "src/contracts/compositionContracts.ts",
+      "src/contracts/contractArtifactCompiler.ts",
+      "src/contracts/contractIndex.ts",
+      "src/contracts/contractIndexResolver.ts",
+      "src/contracts/contractTransport.ts",
+      "src/contracts/experimentalContractV2Registry.ts",
+      "src/contracts/publicArtifact.ts",
+      "src/contracts/runtimeContractRegistry.ts",
+      "src/policies/auditPolicyConfig.ts",
+      "src/reference/library.ts",
+      "src/reference/referenceList.ts",
+      "src/remediation/remediationConfig.ts",
+      "src/services/asyncResourceLifecycle.ts",
+      "src/services/themeAudit.ts",
+      "src/utils/auditInstrumentation.ts",
+      "src/utils/networkFetch.ts",
+      "src/utils/nodeHelpers.ts",
+      "src/utils/promisePool.ts",
+      "src/utils/variantProperties.ts"
+    ],
+    "src/services/auditViewBuilder.ts": [
+      "src/assessment/patternRuleLoader.ts",
+      "src/assessment/patternRules.ts",
+      "src/config/deprecatedStyleSources.ts",
+      "src/contracts/artifactContext.ts",
+      "src/contracts/componentApiContracts.ts",
+      "src/contracts/compositionContracts.ts",
+      "src/contracts/contractArtifactCompiler.ts",
+      "src/contracts/contractIndex.ts",
+      "src/contracts/contractIndexResolver.ts",
+      "src/contracts/contractTransport.ts",
+      "src/contracts/experimentalContractV2Registry.ts",
+      "src/contracts/publicArtifact.ts",
+      "src/contracts/runtimeContractRegistry.ts",
+      "src/filters/customStyleFilters.ts",
+      "src/filters/ignoredComponentFilters.ts",
+      "src/policies/auditPolicyConfig.ts",
+      "src/reference/library.ts",
+      "src/reference/referenceList.ts",
+      "src/remediation/remediationConfig.ts",
+      "src/services/asyncResourceLifecycle.ts",
+      "src/services/auditViewBuilder.ts",
+      "src/services/detachedComponentSource.ts",
+      "src/services/styleMetadata.ts",
+      "src/utils/auditInstrumentation.ts",
+      "src/utils/networkFetch.ts",
+      "src/utils/nodeHelpers.ts",
+      "src/utils/promisePool.ts",
+      "src/utils/variantProperties.ts"
+    ],
+    "src/services/localComponentDependencyAudit.ts": [
+      "src/assessment/patternRuleLoader.ts",
+      "src/assessment/patternRules.ts",
+      "src/contracts/artifactContext.ts",
+      "src/contracts/componentApiContracts.ts",
+      "src/contracts/compositionContracts.ts",
+      "src/contracts/contractArtifactCompiler.ts",
+      "src/contracts/contractIndex.ts",
+      "src/contracts/contractIndexResolver.ts",
+      "src/contracts/contractTransport.ts",
+      "src/contracts/experimentalContractV2Registry.ts",
+      "src/contracts/publicArtifact.ts",
+      "src/contracts/runtimeContractRegistry.ts",
+      "src/policies/auditPolicyConfig.ts",
+      "src/policies/componentAuditPolicy.ts",
+      "src/reference/library.ts",
+      "src/reference/referenceList.ts",
+      "src/remediation/remediationConfig.ts",
+      "src/services/asyncResourceLifecycle.ts",
+      "src/services/libraryUpdateResults.ts",
+      "src/services/localComponentDependencyAudit.ts",
+      "src/utils/auditInstrumentation.ts",
+      "src/utils/networkFetch.ts",
+      "src/utils/nodeHelpers.ts",
+      "src/utils/promisePool.ts",
+      "src/utils/variantProperties.ts"
+    ],
+    "src/services/libraryComponentFreshness.ts": [
+      "src/services/libraryComponentFreshness.ts"
+    ],
+    "src/services/libraryUpdateResults.ts": [
+      "src/services/libraryUpdateResults.ts"
+    ],
+    "src/services/channelAudit.ts": [
+      "src/services/channelAudit.ts"
+    ],
+    "src/services/deprecatedStyleAudit.ts": [
+      "src/services/deprecatedStyleAudit.ts",
+      "src/utils/nodeHelpers.ts"
+    ],
+    "src/services/detachedComponentSource.ts": [
+      "src/services/detachedComponentSource.ts"
+    ],
+    "src/services/componentClassifier.ts": [
+      "src/assessment/customizationAssessment.ts",
+      "src/assessment/patternRuleLoader.ts",
+      "src/assessment/patternRules.ts",
+      "src/assessment/surfaceContext.ts",
+      "src/config/deprecatedStyleSources.ts",
+      "src/contracts/artifactContext.ts",
+      "src/contracts/componentApiContracts.ts",
+      "src/contracts/componentRules.ts",
+      "src/contracts/compositionContractEngine.ts",
+      "src/contracts/compositionContractRegistry.ts",
+      "src/contracts/compositionContracts.ts",
+      "src/contracts/contractArtifactCompiler.ts",
+      "src/contracts/contractAwareDiffs.ts",
+      "src/contracts/contractIndex.ts",
+      "src/contracts/contractIndexResolver.ts",
+      "src/contracts/contractTransport.ts",
+      "src/contracts/experimentalContractV2Engine.ts",
+      "src/contracts/experimentalContractV2Registry.ts",
+      "src/contracts/publicArtifact.ts",
+      "src/contracts/runtimeContractRegistry.ts",
+      "src/filters/allowedCustomizationRules.ts",
+      "src/filters/customizationFilters.ts",
+      "src/filters/suppressionPolicy.ts",
+      "src/policies/auditPolicyConfig.ts",
+      "src/policies/componentAuditPolicy.ts",
+      "src/reference/library.ts",
+      "src/reference/nestedReferenceMerge.ts",
+      "src/reference/referenceList.ts",
+      "src/remediation/remediationConfig.ts",
+      "src/services/asyncResourceLifecycle.ts",
+      "src/services/componentClassifier.ts",
+      "src/services/libraryComponentFreshness.ts",
+      "src/services/nestedReferencePreparation.ts",
+      "src/services/styleMetadata.ts",
+      "src/structure/diff.ts",
+      "src/structure/layoutSizing.ts",
+      "src/structure/occurrenceKeys.ts",
+      "src/structure/snapshot.ts",
+      "src/structure/strokeAlignment.ts",
+      "src/utils/auditInstrumentation.ts",
+      "src/utils/networkFetch.ts",
+      "src/utils/nodeHelpers.ts",
+      "src/utils/promisePool.ts",
+      "src/utils/variantProperties.ts"
+    ],
+    "src/services/auditTargetCollector.ts": [
+      "src/assessment/customizationAssessment.ts",
+      "src/assessment/patternRuleLoader.ts",
+      "src/assessment/patternRules.ts",
+      "src/assessment/surfaceContext.ts",
+      "src/config/deprecatedStyleSources.ts",
+      "src/contracts/artifactContext.ts",
+      "src/contracts/componentApiContracts.ts",
+      "src/contracts/componentRules.ts",
+      "src/contracts/compositionContractEngine.ts",
+      "src/contracts/compositionContractRegistry.ts",
+      "src/contracts/compositionContracts.ts",
+      "src/contracts/contractArtifactCompiler.ts",
+      "src/contracts/contractAwareDiffs.ts",
+      "src/contracts/contractIndex.ts",
+      "src/contracts/contractIndexResolver.ts",
+      "src/contracts/contractTransport.ts",
+      "src/contracts/experimentalContractV2Engine.ts",
+      "src/contracts/experimentalContractV2Registry.ts",
+      "src/contracts/publicArtifact.ts",
+      "src/contracts/runtimeContractRegistry.ts",
+      "src/filters/allowedCustomizationRules.ts",
+      "src/filters/customStyleFilters.ts",
+      "src/filters/customizationFilters.ts",
+      "src/filters/ignoredComponentFilters.ts",
+      "src/filters/suppressionPolicy.ts",
+      "src/policies/auditPolicyConfig.ts",
+      "src/policies/componentAuditPolicy.ts",
+      "src/policies/shellComponentAuditPolicy.ts",
+      "src/reference/library.ts",
+      "src/reference/nestedReferenceMerge.ts",
+      "src/reference/referenceList.ts",
+      "src/remediation/remediationConfig.ts",
+      "src/services/asyncResourceLifecycle.ts",
+      "src/services/auditTargetCollector.ts",
+      "src/services/auditTreeTraversal.ts",
+      "src/services/auditViewBuilder.ts",
+      "src/services/channelAudit.ts",
+      "src/services/componentClassifier.ts",
+      "src/services/deprecatedStyleAudit.ts",
+      "src/services/detachedComponentSource.ts",
+      "src/services/detachedContractV2Audit.ts",
+      "src/services/libraryComponentFreshness.ts",
+      "src/services/libraryUpdateResults.ts",
+      "src/services/localComponentDependencyAudit.ts",
+      "src/services/nestedReferencePreparation.ts",
+      "src/services/styleMetadata.ts",
+      "src/services/themeAudit.ts",
+      "src/structure/diff.ts",
+      "src/structure/layoutSizing.ts",
+      "src/structure/occurrenceKeys.ts",
+      "src/structure/snapshot.ts",
+      "src/structure/strokeAlignment.ts",
+      "src/utils/auditInstrumentation.ts",
+      "src/utils/networkFetch.ts",
+      "src/utils/nodeHelpers.ts",
+      "src/utils/promisePool.ts",
+      "src/utils/variantProperties.ts"
+    ],
+    "src/services/auditResults.ts": [
+      "src/assessment/patternRuleLoader.ts",
+      "src/assessment/patternRules.ts",
+      "src/config/deprecatedStyleSources.ts",
+      "src/contracts/artifactContext.ts",
+      "src/contracts/componentApiContracts.ts",
+      "src/contracts/componentRules.ts",
+      "src/contracts/compositionContracts.ts",
+      "src/contracts/contractArtifactCompiler.ts",
+      "src/contracts/contractIndex.ts",
+      "src/contracts/contractIndexResolver.ts",
+      "src/contracts/contractTransport.ts",
+      "src/contracts/experimentalContractV2Registry.ts",
+      "src/contracts/publicArtifact.ts",
+      "src/contracts/runtimeContractRegistry.ts",
+      "src/filters/customStyleFilters.ts",
+      "src/filters/ignoredComponentFilters.ts",
+      "src/policies/auditPolicyConfig.ts",
+      "src/reference/library.ts",
+      "src/reference/referenceList.ts",
+      "src/remediation/remediationConfig.ts",
+      "src/services/asyncResourceLifecycle.ts",
+      "src/services/auditResults.ts",
+      "src/services/auditViewBuilder.ts",
+      "src/services/detachedComponentSource.ts",
+      "src/services/styleMetadata.ts",
+      "src/stats/agentReport.ts",
+      "src/stats/patternReport.ts",
+      "src/stats/report.ts",
+      "src/structure/layoutSizing.ts",
+      "src/utils/auditInstrumentation.ts",
+      "src/utils/networkFetch.ts",
+      "src/utils/nodeHelpers.ts",
+      "src/utils/promisePool.ts",
+      "src/utils/variantProperties.ts"
+    ],
+    "src/services/styleMetadata.ts": [
+      "src/assessment/patternRuleLoader.ts",
+      "src/assessment/patternRules.ts",
+      "src/config/deprecatedStyleSources.ts",
+      "src/contracts/artifactContext.ts",
+      "src/contracts/componentApiContracts.ts",
+      "src/contracts/compositionContracts.ts",
+      "src/contracts/contractArtifactCompiler.ts",
+      "src/contracts/contractIndex.ts",
+      "src/contracts/contractIndexResolver.ts",
+      "src/contracts/contractTransport.ts",
+      "src/contracts/experimentalContractV2Registry.ts",
+      "src/contracts/publicArtifact.ts",
+      "src/contracts/runtimeContractRegistry.ts",
+      "src/policies/auditPolicyConfig.ts",
+      "src/reference/library.ts",
+      "src/reference/referenceList.ts",
+      "src/remediation/remediationConfig.ts",
+      "src/services/asyncResourceLifecycle.ts",
+      "src/services/styleMetadata.ts",
+      "src/utils/auditInstrumentation.ts",
+      "src/utils/networkFetch.ts",
+      "src/utils/promisePool.ts",
+      "src/utils/variantProperties.ts"
+    ]
+  },
+  "services": [
+    {
+      "path": "src/services/themeAudit.ts",
+      "v3Main": true,
+      "v4Main": false,
+      "v4Ui": false,
+      "legacyContractDependencies": 10
+    },
+    {
+      "path": "src/services/auditViewBuilder.ts",
+      "v3Main": true,
+      "v4Main": false,
+      "v4Ui": false,
+      "legacyContractDependencies": 10
+    },
+    {
+      "path": "src/services/localComponentDependencyAudit.ts",
+      "v3Main": true,
+      "v4Main": false,
+      "v4Ui": false,
+      "legacyContractDependencies": 10
+    },
+    {
+      "path": "src/services/libraryComponentFreshness.ts",
+      "v3Main": true,
+      "v4Main": false,
+      "v4Ui": false,
+      "legacyContractDependencies": 0
+    },
+    {
+      "path": "src/services/libraryUpdateResults.ts",
+      "v3Main": true,
+      "v4Main": false,
+      "v4Ui": false,
+      "legacyContractDependencies": 0
+    },
+    {
+      "path": "src/services/channelAudit.ts",
+      "v3Main": true,
+      "v4Main": false,
+      "v4Ui": false,
+      "legacyContractDependencies": 0
+    },
+    {
+      "path": "src/services/deprecatedStyleAudit.ts",
+      "v3Main": true,
+      "v4Main": false,
+      "v4Ui": false,
+      "legacyContractDependencies": 0
+    },
+    {
+      "path": "src/services/detachedComponentSource.ts",
+      "v3Main": true,
+      "v4Main": false,
+      "v4Ui": false,
+      "legacyContractDependencies": 0
+    },
+    {
+      "path": "src/services/componentClassifier.ts",
+      "v3Main": true,
+      "v4Main": false,
+      "v4Ui": false,
+      "legacyContractDependencies": 15
+    },
+    {
+      "path": "src/services/auditTargetCollector.ts",
+      "v3Main": true,
+      "v4Main": false,
+      "v4Ui": false,
+      "legacyContractDependencies": 15
+    },
+    {
+      "path": "src/services/auditResults.ts",
+      "v3Main": true,
+      "v4Main": false,
+      "v4Ui": false,
+      "legacyContractDependencies": 11
+    },
+    {
+      "path": "src/services/styleMetadata.ts",
+      "v3Main": true,
+      "v4Main": false,
+      "v4Ui": false,
+      "legacyContractDependencies": 10
+    }
+  ],
+  "files": [
+    {
+      "path": "apps/apollo-v4/src/area-ownership.ts",
+      "bytes": 4543,
+      "sha256": "46cd01e3bbc89ab7668269e4acde3fbebbcb3cfdb27faa27c90aedd9638fc8ed",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/snapshot-topology.ts",
+        "packages/component-contract-core/src/variant-facts.ts",
+        "packages/component-contract-core/src/instance-boundaries.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/area-result.js",
+      "bytes": 1886,
+      "sha256": "88ffbaf40e14dba0fea8211d51a485cf08b8f3a18870e3ac6b747c5908a2551a",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": [
+        "@apollo/predicate-engine"
+      ]
+    },
+    {
+      "path": "apps/apollo-v4/src/area-scan.ts",
+      "bytes": 2529,
+      "sha256": "f19a9ab2aee071c1cc4b515d226e78e47fe3bbedab51d95604b2d9182695b7ef",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/audit-display-resources.js",
+      "bytes": 3742,
+      "sha256": "4474409b592b9844f212f1265584461fa0b4966faf75d07f5e100d58dd8fbec7",
+      "runtimeRelative": [
+        "apps/apollo-v4/src/resource-identity.js"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/authoring-source.js",
+      "bytes": 12851,
+      "sha256": "f189e83795a3b7c5dc33c368186cf12065bc1069342506c9363f5598f84de454",
+      "runtimeRelative": [
+        "apps/apollo-v4/src/contract-profile.js"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": [
+        "@apollo/component-contract-compiler",
+        "@apollo/component-contract-importer",
+        "@apollo/predicate-engine"
+      ]
+    },
+    {
+      "path": "apps/apollo-v4/src/code.ts",
+      "bytes": 23860,
+      "sha256": "da4ff3f640df982888e2ae6f44e39b6eca0a02bec703dcc67f11bd8bcae1c217",
+      "runtimeRelative": [
+        "apps/apollo-v4/src/generation-native-observer.ts",
+        "apps/apollo-v4/src/generation-native-diagnostic.ts",
+        "apps/apollo-v4/src/generation-native-diagnostic-bridge.ts",
+        "apps/apollo-v4/src/generation-controller.ts",
+        "apps/apollo-v4/src/generation-frontend-port.ts",
+        "apps/apollo-v4/src/generation-proxy-port.ts",
+        "apps/apollo-v4/src/generation-figma-host.ts",
+        "apps/apollo-v4/src/generation-figma-capture.ts",
+        "apps/apollo-v4/src/generation-native-bindings.ts",
+        "packages/component-contract-core/src/figma-capture.ts",
+        "packages/component-contract-core/src/instance-validation.ts",
+        "packages/component-contract-core/src/native-slot-capture.ts",
+        "apps/apollo-v4/src/area-scan.ts",
+        "apps/apollo-v4/src/area-ownership.ts",
+        "packages/component-contract-core/src/component-dependencies.ts",
+        "apps/apollo-v4/src/runtime.js",
+        "apps/apollo-v4/src/design-check/ui-protocol.js",
+        "apps/apollo-v4/src/audit-display-resources.js"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": [
+        "@apollo/predicate-engine"
+      ]
+    },
+    {
+      "path": "apps/apollo-v4/src/contract-profile.js",
+      "bytes": 16717,
+      "sha256": "7b653beca7bfb9a26b4648b8aa9531ee16ea5428132a518a0665b57a3669c072",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": [
+        "@apollo/representation-evidence",
+        "@apollo/component-contract-dependencies",
+        "@apollo/member-collections",
+        "@apollo/component-contract-compiler"
+      ]
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/controller.js",
+      "bytes": 14580,
+      "sha256": "3aa1015434701ac1d0e6cc749f9ae17df7d766f6655b92ee5882896ce15303dc",
+      "runtimeRelative": [
+        "apps/apollo-v4/src/design-check/definitions.js"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/definitions.js",
+      "bytes": 1460,
+      "sha256": "0fb0e4f61812cfd981a9b7973271856c48200bb93ade77af05cc15237f3aaa1b",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/dialogue-port.js",
+      "bytes": 3004,
+      "sha256": "714f7daaeba04826686329e58d9bbc16c21cc8ca3939369eff828426e959c0fa",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/index.tsx",
+      "bytes": 18932,
+      "sha256": "3c904193f3371601d774ed78eda3a97de862310497cafe623b8efc92eeae4d02",
+      "runtimeRelative": [
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/TopSection.tsx",
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/PickerIcons.tsx",
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/LeftSection.tsx",
+        "apps/apollo-v4/src/design-check/v3/config/tabs.ts",
+        "apps/apollo-v4/src/design-check/controller.js",
+        "apps/apollo-v4/src/design-check/dialogue-port.js",
+        "apps/apollo-v4/src/design-check/MarkdownMessage.tsx",
+        "apps/apollo-v4/src/design-check/v3/shell.css",
+        "apps/apollo-v4/src/design-check/integration.css"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": [
+        "react",
+        "react-dom/client",
+        "react-dom"
+      ]
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/integration.css",
+      "bytes": 8494,
+      "sha256": "40c3f7d79e782347a070a239562588d7f83242cc71c004d5475bef27ebad225f",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/legacy.css",
+      "bytes": 4262,
+      "sha256": "97a22818cf3fcb94941ad13b86d86d72d2a1e0fbd856c8ac81cc32f7a87fd4a1",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/markdown-inline.js",
+      "bytes": 1588,
+      "sha256": "9d7e53c0f92b64dbba86417c7cff21d3a65521da36f32ca2387bafcb9e1fe4b2",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/markdown.js",
+      "bytes": 7315,
+      "sha256": "76cf04cf39522f0374e7e88cea4378efb6b07a036b1cd2d50356ce681c362f23",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/MarkdownMessage.tsx",
+      "bytes": 3689,
+      "sha256": "d031badd99029277224115b6bf69beacfdbb09aef47f6ed87a9f52817866d650",
+      "runtimeRelative": [
+        "apps/apollo-v4/src/design-check/markdown.js",
+        "apps/apollo-v4/src/design-check/markdown-inline.js"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": [
+        "react"
+      ]
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/opaque-id.js",
+      "bytes": 808,
+      "sha256": "3dfd9ec278c0f2c0207815f3fb0136bcb46234c5c8b53cb7d9a03fc60fc705bc",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/ui-client.js",
+      "bytes": 2798,
+      "sha256": "f208fbede2f081feb7bbea1ef966cf4e0c15aa347dd4db8b5972bea9dbcbb72e",
+      "runtimeRelative": [
+        "apps/apollo-v4/src/design-check/ui-protocol.js",
+        "apps/apollo-v4/src/design-check/definitions.js",
+        "apps/apollo-v4/src/design-check/opaque-id.js"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/ui-protocol.js",
+      "bytes": 3106,
+      "sha256": "263987e8df3405664acc34bb92ad47581664771c7ec451c77357931bbeef50c1",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/config/tabs.ts",
+      "bytes": 3021,
+      "sha256": "eb6659d5eebd82ce00e091ffd9f51234b8ac9220627f2ce325b97c6d1c9fabe9",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/shell.css",
+      "bytes": 33108,
+      "sha256": "13a12c60f62164b81bca259840e18942342083c335a73412603a0691c4e4029c",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/Button.module.css",
+      "bytes": 2881,
+      "sha256": "acf54ecd035c9417a90bc49123e0727219e11732a7baa6ffdc456bf197dca9ee",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/Button.tsx",
+      "bytes": 1492,
+      "sha256": "e3aa480f370eb31506b52e860634ac3b2a141b43bd55735f7472af0c0e84298b",
+      "runtimeRelative": [
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/IconSlot.tsx",
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/Button.module.css"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": [
+        "react"
+      ]
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/CategoryCard.module.css",
+      "bytes": 1126,
+      "sha256": "450ef460b32c114d5a747f8f65a08f236a3175f819b8e314f8366384ac8a832d",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/CategoryCard.tsx",
+      "bytes": 1062,
+      "sha256": "95c37c70695beb888fc22e7233ee2e8de8855eb4c0e50c3efea8a45ad2520763",
+      "runtimeRelative": [
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/CounterBadge.tsx",
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/CategoryCard.module.css"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": [
+        "react"
+      ]
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/CounterBadge.module.css",
+      "bytes": 729,
+      "sha256": "8f76fe10cea6bc62194edaf1efc6c7ddd339959f7c5e3d98318516a7d0988a66",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/CounterBadge.tsx",
+      "bytes": 521,
+      "sha256": "b7c518a4ee7bdd7f66b7c446b6cb0bfab74eb86430b8dc7ad7375040a6b3fb82",
+      "runtimeRelative": [
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/CounterBadge.module.css"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": [
+        "react"
+      ]
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/Divider.module.css",
+      "bytes": 259,
+      "sha256": "38e72f62354f1b54c2b3d71c417c48eb6e4e377474896248834f3d3fe1b80349",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/Divider.tsx",
+      "bytes": 238,
+      "sha256": "36842c1cbbc80b2ec59b92bf3c8dde4cb6a98b1036a253b392c42d8b8739459f",
+      "runtimeRelative": [
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/Divider.module.css"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": [
+        "react"
+      ]
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/GenerationExampleModal.module.css",
+      "bytes": 3022,
+      "sha256": "8d121c3a81717ee9c45a5de82fa53c3edf315f695c2f925e279452ab333950bb",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/GenerationExampleModal.tsx",
+      "bytes": 11482,
+      "sha256": "fea18d827134a670044dc300ca13cfc869ec813acff6724fb6136aa591b13092",
+      "runtimeRelative": [
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/GenerationExampleModal.module.css"
+      ],
+      "typeOnlyRelative": [
+        "apps/apollo-v4/src/design-check/v3/ui-app/types.ts"
+      ],
+      "externalOrUnresolved": [
+        "react"
+      ]
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/IconSlot.module.css",
+      "bytes": 343,
+      "sha256": "a8855d927dc2d7624a1cd743361f12b01a66b27f491484fe93ce1bf544ac52db",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/IconSlot.tsx",
+      "bytes": 554,
+      "sha256": "48bfd6bcc0c2e8385edd7e26a42d5678ca33f0a649fa9ac0b18ca278596d0840",
+      "runtimeRelative": [
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/IconSlot.module.css"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": [
+        "react"
+      ]
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/LeftSection.module.css",
+      "bytes": 251,
+      "sha256": "8f5ab4369a59f021ff7d7104176f93d4388a394caef7d2ee04bb83c5c66158d2",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/LeftSection.tsx",
+      "bytes": 1555,
+      "sha256": "abbdd7f167da5bc2e2bfeda75542100da77c49bde6b0e266a9565a182b6f8e29",
+      "runtimeRelative": [
+        "apps/apollo-v4/src/design-check/v3/config/tabs.ts",
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/CategoryCard.tsx",
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/Divider.tsx",
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/LeftSection.module.css"
+      ],
+      "typeOnlyRelative": [
+        "apps/apollo-v4/src/design-check/v3/ui-app/types.ts"
+      ],
+      "externalOrUnresolved": [
+        "react"
+      ]
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/OptionList.module.css",
+      "bytes": 449,
+      "sha256": "90b7aa6f8273a279f9964704823d3e7e07f087c5aecf7d3ca025c83ba4590765",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/OptionList.tsx",
+      "bytes": 449,
+      "sha256": "7a0535b04f5d129804594d5bc6570b1864a439d9c1bf96807d00884af0ba30ac",
+      "runtimeRelative": [
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/OptionList.module.css"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": [
+        "react"
+      ]
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/OptionListCell.module.css",
+      "bytes": 773,
+      "sha256": "f503e47de1a4a4e942542917aee54cb77eff1034da792eda577bdedcfc81cc31",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/OptionListCell.tsx",
+      "bytes": 1380,
+      "sha256": "6f7f75164958931f16bdc4d955cb639a6bc56877290aa04695653f5c01c3c516",
+      "runtimeRelative": [
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/IconSlot.tsx",
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/OptionListCell.module.css",
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/PickerIcons.tsx"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": [
+        "react"
+      ]
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/OptionListHeader.module.css",
+      "bytes": 333,
+      "sha256": "559405666b1e7aa399b0ed67985848fc8a3bdae25f52aa838dc6cbe848313fb3",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/OptionListHeader.tsx",
+      "bytes": 452,
+      "sha256": "1186e3a109668d057eafd65b299048e1534541251ca51195847abd04a2136395",
+      "runtimeRelative": [
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/OptionListHeader.module.css"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": [
+        "react"
+      ]
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/PickerButton.module.css",
+      "bytes": 1110,
+      "sha256": "097b1949bd61c6efd4ce499856758415556f6a655461b5c38174f3b01293ec09",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/PickerButton.tsx",
+      "bytes": 1305,
+      "sha256": "72bb5d091a3bc9f6785a195bc8d3c91e00842385836fbd0fba5d523ba7d43162",
+      "runtimeRelative": [
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/IconSlot.tsx",
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/PickerButton.module.css",
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/PickerIcons.tsx"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": [
+        "react"
+      ]
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/PickerIcons.tsx",
+      "bytes": 10502,
+      "sha256": "94491f755425ef27ec92e13e923d8c883d322c3b862400ad1898eb4895e22db0",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": [
+        "react"
+      ]
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/TopSection.module.css",
+      "bytes": 3791,
+      "sha256": "4224a6754a05b0abb3ee7749b3b124e6c520d26d391ca60bab9e53a836ac448c",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/design-check/v3/ui-app/components/TopSection.tsx",
+      "bytes": 19661,
+      "sha256": "72d34e5700a5e688bbab327e485c40285499e06debbe957dca2b306973f5c6f9",
+      "runtimeRelative": [
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/Button.tsx",
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/GenerationExampleModal.tsx",
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/OptionList.tsx",
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/OptionListCell.tsx",
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/OptionListHeader.tsx",
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/PickerButton.tsx",
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/PickerIcons.tsx",
+        "apps/apollo-v4/src/design-check/v3/ui-app/components/TopSection.module.css"
+      ],
+      "typeOnlyRelative": [
+        "apps/apollo-v4/src/design-check/v3/ui-app/types.ts"
+      ],
+      "externalOrUnresolved": [
+        "react",
+        "react-dom"
+      ]
+    },
+    {
+      "path": "apps/apollo-v4/src/finding-details.js",
+      "bytes": 12604,
+      "sha256": "227838c76d5b511be655beeedec49bc31e8b4c50c4b33a1290a44e5fbfd671b5",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/finding-display.js",
+      "bytes": 4453,
+      "sha256": "2ba29519ac7e58847b318ee80880dff2ecded78be254377ddf72c8ea561f7fea",
+      "runtimeRelative": [
+        "apps/apollo-v4/src/resource-identity.js"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/generation-controller.ts",
+      "bytes": 7450,
+      "sha256": "1655e0bf275c356b85bff004e9fc8fba0387dc9f97fdffbf04665a8066cd3856",
+      "runtimeRelative": [
+        "packages/generation-core/src/planning/index.ts",
+        "packages/adapter-figma/src/index.ts",
+        "packages/adapter-frontend/src/index.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/generation-core/src/planning/index.ts",
+        "packages/adapter-figma/src/index.ts",
+        "packages/adapter-frontend/src/index.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/generation-figma-capture.ts",
+      "bytes": 5821,
+      "sha256": "b161bcb3c66ae20b2928de83c4f1eb9ce212c286179313c0a556e724663d328d",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/figma-capture.ts",
+        "packages/component-contract-core/src/instance-validation.ts",
+        "packages/component-contract-core/src/native-slot-capture.ts"
+      ],
+      "typeOnlyRelative": [
+        "apps/apollo-v4/src/generation-native-bindings.ts",
+        "packages/generation-core/src/planning/index.ts",
+        "packages/component-contract-core/src/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/generation-figma-host.ts",
+      "bytes": 24533,
+      "sha256": "0edb2ab44fa24ff5a1f52190650e49fa5e7882da77147b0bf22463f0bf4d945c",
+      "runtimeRelative": [
+        "packages/generation-core/src/planning/index.ts",
+        "apps/apollo-v4/src/generation-figma-rollback.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/generation-core/src/planning/index.ts",
+        "packages/adapter-figma/src/index.ts",
+        "packages/component-contract-core/src/types.ts",
+        "apps/apollo-v4/src/generation-native-bindings.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/generation-figma-rollback.ts",
+      "bytes": 15704,
+      "sha256": "28a0a1b8fc0010c236d4cc679a0fd6d9e2da467808a51acfa1e69b80fcf8c13b",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "packages/generation-core/src/planning/index.ts",
+        "packages/adapter-figma/src/index.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/generation-frontend-port.ts",
+      "bytes": 2772,
+      "sha256": "a8d536ebff48cb863a3b01340bbe5d644cd1ba31f4512ba3a24f7dc5c5732451",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "packages/generation-core/src/planning/index.ts",
+        "packages/adapter-frontend/src/index.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/generation-frontend-ui.js",
+      "bytes": 1948,
+      "sha256": "776d6c47648b8927bd5ebbfe38b6ac42a1538abe00fc3000cb64d7c8bb4d19b2",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/generation-native-bindings.ts",
+      "bytes": 3319,
+      "sha256": "57ac9daf2a9e18c54d68411afd032866d290c0bc716d981a0bddfbb7285850c6",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "packages/generation-core/src/planning/index.ts",
+        "packages/component-contract-core/src/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/generation-native-diagnostic-bridge.ts",
+      "bytes": 996,
+      "sha256": "dbe8350a6c69af6aa4590a3ae67d963fbd5e7898d57ca538db4c8c3b421cd8c2",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/generation-native-diagnostic.ts",
+      "bytes": 15597,
+      "sha256": "9f13cb2046d665d7f813412a213fefcf8aceabfeda66521a10604d234f9ea898",
+      "runtimeRelative": [
+        "apps/apollo-v4/src/generation-native-properties.ts",
+        "packages/component-contract-core/src/capture-topology.ts",
+        "packages/component-contract-core/src/instance-source-identity.ts",
+        "packages/generation-core/src/planning/index.ts"
+      ],
+      "typeOnlyRelative": [
+        "apps/apollo-v4/src/generation-native-observer.ts",
+        "packages/generation-core/src/planning/index.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/generation-native-observer.ts",
+      "bytes": 2107,
+      "sha256": "47c27d7f876563936ab91ced6bd0d115694809f0f41c8d871b70b0b9ef1fc3c6",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/generation-native-properties.ts",
+      "bytes": 2964,
+      "sha256": "12ad5df26b55fdd4ab70bd2f1fb70762f1b1c52b4fb94fea95001a182083ebf6",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/generation-proxy-port.ts",
+      "bytes": 2274,
+      "sha256": "e7b2315afb44102c22441b331d8f8cc5c38bd885a0354a1580035cb325d5a67e",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "packages/generation-core/src/planning/index.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/generation-proxy-ui.js",
+      "bytes": 1487,
+      "sha256": "5dd20933bfcfeb641e5ac3320b46a17f24af99a5847eec81655e180323b4efe8",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/generation-static-review-ui.js",
+      "bytes": 2087,
+      "sha256": "924cfaa21cd5dbf3d2bdc79e279b294439769b8b90d196636d69c42f96e01e5b",
+      "runtimeRelative": [
+        "packages/generation-core/src/planning/static-review-binding-transport.ts"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": [
+        "@apollo/predicate-engine"
+      ]
+    },
+    {
+      "path": "apps/apollo-v4/src/native-diagnostic-ui.js",
+      "bytes": 1139,
+      "sha256": "bf5cf887787418cf28930bcdba5d3a8c693eb06e1bc834a3616ca8d012e6d598",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/resource-identity.js",
+      "bytes": 578,
+      "sha256": "18fd2645fba0ffd6a045e3fb29612c9c6e361c8b100d6fdcf2c8c5c73671efa7",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "apps/apollo-v4/src/runtime.js",
+      "bytes": 5673,
+      "sha256": "be85cc3dcb7a5c97b1248fe489086ac8b1b23005902ac200d9dbd87e9a8c1435",
+      "runtimeRelative": [
+        "apps/apollo-v4/src/contract-profile.js",
+        "apps/apollo-v4/src/authoring-source.js",
+        "apps/apollo-v4/src/area-result.js",
+        "apps/apollo-v4/src/area-ownership.ts"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": [
+        "@apollo/component-contract-runtime",
+        "@apollo/predicate-engine",
+        "@apollo/component-contract-dependencies"
+      ]
+    },
+    {
+      "path": "apps/apollo-v4/src/ui.js",
+      "bytes": 38465,
+      "sha256": "ae425276aa49a5504d6a9d28f186eb2fd57bae962d748b1017676ea5770a92d0",
+      "runtimeRelative": [
+        "apps/apollo-v4/src/design-check/index.tsx",
+        "apps/apollo-v4/src/design-check/ui-client.js",
+        "apps/apollo-v4/src/design-check/opaque-id.js",
+        "apps/apollo-v4/src/design-check/legacy.css",
+        "apps/apollo-v4/src/native-diagnostic-ui.js",
+        "apps/apollo-v4/src/generation-static-review-ui.js",
+        "apps/apollo-v4/src/generation-frontend-ui.js",
+        "apps/apollo-v4/src/generation-proxy-ui.js",
+        "apps/apollo-v4/src/authoring-source.js",
+        "apps/apollo-v4/src/finding-details.js",
+        "apps/apollo-v4/src/finding-display.js",
+        "packages/component-contract-core/src/diagnostic-values.ts"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": [
+        "@apollo/component-contract-zip"
+      ]
+    },
+    {
+      "path": "packages/adapter-figma/src/index.ts",
+      "bytes": 9246,
+      "sha256": "2ad763b2366535d948d5d5687fe7218617c7fc133f3899001f2ae1afd2d1c79b",
+      "runtimeRelative": [
+        "packages/generation-core/src/planning/index.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/generation-core/src/planning/index.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/adapter-frontend/src/index.ts",
+      "bytes": 10739,
+      "sha256": "b5d583bf21da6298c34ac8d3215d7603990b01bb0cb689370c184d6cddf344a0",
+      "runtimeRelative": [
+        "packages/generation-core/src/planning/index.ts",
+        "packages/adapter-frontend/src/profile.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/generation-core/src/planning/index.ts",
+        "packages/adapter-frontend/src/profile.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/adapter-frontend/src/profile.ts",
+      "bytes": 5502,
+      "sha256": "091c19079d383a7be528c038e15986e4d8bcc0886c2e5a4c0a21870c5e4ce4ec",
+      "runtimeRelative": [
+        "packages/generation-core/src/planning/index.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/generation-core/src/planning/index.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/capabilities.ts",
+      "bytes": 1940,
+      "sha256": "4333fafeee7fb087894b97fd8b42a7af9a617e59e489b8b90a14ee6e82b129c3",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/capture-facts.ts",
+      "bytes": 1774,
+      "sha256": "f9da03a8bcf5712e0cefbc2a906b424f5f0f22807afcb98eb17973bb8b56d313",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/capture-representation.ts",
+      "bytes": 1856,
+      "sha256": "665799acc055cf40b4b9034ac04d8605855314ff13adcd87ffca0deba0df516a",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/capture-topology.ts",
+      "bytes": 2854,
+      "sha256": "2cb69fb22f1745ef634025f1971facc2ea7fe0fbceed480b82f961a009abe8f9",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/component-dependencies.ts",
+      "bytes": 24753,
+      "sha256": "892363047e485e64f87fad8a20f7f05dd81c3542faacce21f55cea22388e4a9f",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/representation-evidence.ts",
+        "packages/component-contract-core/src/stable.ts",
+        "packages/component-contract-core/src/snapshot-topology.ts",
+        "packages/component-contract-core/src/instance-boundaries.ts",
+        "packages/component-contract-core/src/variant-facts.ts",
+        "packages/component-contract-core/src/instance-validation.ts",
+        "packages/component-contract-core/src/occurrence-address.ts",
+        "packages/component-contract-core/src/capture-representation.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/component-property-identity.ts",
+      "bytes": 1727,
+      "sha256": "dcfd2d20f27c6b6bbe3470683a69606d2968b4f15da2acaf9549b1a814371e74",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/declared-target-membership.ts",
+      "bytes": 633,
+      "sha256": "d3e421a9b96d9a5f1399f658a3584405dd8e14cfdfcfea1c27e2592b03e2d96b",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/stable.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/dependency-capture-diagnostics.ts",
+      "bytes": 2629,
+      "sha256": "cf1cac3811972247a2be3ca3c0a35b0bdf76f5bb0cbd782c0ec7824e50e59fca",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/diagnostic-values.ts",
+      "bytes": 1856,
+      "sha256": "78299f10e5f724abf7dfde3afbc316739ffe127ce20d3e4ca7447cee4a757579",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/effect-facts.ts",
+      "bytes": 1081,
+      "sha256": "1eb5d2d143a45a3bf3a3df955cea1d0a4b6c2c568648563630c76c0c4d7ab7e7",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/figma-capture.ts",
+      "bytes": 46082,
+      "sha256": "d398366784bd606a4cfe30cf8a75192829923910f50895de3ec61b003fa978b9",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/instance-validation.ts",
+        "packages/component-contract-core/src/capture-representation.ts",
+        "packages/component-contract-core/src/capture-facts.ts",
+        "packages/component-contract-core/src/capture-topology.ts",
+        "packages/component-contract-core/src/instance-source-identity.ts",
+        "packages/component-contract-core/src/native-slot-capture.ts",
+        "packages/component-contract-core/src/variable-mode-facts.ts",
+        "packages/component-contract-core/src/host-context-variable-modes.ts",
+        "packages/component-contract-core/src/property-applicability.ts",
+        "packages/component-contract-core/src/gradient-paint-facts.ts",
+        "packages/component-contract-core/src/effect-facts.ts",
+        "packages/component-contract-core/src/text-style-facts.ts",
+        "packages/component-contract-core/src/text-decoration-facts.ts",
+        "packages/component-contract-core/src/text-binding-identity.ts",
+        "packages/component-contract-core/src/component-dependencies.ts",
+        "packages/component-contract-core/src/dependency-capture-diagnostics.ts",
+        "packages/component-contract-core/src/variant-facts.ts",
+        "packages/component-contract-core/src/snapshot-topology.ts",
+        "packages/component-contract-core/src/transition-capture.ts",
+        "packages/component-contract-core/src/instance-content-reference.ts",
+        "packages/component-contract-core/src/nested-instance-content-reference.ts",
+        "packages/component-contract-core/src/instance-main-aliases.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/instance-boundaries.ts",
+        "packages/component-contract-core/src/types.ts",
+        "packages/component-contract-core/src/native-slot-capture.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/gradient-paint-facts.ts",
+      "bytes": 4898,
+      "sha256": "11bc070bfc12df663bc6df9db2d075a2313de022c14392dd47ed9c90b28165e8",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/host-context-variable-modes.ts",
+      "bytes": 6219,
+      "sha256": "914e62c60dd6a784b0ba268dbb1bfe8df9ebab161cde6b870d125f072cde0b1b",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/instance-validation.ts"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/instance-boundaries.ts",
+      "bytes": 7470,
+      "sha256": "9778eb4130dd0cf6a8efad535fd6f0c034b3b134c046621cde55e0650311198c",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/snapshot-topology.ts",
+        "packages/component-contract-core/src/stable.ts",
+        "packages/component-contract-core/src/instance-correspondence.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/instance-content-reference.ts",
+      "bytes": 11284,
+      "sha256": "2e65aabc9a8c94dde7ac593637433ab7c95a3a563b24fde623b9d86a2cddabb2",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/instance-boundaries.ts",
+        "packages/component-contract-core/src/variant-facts.ts",
+        "packages/component-contract-core/src/instance-validation.ts",
+        "packages/component-contract-core/src/snapshot-topology.ts",
+        "packages/component-contract-core/src/stable.ts",
+        "packages/component-contract-core/src/nested-instance-content-reference.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/instance-correspondence.ts",
+      "bytes": 19152,
+      "sha256": "2f93e21ab03d6dd75b8bdcaf7301b79407c76785512dfa2e2c289bdf91b2b3d1",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/snapshot-topology.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/types.ts",
+        "packages/component-contract-core/src/instance-boundaries.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/instance-main-aliases.ts",
+      "bytes": 1911,
+      "sha256": "35a5976a2603865caf5125dbe25cadcc16efe4da6f36869c91ae3f615281d225",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/variant-facts.ts",
+        "packages/component-contract-core/src/instance-validation.ts",
+        "packages/component-contract-core/src/stable.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/instance-source-identity.ts",
+      "bytes": 4532,
+      "sha256": "61d27ce4878bdd3ebf2ee225a7e6617d8ea49faadf08a88e307b383b1c49f61a",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/capture-topology.ts"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/instance-validation.ts",
+      "bytes": 5984,
+      "sha256": "a5df89851ede504b1479797481c26d7802e5c0e116a7d06f4945c365cdfed9d0",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/snapshot-topology.ts",
+        "packages/component-contract-core/src/variant-facts.ts",
+        "packages/component-contract-core/src/instance-boundaries.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/native-slot-capture.ts",
+      "bytes": 7139,
+      "sha256": "480b142ca360cfa41887095bb1aad790b3969f11ec84bc32c69fb6b3df9d3db1",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/capture-representation.ts",
+        "packages/component-contract-core/src/snapshot-topology.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/nested-instance-content-reference.ts",
+      "bytes": 10889,
+      "sha256": "1cd0efdd2e306b020d659fd05fba7d673a0d3bd904805f84b848a4e32a07326e",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/instance-boundaries.ts",
+        "packages/component-contract-core/src/variant-facts.ts",
+        "packages/component-contract-core/src/instance-validation.ts",
+        "packages/component-contract-core/src/snapshot-topology.ts",
+        "packages/component-contract-core/src/stable.ts",
+        "packages/component-contract-core/src/host-context-variable-modes.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/types.ts",
+        "packages/component-contract-core/src/instance-content-reference.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/occurrence-address.ts",
+      "bytes": 3573,
+      "sha256": "7e0c3929293eee8ecf7b5c53c9175773ea0b8d404b89bd3d6800163550c00387",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/property-applicability.ts",
+      "bytes": 3993,
+      "sha256": "20199255442d6fcd8355bb7e6cf9557eb9e8d4f47a3b8082e4670ae32f8942b1",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/capabilities.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/representation-evidence.ts",
+      "bytes": 11721,
+      "sha256": "6181c9107b5406776a6821203e9280e5ac97d27d7af0f87ee66ccbf0d25dbf11",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/stable.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/root-target.ts",
+      "bytes": 1626,
+      "sha256": "d1d0049185b746398b8bdf04ae630ffdcdc003af80538506c403ee9386cad642",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/declared-target-membership.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/snapshot-topology.ts",
+      "bytes": 2659,
+      "sha256": "f42efb8e773c6b2d501aa5a4342a3b115d7933e4dd7e8f08fb0f59fe1307596f",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/occurrence-address.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/stable.ts",
+      "bytes": 1126,
+      "sha256": "86d7e089757a0d4dedce71a3e71a58ffb785122370b4e6818e565ccd73ba1597",
+      "runtimeRelative": [
+        "packages/component-contract-core/vendor/sha256.ts"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/text-binding-identity.ts",
+      "bytes": 9219,
+      "sha256": "18f9077d73f08dd0338416c3ae9fbe43f26e54ec0705a91ec484367b7b773eca",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/stable.ts",
+        "packages/component-contract-core/src/capture-representation.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/text-decoration-facts.ts",
+      "bytes": 946,
+      "sha256": "816580e5e78ea64cb5337e31f8a34a5387a7bbd190f5b94a694fe02ca609104f",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/text-style-facts.ts",
+      "bytes": 5858,
+      "sha256": "7c8b1e91c999b72b89b8ae8e07116363e1019ce232ee953b9a675b941ee72140",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/stable.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/transition-capture.ts",
+      "bytes": 2903,
+      "sha256": "f93050c1949ca0e4d12d1b018f08332145ac6d5007bf4a088ed5bf8e1867ead4",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/stable.ts"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/variable-mode-facts.ts",
+      "bytes": 1937,
+      "sha256": "f7304de0fff3e5dc8f17f91a10878da920ccfde12faa55e0e344423188b518d8",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/src/variant-facts.ts",
+      "bytes": 25112,
+      "sha256": "c5216a5e058a4ca4edabbb0fa1168d0ec6a5c6d0ef0d4b7c6c54ab379d632dfc",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/stable.ts",
+        "packages/component-contract-core/src/capture-representation.ts",
+        "packages/component-contract-core/src/component-property-identity.ts",
+        "packages/component-contract-core/src/snapshot-topology.ts",
+        "packages/component-contract-core/src/occurrence-address.ts",
+        "packages/component-contract-core/src/root-target.ts",
+        "packages/component-contract-core/src/instance-boundaries.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/component-contract-core/src/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/component-contract-core/vendor/sha256.ts",
+      "bytes": 4317,
+      "sha256": "788d3452d0fd460237a4214e49e858a539ee8afd7d07ed148bc5717ced7d335f",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/generation-core/src/planning/code-connect.ts",
+      "bytes": 25588,
+      "sha256": "0bebe46201fcb36fe1525a15d525c323320a031857e6aaf901a37a7b0f3cb33a",
+      "runtimeRelative": [
+        "packages/generation-core/src/planning/projection.ts",
+        "packages/generation-core/src/planning/preflight.ts",
+        "packages/generation-core/src/planning/schema.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/generation-core/src/planning/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/generation-core/src/planning/diagnostics.ts",
+      "bytes": 488,
+      "sha256": "a5d6e4beaf58fa4c9a9373b78ecd68ba853e91f714b67d7c6fefe69898e44ea1",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/generation-core/src/planning/index.ts",
+      "bytes": 413,
+      "sha256": "13c10babc81d280a35a1d7c719caad2ce753a81ed7e234430b0a64778cce2d8a",
+      "runtimeRelative": [
+        "packages/generation-core/src/planning/types.ts",
+        "packages/generation-core/src/planning/schema.ts",
+        "packages/generation-core/src/planning/projection.ts",
+        "packages/generation-core/src/planning/preflight.ts",
+        "packages/generation-core/src/planning/verification.ts",
+        "packages/generation-core/src/planning/diagnostics.ts",
+        "packages/generation-core/src/planning/code-connect.ts",
+        "packages/generation-core/src/planning/representation-proof.ts",
+        "packages/generation-core/src/planning/static-content-types.ts",
+        "packages/generation-core/src/planning/static-content.ts",
+        "packages/generation-core/src/planning/static-review-transport.ts",
+        "packages/generation-core/src/planning/static-review-binding-transport.ts"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/generation-core/src/planning/preflight.ts",
+      "bytes": 20134,
+      "sha256": "897d7a8ae632b91bf89ea3c3e59b646b0cf8867e5ee86c29aa8e93cf56b8ac1c",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/representation-evidence.ts",
+        "packages/generation-core/src/planning/representation-proof.ts",
+        "packages/generation-core/src/planning/schema.ts",
+        "packages/generation-core/src/planning/projection.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/generation-core/src/planning/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/generation-core/src/planning/projection.ts",
+      "bytes": 2597,
+      "sha256": "ac65b1716d81cd57cf0712aca6355b59f8533a847e11adb48d060076e9fa7a62",
+      "runtimeRelative": [
+        "packages/component-contract-core/src/representation-evidence.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/generation-core/src/contracts/packages.ts",
+        "packages/generation-core/src/planning/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/generation-core/src/planning/representation-proof.ts",
+      "bytes": 2344,
+      "sha256": "bd73ee66e779976dc0b4025426c3624efd5b33ccc7ffa0e2b86416848ff6724c",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "packages/generation-core/src/planning/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/generation-core/src/planning/schema.ts",
+      "bytes": 6531,
+      "sha256": "5a1a06948f309b35cf0505a4ef5280dac5f7baa0a5e0595f70250d1a5f5a031f",
+      "runtimeRelative": [
+        "packages/generation-core/src/planning/static-content-types.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/generation-core/src/planning/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/generation-core/src/planning/static-content-types.ts",
+      "bytes": 3559,
+      "sha256": "e98a293055f454d39f45ab87498cd7dae4f7defa365f36bbf42424b0736b6fd9",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "packages/generation-core/src/planning/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/generation-core/src/planning/static-content.ts",
+      "bytes": 19939,
+      "sha256": "f73b2f0f03f36522a94a7607349c878beb07b52867ce3e5920af2b435b537d90",
+      "runtimeRelative": [
+        "packages/generation-core/src/planning/projection.ts",
+        "packages/generation-core/src/planning/representation-proof.ts",
+        "packages/generation-core/src/planning/static-content-types.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/generation-core/src/planning/types.ts",
+        "packages/generation-core/src/planning/static-content-types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/generation-core/src/planning/static-review-binding-transport.ts",
+      "bytes": 3789,
+      "sha256": "6fc83a30c7bb183ca4312ac51fa92069fa3ccdcec04aa0d17fc0636ae62ef350",
+      "runtimeRelative": [
+        "packages/generation-core/src/planning/static-review-transport.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/generation-core/src/planning/types.ts",
+        "packages/generation-core/src/planning/static-review-transport.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/generation-core/src/planning/static-review-transport.ts",
+      "bytes": 10259,
+      "sha256": "3e0095e08613502254d38391a3c68a47702aa6845cc2b59d4414e19b6f6e8dec",
+      "runtimeRelative": [
+        "packages/generation-core/src/planning/static-content.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/generation-core/src/planning/types.ts",
+        "packages/generation-core/src/planning/static-content-types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/generation-core/src/planning/types.ts",
+      "bytes": 8961,
+      "sha256": "42a08952a2f28726480622f043ef4fb7160b3e28f39f08079cfbf7629f0b9ec1",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "packages/generation-core/src/contracts/packages.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "packages/generation-core/src/planning/verification.ts",
+      "bytes": 2085,
+      "sha256": "6c7712fe804e70f4101737250957d02d7ca545accd255d3beb9d86f94145a8bf",
+      "runtimeRelative": [
+        "packages/generation-core/src/planning/schema.ts"
+      ],
+      "typeOnlyRelative": [
+        "packages/generation-core/src/planning/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/actions/corporateComponentAction.ts",
+      "bytes": 16883,
+      "sha256": "a9a0a359d174c2f0b20c624630c69b7981f2e96d569c25c096b933db9f130697",
+      "runtimeRelative": [
+        "src/reference/library.ts",
+        "src/actions/sceneNodeResolver.ts",
+        "src/utils/variantProperties.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/reference/libraryTypes.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/actions/customizationResetAction.ts",
+      "bytes": 12322,
+      "sha256": "631fca15d625d18e88048725d1b57a2a32d7f9ab45a688251f525ff37f04ab46",
+      "runtimeRelative": [
+        "src/utils/auditInstrumentation.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/types/structures.ts",
+        "src/actions/customizationResetMutations.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/actions/customizationResetMutations.ts",
+      "bytes": 31765,
+      "sha256": "1995528fcec979295bd7a3ed5cc25f95998aa688bdd68c91ce4da2279cd22bcd",
+      "runtimeRelative": [
+        "src/structure/strokeAlignment.ts",
+        "src/structure/layoutSizing.ts",
+        "src/utils/nodeHelpers.ts",
+        "src/utils/variableBindingReset.ts",
+        "src/services/styleMetadata.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/types/structures.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/actions/findingAction.ts",
+      "bytes": 2306,
+      "sha256": "b285d9c9faa3290202369f0cb939a458ff8af3a274ef92d6da351dc7e2add932",
+      "runtimeRelative": [
+        "src/actions/corporateComponentAction.ts",
+        "src/actions/styleBindingAction.ts",
+        "src/actions/variableBindingAction.ts",
+        "src/remediation/findingActionRegistry.ts",
+        "src/remediation/types.ts"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/actions/focusNode.ts",
+      "bytes": 1408,
+      "sha256": "81080b52c1c2710eb0b6f59ccca099d654e2d07b04a6b8f22aff6b636ced8eb5",
+      "runtimeRelative": [
+        "src/actions/sceneNodeResolver.ts"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/actions/pageThemizationAction.ts",
+      "bytes": 1835,
+      "sha256": "cb09770899005cc7f275096fd002f14379a0ed4da8cf543f222cfc83159a9de8",
+      "runtimeRelative": [
+        "src/actions/focusNode.ts"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/actions/sceneNodeResolver.ts",
+      "bytes": 1033,
+      "sha256": "cd4b6c23010255ddf5be267f106f4f63233ab3f48a8ca77cb9636d18296e89e2",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/actions/styleBindingAction.ts",
+      "bytes": 11811,
+      "sha256": "303db2ef33d5f88ad41c5f144b9ddd1e486afa19e489291c334be35e924ef5cd",
+      "runtimeRelative": [
+        "src/services/styleMetadata.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/remediation/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/actions/variableBindingAction.ts",
+      "bytes": 4243,
+      "sha256": "43f81f2d03993d0cab9c65478cb9d40880e722cdc327caff8f7e8b3ed1ad3889",
+      "runtimeRelative": [
+        "src/services/styleMetadata.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/remediation/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/assessment/customizationAssessment.ts",
+      "bytes": 49247,
+      "sha256": "dd67981995b51181aecdd70f63a7475e840e7787c72d0d6bcd6e794164c87eee",
+      "runtimeRelative": [
+        "src/structure/diff.ts",
+        "src/structure/strokeAlignment.ts",
+        "src/structure/layoutSizing.ts",
+        "src/structure/occurrenceKeys.ts",
+        "src/contracts/compositionContractEngine.ts",
+        "src/assessment/patternRules.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/types/structures.ts",
+        "src/assessment/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/assessment/patternRuleLoader.ts",
+      "bytes": 605,
+      "sha256": "b543e47cdc013b8aed1d44e362565315601850ed751ebdb2059dbb5ccf1423d2",
+      "runtimeRelative": [
+        "src/utils/networkFetch.ts",
+        "src/assessment/patternRules.ts"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/assessment/patternRules.ts",
+      "bytes": 8964,
+      "sha256": "6236f02999b9933431bc4c6313f812edc644f24315dfcf29499cc34950699707",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/assessment/surfaceContext.ts",
+      "bytes": 4629,
+      "sha256": "695a40c82e551b87435bf236188ef71d963eecb40559d11bf867017b94da83ba",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/code.ts",
+      "bytes": 78149,
+      "sha256": "70fa0052fad6949597a59e0ac5f3b7c44042d3035002438661bbe523d2b3ee6c",
+      "runtimeRelative": [
+        "src/reference/library.ts",
+        "src/reference/libraryTypes.ts",
+        "src/structure/snapshot.ts",
+        "src/structure/diff.ts",
+        "src/structure/occurrenceKeys.ts",
+        "src/config/tabs.ts",
+        "src/utils/nodeHelpers.ts",
+        "src/services/styleMetadata.ts",
+        "src/create-check-state.ts",
+        "src/policies/componentAuditPolicy.ts",
+        "src/services/themeAudit.ts",
+        "src/services/channelAudit.ts",
+        "src/utils/auditInstrumentation.ts",
+        "src/utils/componentKeyCache.ts",
+        "src/utils/variableCollectionId.ts",
+        "src/stats/delivery.ts",
+        "src/stats/textReport.ts",
+        "src/stats/layoutRelations.ts",
+        "src/stats/evidenceBundle.ts",
+        "src/predicate/predicateValidation.ts",
+        "src/contracts/runtimeContractRegistry.ts",
+        "src/contracts/experimentalContractV2Registry.ts",
+        "src/examples/generationExampleCandidate.ts",
+        "src/examples/generationExampleSource.ts",
+        "src/actions/focusNode.ts",
+        "src/actions/corporateComponentAction.ts",
+        "src/actions/customizationResetAction.ts",
+        "src/actions/customizationResetMutations.ts",
+        "src/actions/pageThemizationAction.ts",
+        "src/actions/findingAction.ts",
+        "src/plugin/messageRouter.ts",
+        "src/generation/service.ts",
+        "src/services/auditLifecycle.ts",
+        "src/services/auditTraversalContext.ts",
+        "src/services/auditResults.ts",
+        "src/services/nestedReferencePreparation.ts",
+        "src/services/auditTargetCollector.ts",
+        "src/remediation/findingActionRegistry.ts",
+        "src/remediation/findingActionResolver.ts",
+        "src/services/colorTokenValueIndex.ts",
+        "src/services/detachedComponentSource.ts",
+        "src/types/pageContext.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/types/structures.ts",
+        "src/types/audit.ts",
+        "src/stats/types.ts",
+        "src/contracts/componentRules.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/config/deprecatedStyleSources.ts",
+      "bytes": 371,
+      "sha256": "381b8c7e3a384247b78af233f515c63066881cf2d70ce09a318fa9c0fe2cd433",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/config/tabs.ts",
+      "bytes": 3021,
+      "sha256": "eb6659d5eebd82ce00e091ffd9f51234b8ac9220627f2ce325b97c6d1c9fabe9",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/contracts/artifactContext.ts",
+      "bytes": 7462,
+      "sha256": "db3c39c3ec475b9abb999d26d8b9caf101478382a36c8484a060338ff107a9e0",
+      "runtimeRelative": [
+        "src/contracts/publicArtifact.ts"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/contracts/componentApiContracts.ts",
+      "bytes": 14306,
+      "sha256": "251d56ae06712c59b5f19454edffffbb189726dd7b2bd945b1e07ce1bca470a1",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "src/structure/diff.ts",
+        "src/types/structures.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/contracts/componentRules.ts",
+      "bytes": 65286,
+      "sha256": "fc093e2893bcca27ca2a7bbc1d1b83aa53535198e5f0aeeb5742ba312824e1cd",
+      "runtimeRelative": [
+        "src/structure/layoutSizing.ts",
+        "src/reference/library.ts",
+        "src/contracts/runtimeContractRegistry.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/structure/diff.ts",
+        "src/types/structures.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/contracts/compositionContractEngine.ts",
+      "bytes": 14535,
+      "sha256": "109908f0526ccc16bb6071529d452b94563a86e6e896c0f5706112febb53626f",
+      "runtimeRelative": [
+        "src/structure/occurrenceKeys.ts",
+        "src/contracts/compositionContractRegistry.ts",
+        "src/contracts/runtimeContractRegistry.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/assessment/types.ts",
+        "src/structure/diff.ts",
+        "src/types/structures.ts",
+        "src/contracts/compositionContractTypes.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/contracts/compositionContractRegistry.ts",
+      "bytes": 9012,
+      "sha256": "514d4032fab495840682708f62a7f20aa15df3dd45df56c6a0dd586e4be46341",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "src/contracts/compositionContractTypes.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/contracts/compositionContracts.ts",
+      "bytes": 8195,
+      "sha256": "4164f7e86fd683ef77ce0ce7ff33a8393768ffb5ac2ec812e98bc0683adbd6c3",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "src/contracts/compositionContractTypes.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/contracts/contractArtifactCompiler.ts",
+      "bytes": 3821,
+      "sha256": "be3f81a3a4aeee5191bd333b4ba045b2597af7f76201f03fd402be3da3a36745",
+      "runtimeRelative": [
+        "src/contracts/artifactContext.ts",
+        "src/contracts/publicArtifact.ts",
+        "src/contracts/componentApiContracts.ts",
+        "src/contracts/compositionContracts.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/contracts/componentRules.ts",
+        "src/contracts/contractIndex.ts",
+        "src/contracts/compositionContractTypes.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/contracts/contractAwareDiffs.ts",
+      "bytes": 23907,
+      "sha256": "c7fffcac6a201ab8aab17b3dd490eec437482ca8670359e2a8828339bd257863",
+      "runtimeRelative": [
+        "src/structure/strokeAlignment.ts",
+        "src/structure/layoutSizing.ts",
+        "src/structure/occurrenceKeys.ts",
+        "src/contracts/runtimeContractRegistry.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/structure/diff.ts",
+        "src/types/structures.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/contracts/contractIndex.ts",
+      "bytes": 7824,
+      "sha256": "98f8f8f3c2078333867cbb85b527fd2a797ed2ddf51e8e2237bee6ea9cc461a8",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/contracts/contractIndexResolver.ts",
+      "bytes": 4141,
+      "sha256": "42c0869572c987504bae87cc1c1b9db822bba203bf43b0bc1453bdc612ff6b9f",
+      "runtimeRelative": [
+        "src/reference/referenceList.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/contracts/contractIndex.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/contracts/contractTransport.ts",
+      "bytes": 1163,
+      "sha256": "5a21bda47b508c054ed4ea15f4470bf917d680e2c8a7692670d1992a31ff1e2a",
+      "runtimeRelative": [
+        "src/utils/networkFetch.ts",
+        "src/reference/referenceList.ts"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/contracts/experimentalContractV2Engine.ts",
+      "bytes": 110615,
+      "sha256": "7dbfea0a8b6a3f544454695baaee278c02dea171db0da871db4d3a5b841c5219",
+      "runtimeRelative": [
+        "src/utils/auditInstrumentation.ts",
+        "src/utils/variantProperties.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/assessment/types.ts",
+        "src/structure/diff.ts",
+        "src/types/structures.ts",
+        "src/contracts/experimentalContractV2Registry.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/contracts/experimentalContractV2Registry.ts",
+      "bytes": 8924,
+      "sha256": "023a94cd3a9dc31982828400ac0e95e9fce7bc5f646c22ad0c86cf87809ab00e",
+      "runtimeRelative": [
+        "src/reference/referenceList.ts",
+        "src/utils/networkFetch.ts"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/contracts/publicArtifact.ts",
+      "bytes": 13804,
+      "sha256": "cdd1d61a4a679515235094d92b2124104f0a864caf0487fbc1a84d8a72c452d2",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/contracts/runtimeContractRegistry.ts",
+      "bytes": 18019,
+      "sha256": "041127ad665ee9345efb157728b2bef71c6798fd8c16ad15c7802b944f2e6ee1",
+      "runtimeRelative": [
+        "src/contracts/artifactContext.ts",
+        "src/contracts/contractIndex.ts",
+        "src/contracts/contractArtifactCompiler.ts",
+        "src/contracts/contractIndexResolver.ts",
+        "src/contracts/contractTransport.ts",
+        "src/services/asyncResourceLifecycle.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/contracts/componentApiContracts.ts",
+        "src/contracts/contractIndexResolver.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/create-check-state.ts",
+      "bytes": 1127,
+      "sha256": "bd2088880012765af8b308bc8d4cef40c0fa7ff5a19e8bd2e8beff70e77c0008",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "src/types/audit.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/examples/generationExampleCandidate.ts",
+      "bytes": 25545,
+      "sha256": "ea71a66b966547ea7fb3deeb36e9022198f896fd7ef81b44d79f5fcfb0445a44",
+      "runtimeRelative": [
+        "src/examples/generationExampleSource.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/reference/libraryTypes.ts",
+        "src/stats/types.ts",
+        "src/types/structures.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/examples/generationExampleSource.ts",
+      "bytes": 1504,
+      "sha256": "23debfd449e6628f928051e86ea595a56d30cb71ebe662578b4c8bf6ca363a97",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/filters/allowedCustomizationRules.ts",
+      "bytes": 23548,
+      "sha256": "2fa5ddd6a72c5eafc7fc8b3cf2f3505d2ab7e086945dbecc14f7d7a1725cb3a0",
+      "runtimeRelative": [
+        "src/reference/library.ts",
+        "src/utils/auditInstrumentation.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/structure/diff.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/filters/customizationFilters.ts",
+      "bytes": 2154,
+      "sha256": "bb3c54be350dcd6f73dfb3e9f74da005355938fc356f7e1f4d86ecf3d7c8a4d7",
+      "runtimeRelative": [
+        "src/utils/auditInstrumentation.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/structure/diff.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/filters/customStyleFilters.ts",
+      "bytes": 5214,
+      "sha256": "5497a39887fc1562d7b05cf536fd77df4b9a81a347f6c67bdd41f6463510dbfa",
+      "runtimeRelative": [
+        "src/reference/library.ts",
+        "src/policies/auditPolicyConfig.ts",
+        "src/utils/nodeHelpers.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/types/audit.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/filters/ignoredComponentFilters.ts",
+      "bytes": 2550,
+      "sha256": "16370dc3f0d796e4cb516cf5a5e9657d5ed458eb3dec5a8b57987b075a3ff805",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "src/types/audit.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/filters/suppressionPolicy.ts",
+      "bytes": 4235,
+      "sha256": "d2045a7e0416f7f40d4769c4ca33fe12bc23fa71d301abaa89513c3d7f0eb033",
+      "runtimeRelative": [
+        "src/reference/library.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/structure/diff.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/generation/contracts.ts",
+      "bytes": 14282,
+      "sha256": "78ac3292830c2c4825b6e502da1d5d159e085399452c7af671aee65ac985d2c0",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/generation/executePlan.ts",
+      "bytes": 10841,
+      "sha256": "647cd991f90d2ca586519cdbbeac05b0a320e83665f7e7e888634ee844aa548d",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "src/generation/contracts.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/generation/service.ts",
+      "bytes": 7896,
+      "sha256": "daae4993db9cb719c66bf76503de05341b035410ee76f3fec761b4111c4b5926",
+      "runtimeRelative": [
+        "src/generation/contracts.ts",
+        "src/generation/executePlan.ts"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/plugin/messageRouter.ts",
+      "bytes": 7568,
+      "sha256": "72a5369d82f41f5b87d50462f210fb70e64d022ceef97d47ff97f4161b1312f9",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/policies/auditPolicyConfig.ts",
+      "bytes": 5559,
+      "sha256": "9b25061b1158e3b587d30775545f387c5e2a6137728abb4a428860c346de102d",
+      "runtimeRelative": [
+        "src/services/asyncResourceLifecycle.ts",
+        "src/utils/networkFetch.ts"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/policies/componentAuditPolicy.ts",
+      "bytes": 2080,
+      "sha256": "a92edcf6192d9e737db493e199b268c4bbe9b5db971430e4ac75bc8ac437b9fa",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "src/reference/libraryTypes.ts",
+        "src/services/channelAudit.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/policies/shellComponentAuditPolicy.ts",
+      "bytes": 6910,
+      "sha256": "1ad8cfbb3c97e91b93e648b309851e184a6d8079736a5d9c4af85e11f4aeb0e2",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "src/types/audit.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/predicate/predicateValidation.ts",
+      "bytes": 18132,
+      "sha256": "a5243134724f7c5b1650b9a195df6ed28c8e472bdbc0a2c6721121e2faf24622",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "src/stats/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/reference/library.ts",
+      "bytes": 81853,
+      "sha256": "685053a85fa5f0b6d032aff3eadd5a7d4d013b6032768e59c8ffe43cbf1d11c3",
+      "runtimeRelative": [
+        "src/reference/referenceList.ts",
+        "src/contracts/runtimeContractRegistry.ts",
+        "src/contracts/experimentalContractV2Registry.ts",
+        "src/assessment/patternRuleLoader.ts",
+        "src/remediation/remediationConfig.ts",
+        "src/policies/auditPolicyConfig.ts",
+        "src/utils/networkFetch.ts",
+        "src/utils/variantProperties.ts",
+        "src/utils/auditInstrumentation.ts",
+        "src/utils/promisePool.ts",
+        "src/services/asyncResourceLifecycle.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/reference/libraryTypes.ts",
+        "src/remediation/types.ts",
+        "src/types/structures.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/reference/libraryTypes.ts",
+      "bytes": 5036,
+      "sha256": "fd4b3934469b38ec1e7fb1d13f8053ec30099ad36f5f670e65f67de8bb868cd7",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "src/types/structures.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/reference/nestedReferenceMerge.ts",
+      "bytes": 32082,
+      "sha256": "13a7bfdc3a326ed6c90270cdc1675be04783a57c94b78ea455b3b349dc5bd9cd",
+      "runtimeRelative": [
+        "src/structure/occurrenceKeys.ts",
+        "src/utils/auditInstrumentation.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/types/structures.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/reference/referenceList.ts",
+      "bytes": 11471,
+      "sha256": "152d21c31aaf4b199ffff168ce5cc2eb3b368fb15a0803f0c14b3c221b4a4df8",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/remediation/findingActionRegistry.ts",
+      "bytes": 1489,
+      "sha256": "545c2f5b4ef43f535c27b35491b02892ae0238393e48cf8a62c7c7e36c733910",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "src/types/audit.ts",
+        "src/remediation/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/remediation/findingActionResolver.ts",
+      "bytes": 13116,
+      "sha256": "34665171575a3f302f5b87ab7e4d0838c95aba2cbb026674d27aba271979f0b1",
+      "runtimeRelative": [
+        "src/reference/library.ts",
+        "src/services/styleMetadata.ts",
+        "src/remediation/remediationConfig.ts",
+        "src/remediation/findingActionRegistry.ts",
+        "src/services/colorTokenValueIndex.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/create-check-state.ts",
+        "src/types/audit.ts",
+        "src/services/channelAudit.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/remediation/remediationConfig.ts",
+      "bytes": 5386,
+      "sha256": "76e33e180b0345dbfaa0394bb8937fc88d4f7c53396f454fc9abf4c45c8eced4",
+      "runtimeRelative": [
+        "src/services/asyncResourceLifecycle.ts",
+        "src/utils/networkFetch.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/remediation/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/remediation/types.ts",
+      "bytes": 2399,
+      "sha256": "ac78e47850fd2778323f11c0b9d1dc80b915a9845a6ff1f5407dc4d9ac5d5d2b",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "src/services/channelAudit.ts",
+        "src/types/audit.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/services/asyncResourceLifecycle.ts",
+      "bytes": 2123,
+      "sha256": "979aea49cbfb12f00c0e7eb1f776b5b627005321095bd1302f077089e0900735",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/services/auditLifecycle.ts",
+      "bytes": 1338,
+      "sha256": "d6797b9a64ee1eace3cde1b388f0856e0aaf084ec17279761bffe9b376c32a11",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/services/auditResults.ts",
+      "bytes": 7281,
+      "sha256": "4d091c4f0aab42d73e560ad6b6fa3012e617d3c9e776b8a29887acbad628f04a",
+      "runtimeRelative": [
+        "src/filters/ignoredComponentFilters.ts",
+        "src/stats/report.ts",
+        "src/stats/patternReport.ts",
+        "src/services/auditViewBuilder.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/create-check-state.ts",
+        "src/stats/types.ts",
+        "src/types/pageContext.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/services/auditTargetCollector.ts",
+      "bytes": 16046,
+      "sha256": "6a97de15665cf2ae09d1df1ddda84f21200d8176da99b8602247a3c02a24b248",
+      "runtimeRelative": [
+        "src/services/componentClassifier.ts",
+        "src/services/auditTreeTraversal.ts",
+        "src/services/localComponentDependencyAudit.ts",
+        "src/services/auditViewBuilder.ts",
+        "src/services/deprecatedStyleAudit.ts",
+        "src/services/libraryComponentFreshness.ts",
+        "src/services/themeAudit.ts",
+        "src/services/channelAudit.ts",
+        "src/policies/componentAuditPolicy.ts",
+        "src/policies/shellComponentAuditPolicy.ts",
+        "src/utils/auditInstrumentation.ts",
+        "src/services/detachedContractV2Audit.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/create-check-state.ts",
+        "src/types/audit.ts",
+        "src/services/auditTraversalContext.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/services/auditTraversalContext.ts",
+      "bytes": 1713,
+      "sha256": "c3e87f9ce72066f6d60e196f2e7d4acf8dbc495e9e2348c1741a9c0b8a929138",
+      "runtimeRelative": [
+        "src/services/libraryComponentFreshness.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/types/structures.ts",
+        "src/services/auditViewBuilder.ts",
+        "src/services/deprecatedStyleAudit.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/services/auditTreeTraversal.ts",
+      "bytes": 960,
+      "sha256": "81e8130f4104fce54942aa218fe3e3fffb95bc3e693c142e480e08fd163d4929",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/services/auditViewBuilder.ts",
+      "bytes": 18066,
+      "sha256": "d4c1508b775f095b10d76750d852d09c2440c3b4c9269a01fec4c7dbd46420e9",
+      "runtimeRelative": [
+        "src/reference/library.ts",
+        "src/services/styleMetadata.ts",
+        "src/filters/customStyleFilters.ts",
+        "src/filters/ignoredComponentFilters.ts",
+        "src/services/detachedComponentSource.ts",
+        "src/policies/auditPolicyConfig.ts",
+        "src/utils/nodeHelpers.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/structure/diff.ts",
+        "src/types/audit.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/services/channelAudit.ts",
+      "bytes": 2293,
+      "sha256": "9df3035c514722aec5a7e70a50e5f48600f2339d465cc1bdea4016b92f3d24ad",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "src/reference/libraryTypes.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/services/colorTokenValueIndex.ts",
+      "bytes": 7477,
+      "sha256": "7ed6fc38a824d7a5cf1107dfc3642355e31445905c2602a093ff3e7a5d2cb534",
+      "runtimeRelative": [
+        "src/reference/library.ts"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/services/componentClassifier.ts",
+      "bytes": 70370,
+      "sha256": "eb073a94772cbc79890276feadf3543c7c88132908fbdbe333bc268a9b3f3e98",
+      "runtimeRelative": [
+        "src/reference/library.ts",
+        "src/structure/snapshot.ts",
+        "src/structure/diff.ts",
+        "src/utils/nodeHelpers.ts",
+        "src/services/libraryComponentFreshness.ts",
+        "src/services/styleMetadata.ts",
+        "src/filters/allowedCustomizationRules.ts",
+        "src/filters/customizationFilters.ts",
+        "src/filters/suppressionPolicy.ts",
+        "src/policies/componentAuditPolicy.ts",
+        "src/assessment/customizationAssessment.ts",
+        "src/assessment/surfaceContext.ts",
+        "src/contracts/contractAwareDiffs.ts",
+        "src/contracts/compositionContractEngine.ts",
+        "src/contracts/componentRules.ts",
+        "src/contracts/componentApiContracts.ts",
+        "src/contracts/runtimeContractRegistry.ts",
+        "src/contracts/experimentalContractV2Registry.ts",
+        "src/contracts/experimentalContractV2Engine.ts",
+        "src/reference/nestedReferenceMerge.ts",
+        "src/services/nestedReferencePreparation.ts",
+        "src/utils/auditInstrumentation.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/reference/libraryTypes.ts",
+        "src/types/structures.ts",
+        "src/types/audit.ts",
+        "src/services/auditTraversalContext.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/services/deprecatedStyleAudit.ts",
+      "bytes": 4228,
+      "sha256": "e7aa1b57b1972e2d0b586dacd6f70cd93a875e39abb7a753adf0f3970bf5ae01",
+      "runtimeRelative": [
+        "src/utils/nodeHelpers.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/types/audit.ts",
+        "src/services/styleMetadata.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/services/detachedComponentSource.ts",
+      "bytes": 433,
+      "sha256": "d16a3f1521518b4bf6ef919d61ae1085a18d98f27629e100b10cd4b4214376dc",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/services/detachedContractV2Audit.ts",
+      "bytes": 2440,
+      "sha256": "338f9b044de00340834c7c5d570ee146c6023fdbc19ebd41316ce119a235c390",
+      "runtimeRelative": [
+        "src/reference/library.ts",
+        "src/contracts/experimentalContractV2Registry.ts",
+        "src/contracts/experimentalContractV2Engine.ts",
+        "src/structure/snapshot.ts",
+        "src/utils/nodeHelpers.ts",
+        "src/services/detachedComponentSource.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/types/audit.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/services/libraryComponentFreshness.ts",
+      "bytes": 5501,
+      "sha256": "189a6c0cf001c00869570688a16323e695789fcddd2435e087a8409b29334568",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/services/libraryUpdateResults.ts",
+      "bytes": 5143,
+      "sha256": "d3a12dddf423dffaf41aa0383c7965732b5d116a87903bdf6ce2592ebb730cb4",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/services/localComponentDependencyAudit.ts",
+      "bytes": 13746,
+      "sha256": "d7c8c65951ca388cdf8ebda3efcdf1f5c4a32199c5f637090d2f7e681a7560c4",
+      "runtimeRelative": [
+        "src/utils/promisePool.ts",
+        "src/services/libraryUpdateResults.ts",
+        "src/utils/auditInstrumentation.ts",
+        "src/reference/library.ts",
+        "src/policies/componentAuditPolicy.ts",
+        "src/utils/nodeHelpers.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/types/audit.ts",
+        "src/services/libraryComponentFreshness.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/services/nestedReferencePreparation.ts",
+      "bytes": 10215,
+      "sha256": "38967505972531d3d022a3901d80ccd3286a0bc63a6a9dbbc1e1f0d0d6bc4719",
+      "runtimeRelative": [
+        "src/reference/library.ts",
+        "src/reference/nestedReferenceMerge.ts",
+        "src/structure/occurrenceKeys.ts",
+        "src/utils/auditInstrumentation.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/reference/libraryTypes.ts",
+        "src/structure/diff.ts",
+        "src/types/structures.ts",
+        "src/assessment/surfaceContext.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/services/styleMetadata.ts",
+      "bytes": 18373,
+      "sha256": "d3c8c35a86421a54558c628c69eb6628f8d06451afded8b1e5968b73fa638e45",
+      "runtimeRelative": [
+        "src/reference/library.ts",
+        "src/config/deprecatedStyleSources.ts"
+      ],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/services/themeAudit.ts",
+      "bytes": 6102,
+      "sha256": "ce13d5616b97d9e74c6b1fbab13b1fd9b27eb4ee5abc36f36aba6ad2ffc617d7",
+      "runtimeRelative": [
+        "src/reference/library.ts",
+        "src/utils/nodeHelpers.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/reference/libraryTypes.ts",
+        "src/types/audit.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/stats/agentReport.ts",
+      "bytes": 17182,
+      "sha256": "e0ad97c23a526fa5c3e85994df7bd4dc5ba124594855fcef14f0c952bcf9c149",
+      "runtimeRelative": [
+        "src/contracts/runtimeContractRegistry.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/stats/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/stats/collector.ts",
+      "bytes": 5781,
+      "sha256": "9cab276a02a8e1cc8ca93dd701022bcc18285befe3a390fcfb98b9019be51491",
+      "runtimeRelative": [
+        "src/stats/agentReport.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/stats/types.ts",
+        "src/predicate/predicateValidation.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/stats/delivery.ts",
+      "bytes": 8523,
+      "sha256": "9138e41152c35c5421b741f3ae516b51dcf7bf51a61db795162dd8b140da3cdf",
+      "runtimeRelative": [
+        "src/stats/collector.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/stats/types.ts",
+        "src/predicate/predicateValidation.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/stats/evidenceBundle.ts",
+      "bytes": 29569,
+      "sha256": "b47990ccefd26c1dc9e7ad2a0567baf6d0d7a4ac3242f6c73ca1a444f0e4b4b1",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "src/stats/evidenceTypes.ts",
+        "src/stats/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/stats/layoutRelations.ts",
+      "bytes": 6693,
+      "sha256": "73e9656de65143a099f9ef0e418ddb512de70d31e897bbd7d9df6b557b9c5950",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "src/stats/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/stats/patternReport.ts",
+      "bytes": 5075,
+      "sha256": "4ae658b0828d3d5ee744f259d0a75a75430382cba45092fa83bacab8a5108b75",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "src/stats/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/stats/report.ts",
+      "bytes": 20915,
+      "sha256": "43af3f4970460691653b65eca2833364f46b155d28621f92f43dec1b797a2821",
+      "runtimeRelative": [
+        "src/contracts/componentRules.ts",
+        "src/contracts/runtimeContractRegistry.ts",
+        "src/stats/agentReport.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/structure/diff.ts",
+        "src/types/audit.ts",
+        "src/stats/types.ts",
+        "src/types/pageContext.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/stats/textReport.ts",
+      "bytes": 3591,
+      "sha256": "449dfa0f864ac51cadaa313215e1907435d2faf7c6e97672541333a6f4a976c3",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "src/stats/types.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/structure/diff.ts",
+      "bytes": 75523,
+      "sha256": "5f2d3850c0bd7f14877662ce0649aa7a13801cdaeb1126cb1e7f60b6016e076a",
+      "runtimeRelative": [
+        "src/structure/occurrenceKeys.ts",
+        "src/utils/variantProperties.ts",
+        "src/structure/strokeAlignment.ts",
+        "src/structure/layoutSizing.ts",
+        "src/reference/nestedReferenceMerge.ts"
+      ],
+      "typeOnlyRelative": [
+        "src/types/structures.ts",
+        "src/assessment/types.ts",
+        "src/assessment/surfaceContext.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/structure/layoutSizing.ts",
+      "bytes": 1298,
+      "sha256": "f982ca2b50596128bb147ff45f51aff03019cefdccfeb4d679bc3e393858d5d2",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/structure/occurrenceKeys.ts",
+      "bytes": 1305,
+      "sha256": "566c0d2f654214bb326d344f56ee83a5df4a31129e4830624154bfdf0c6f08bd",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "src/types/structures.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/structure/snapshot.ts",
+      "bytes": 23458,
+      "sha256": "47200e1631a937952cd8e9c0f8491782230fcaa24195cd1a5d8a0b9ed3d0061e",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [
+        "src/types/structures.ts"
+      ],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/structure/strokeAlignment.ts",
+      "bytes": 1115,
+      "sha256": "019b605ab70724f7bfc45e160f6cda1f8319ac1bfb72b0c437e191bba4cb96e4",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/types/pageContext.ts",
+      "bytes": 475,
+      "sha256": "99c23a0ccd29e1a9a9e80c5238a672b3ae365f334812a9ad64ec66af88c97cb5",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/utils/auditInstrumentation.ts",
+      "bytes": 976,
+      "sha256": "9180084f9c239d28e41263185b74919a45e17537616e1a4124ccde92cfd6ea36",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/utils/componentKeyCache.ts",
+      "bytes": 569,
+      "sha256": "d8fcae18e068ada61d07a0b6492aa3725b73d8c01204536c0c6860841240b9f2",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/utils/networkFetch.ts",
+      "bytes": 562,
+      "sha256": "55ee758673ecf3e182f02ab40984e830c12d40ca93daf861234a395ce6a34d19",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/utils/nodeHelpers.ts",
+      "bytes": 1405,
+      "sha256": "ee252974568494088dadf86e0e1cc23f79ec2f4fa3ed2a0137e915109eaf16e8",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/utils/promisePool.ts",
+      "bytes": 670,
+      "sha256": "c6698eaa4eb0aa36fa4ddb8da48f7a6e95f14595eaca6bbec187f14046e7a29b",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/utils/variableBindingReset.ts",
+      "bytes": 691,
+      "sha256": "10558199e540f7cbe176e102b045ca1034449955549faa4fbe1e871f39fc5552",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/utils/variableCollectionId.ts",
+      "bytes": 565,
+      "sha256": "dcafa6fcb90eda7c1b092481ac6ee7c50391b65bf56ca8c2b023088b2336ae7b",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    },
+    {
+      "path": "src/utils/variantProperties.ts",
+      "bytes": 2285,
+      "sha256": "b48d8df5f2af133a206feb7ba78e2d69665a8360efe6c1f42ee8215099621efb",
+      "runtimeRelative": [],
+      "typeOnlyRelative": [],
+      "externalOrUnresolved": []
+    }
+  ]
+}

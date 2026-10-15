@@ -17,5 +17,6 @@
       "@figma/plugin-typings",
       "node"
     ]
-  }
+  },
+  "exclude": ["node_modules", "apps", "packages"]
 }

@@ -2,6 +2,13 @@
   "name": "apollo-v3",
   "version": "0.3.0",
   "scripts": {
+    "core:validate": "npm --prefix packages/component-contract-core run validate",
+    "v4:release:spinner": "npm --prefix apps/apollo-v4 run release:spinner",
+    "v4:release:pilot": "npm --prefix apps/apollo-v4 run release:pilot",
+    "v4:replay:button": "npm --prefix apps/apollo-v4 run replay:button",
+    "v4:validate": "npm --prefix apps/apollo-v4 run validate",
+    "v4:verify:authoring": "npm --prefix apps/apollo-v4 run verify:authoring",
+    "v4:replay:spinner": "npm --prefix apps/apollo-v4 run replay:spinner",
     "build": "node build.js",
     "watch": "node build.js --watch",
     "validate": "npm run type-check && npm run build && npm run check:figma-runtime && npm test",
@@ -44,11 +51,14 @@
     "test:reference-manifest": "node scripts/test-reference-manifest.js",
     "test:promise-pool": "node scripts/test-promise-pool.js",
     "report:nested-overrides": "node scripts/report-nested-overrides.js",
-    "report:predicate-coverage": "node scripts/audit-predicate-coverage.js"
+    "report:predicate-coverage": "node scripts/audit-predicate-coverage.js",
+    "generation:packages": "node apps/apollo-v4/scripts/load-generation-packages.js",
+    "generation:validate": "npm run core:validate && npm run v4:validate && npm --prefix packages/generation-core run validate",
+    "generation:build": "npm --prefix packages/component-contract-core run build && npm --prefix apps/apollo-v4 run build && npm --prefix packages/generation-core run build"
   },
   "devDependencies": {
-    "@figma/plugin-typings": "^1.82.0",
     "@figma/code-connect": "^1.4.9",
+    "@figma/plugin-typings": "1.141.0",
     "@types/node": "^25.0.8",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",

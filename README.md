@@ -1,5 +1,138 @@
 # Apollo v3
 
+Shared core **0.1.17** / Editor **0.2.103**: configuration policy v2 сохраняет
+declared target identity после разрешённого внешнего public INSTANCE_SWAP.
+Local v4 profile поддерживает v1/v2 с точным producer stamp; старый replay и
+Draft/Ready gates сохранены. Принимается доказанный native root-owned порт,
+а slot/host constraints продолжают исполняться. Проверки и открытые consumer /
+native / independent gates: `CC-COMPAT-DECLARED-TARGET-CONFIGURATION-04` в
+`docs/ARCHITECTURE_BACKLOG.md`.
+
+Работы Apollo CB координируются в **Apollo CB :: General** с четырьмя предметными чатами: [роли и передача результатов](../../docs/APOLLO_ORCHESTRATION.md).
+
+Ближайшие цели **Apollo v4** — code mappings ButtonsGroup/CorporateContent, генерация Figma и фронта из подтверждённых компонентов arui-private и framework паттернов: [очередь и критерии](../../docs/APOLLO_NEXT_PRIORITIES.md). Общие пакеты обслуживают v4; продуктовая приёмка включает доступный из v4 маршрут генерации.
+
+UI v4 теперь использует оболочку v3: 13 категорий, тип страницы, настройки,
+compact и открытие чата. Левая панель шириной 56 px открывает проверку,
+генерацию, чат и настройки. По умолчанию открыта проверка; генерация находится
+на отдельном экране. Чат также открывается в основной области страницы;
+панель остаётся доступной во время диалога. Состояние экранов, история и
+черновик чата сохраняются при переключении. Уход из чата не отменяет запрос;
+новый ответ отмечается красным бейджем на кнопке чата.
+General/page settings действуют в текущей сессии;
+отдельно сохраняется источник Langflow/Codex. Проверка, focus/export, pinned
+объяснение и Generation используют прежние обработчики. Свободный чат подключён
+к `/analyze` без контекста макета. Локальная проверка реального HTTP route использует
+синтетические провайдеры; real agent connectivity и live Figma ещё не проверены.
+Недоступные проверки помечены «—». [Подключение и границы приёмки](apps/apollo-v4/docs/DESIGN_CHECK_UI_MIGRATION.md#dchk-ui-02-подключение-рабочего-ui--06102026).
+
+При управляемой structural-записи native broker допускает рост вычисляемого
+`resolvedVariableModes` только для затронутых собственных предков: прежние keys и
+values сохраняются, новые пары подтверждаются собственным subtree и публичным
+`VariableCollection.defaultModeId`. Explicit modes, bindings, style, identity,
+source и fingerprint guards остаются обязательными. При отказе выводятся только
+имя поля, presence и граница транзакции. После принятого cleanup ACK интерфейс
+читает свежий correlated snapshot; primary native failure и Ready=false сохраняются.
+
+Новая версия на ComponentContract v2.1 развивается отдельно в
+[`apps/apollo-v4`](apps/apollo-v4/README.md), в этом же Git-репозитории.
+Локальный пилот включает общий core с Editor, отдельный Figma manifest,
+главные authoring manual CorporateContent r11, Button r31, Spinner r8, Amount r5 и AmountStyles r10, общий compiler, автоматический запрос контрактов по ключам и аудит любой выбранной области с явными gaps. Объяснение выбранного проверенного instance доступно
+через Codex/ApolloProxyControl. Автоматические проверки, архивный replay
+CorporateContent/Button/Spinner и настоящий Codex smoke на синтетическом снимке прошли.
+Один пользовательский live Spinner FAIL подтверждён; остальные живые проверки
+пользователь выполняет самостоятельно.
+
+Локальное исправление PARITY-014 на текущей базе core **0.1.9** / Editor
+**0.2.90** ограничивает сравнение host modes/catalog коллекциями, подтверждёнными
+наблюдаемыми bindings окружения, включая selected-mode alias chains. Fresh capture отмечен
+`hostContextVariableModesVersion=1`; raw modes/catalog и reference сохраняются.
+Смена варианта больше не блокируется из-за исчезновения неиспользуемой metadata.
+Изменение используемых modes/bindings и недоступное evidence сохраняют gap;
+старые отчёты воспроизводят прежний результат. Gates: core **68/68**, Editor
+**819/819**, Apollo v4 **144/144**. Fresh Figma и release/Proxy acceptance открыты;
+версии приложений и опубликованный release этим локальным исправлением не менялись.
+
+Core **0.1.9** / Editor **0.2.90** исправляет false incomplete после reset
+исходной иконки с другим local Figma main ID. Новый профиль сопоставляет только
+независимо доказанные canonical key/set/source identities; подмена остаётся
+violation, missing proof — gap. Локальный v4 consumer поддерживает версию 1,
+historical replay и exact child pins сохраняются. Fresh Figma и published
+acceptance — [APOLLO-V4-PARITY-018](docs/ARCHITECTURE_BACKLOG.md#apollo-v4-parity-018--локальные-main-id-после-восстановления-иконки).
+
+Сверка бэклога с Editor от 05.10.2026 отделяет готовый общий код и локальные
+consumer проверки от оставшихся host-context/scenario доработок и live/release
+gates. Актуальная очередь PARITY-001–018 и состав ZIP/collection/pilot —
+[в каноническом срезе](docs/ARCHITECTURE_BACKLOG.md#сверка-с-editor--05102026).
+
+Core **0.1.8** / Editor **0.2.88** добавляет exact icon lock с отдельной runtime
+версией: actual asset сравнивается с независимым библиотечным портом текущего
+варианта. Локальный Apollo v4 consumer поддерживает новый marker; отсутствие
+evidence остаётся неполнотой. Historical wire/pins сохраняются, authoring и
+published consumer acceptance — [APOLLO-V4-PARITY-017](docs/ARCHITECTURE_BACKLOG.md#apollo-v4-parity-017--сохранение-исходной-иконки-по-независимому-эталону).
+
+Core **0.1.7** / Editor **0.2.84** добавляет optional диагностику этапа и текста
+ошибки native dependency capture. Отсутствующий дочерний эталон остаётся явным gap;
+причина наблюдаемого сбоя Figma ещё не установлена. Contract formats, pins,
+producer minimum и historical replay сохранены. Consumer acceptance:
+APOLLO-V4-PARITY-015; локальная сборка не является published Proxy release.
+Локальные gates: core 27/27, Editor 805/805, Apollo v4 112/112. Latest archived
+report replay точен; diagnostic JSON export проверен. Legacy Apollo build/parser
+проходят, полный test gate требует прежний отсутствующий CardImage fixture.
+
+Core **0.1.6** / Editor **0.2.83** исправляет native independent-reference capture
+для одинаково названных occurrences: свежая source/owner цепочка, native Figma
+locator, independently cloned host stage и явная неполнота при missing/ambiguous
+identity. Formats/pins и producer minimum 0.2.80 прежние. Локальные core 19/19,
+Editor 802/802 и Apollo v4 111/111 gates пройдены; fresh Figma и published consumer
+acceptance открыты в APOLLO-V4-PARITY-013. Legacy full tests требуют отсутствующий
+CardImage compiled fixture; локальная v4 сборка не является Proxy release.
+
+Editor **0.2.82** заменяет ручной ввод finite Component Property values выбором
+из matching API, с multiselect и точным JSON type/регистром. Формат контракта,
+core **0.1.5** и producer minimum **0.2.80** прежние. Apollo v4 validate **108/108**
+подтверждает VARIANT/BOOLEAN/case-sensitive execution и incomplete при неверном
+типе; live authoring и release/Proxy acceptance отмечены в APOLLO-V4-PARITY-012.
+
+Core 0.1.5 / Editor 0.2.80 исправляет production capture collections, две
+доказанные root aliases и сравнение relevant child mode catalogs. Apollo v4
+проверяет новый opt-in `rootTargetAliasesVersion=1` и producer 0.2.80; source
+manual, dependency pins и historical replay сохранены. Локальные gates:
+Editor 786/786, core 5/5, v4 107/107. Fresh live D/M и published release/Proxy
+приёмка остаётся в APOLLO-V4-PARITY-011.
+
+Core 0.1.4 / Editor 0.2.79 исправляет source-валидацию memberCollection и dependencyDomain для
+явных корневых ролей, например `buttons-group`; переименование в `root` не нужно.
+Schema/runtime flags и независимые source/identity проверки сохранены.
+Локальные gates: Editor 783/783, core 5/5, v4 104/104; release/Proxy/live
+приёмка остаётся открытой в APOLLO-V4-PARITY-010.
+
+Core 0.1.3 / Editor 0.2.77 поддерживает одноимённые occurrences, per-variant
+привязки, direct pinned children, закрытый состав и typed conditional collections.
+Apollo v4 использует общий compiler/capture/runtime и проверяет явные capability
+versions. Known child/property violations сохраняются рядом с missing evidence,
+а coverage остаётся неполным. Локальный v4 gate пройден (103/103);
+release/Proxy и live acceptance ручного ButtonsGroup открыты в PARITY-006/007/008/010.
+
+В аудите области v4 внутренний instance без собственного контракта учитывается по
+контракту владельца, если он соответствует объявленному target и независимому
+эталону. Ownership и source provenance видны в `governedComponents`; public
+children, внешние slots и неподтверждённые части сохраняют отдельные маршруты.
+Нарушения и неполное покрытие владельца сохраняются. BUG-002 реализован локально:
+v4 gate 136/136, свежая живая приёмка открыта в архитектурном бэклоге.
+
+Карточки замечаний v4 показывают свойство, ожидаемое/эталонное и фактическое значения из trace; правило и переход к исходному узлу остаются рядом.
+Команды: `npm run core:validate`, `npm run v4:validate`,
+`npm run v4:replay:spinner`, `npm run v4:replay:button` и `npm run v4:release:pilot`, затем `npm run v4:verify:authoring`.
+Этапы и границы миграции — в [`docs/APOLLO_V4_PLAN.md`](docs/APOLLO_V4_PLAN.md).
+
+Общее ядро с Editor 0.2.73 различает повторяющиеся component-owned экземпляры
+с одинаковыми keys по подтверждённым исходным слоям ближайшего main component.
+Для импортированного main namespace проверяется через отдельный чистый временный
+экземпляр. Capture в мастерской дал 6/6 matches, 17 определённых проверок и
+ожидаемые clipping/modal violations. Новое evidence не меняет нормы и не
+переоценивает старые отчёты. Mobile CorporateContent остаётся Draft до control/reset.
+
 Apollo v3 — отдельная экспериментальная версия рабочего детерминированного
 Apollo. Плагин сохраняет существующие проверки и формирование JSON-отчётов, а
 новый контур будет передавать локальному агенту только компактные факты аудита:
@@ -630,3 +763,104 @@ npm run test:snapshot-tree
 npm run test:stats-report
 npm run report:nested-overrides
 ```
+
+09.10.2026: общий core **0.1.14** / Editor **0.2.95** поддерживает opt-in
+`declaredTargetIdentityVersion=3`. Независимый host/source proof восстанавливает
+identity корня настроенного native occurrence, сохраняя исходный baseline
+запрещённых properties. Доказанный false root guard исключает child checks;
+неизвестный guard и неподтверждённый owner остаются unknown. Исторические profiles
+1/2 сохраняют replay. Core273 / Editor825 / v4 590 и root81 прошли, Main/UI
+пересобраны; BenefitCard r5 остаётся Draft, installed live/source/child/release gates
+открыты. [Совместимость и приёмка](docs/ARCHITECTURE_BACKLOG.md#cc-compat-native-card-facts-03--текст-native-properties-и-исключение-instance-swap).
+
+Единая генерация по контрактам теперь развивается рядом с Apollo V4: [архитектура и action points](docs/GENERATION.md). G02 добавляет read-only ZIP loader, exact dependency pins и run lock; общий план и отдельные адаптеры Figma/фронта следуют следующими задачами. Команды `generation:validate` и `generation:packages` доступны из корня. Текущий V4 release и UI этим шагом не заменены.
+
+NEXT-02 реализован локально в core **0.1.10** / Editor **0.2.91**: отдельные
+Code evidence/profile receipts, closed owned/SLOT bindings и lossless ZIP/export
+с проверенным historical stamp. Source/Ready gates остаются; production архивы
+и release не менялись. [Consumer handoff](apps/apollo-v4/docs/GENERATION_CODE_EVIDENCE.md).
+
+NEXT-05 frontend host подключён к Apollo v4 и установленному локальному Proxy: private artifact, actual TS/import build, Chrome и cancellation/cleanup. Проверки synthetic-local, production profile port пока null; registry/lock 1.1.0 и свежий current consumer проверены 06.10.2026. BG source Draft, Code profiles/native recipes требуют приёмки. [Current pins, consumer proof и remaining gates](apps/apollo-v4/docs/GENERATION_CURRENT_INPUTS.md).
+
+NEXT-04 rollback теперь сохраняет unknown/drifted foreign content на месте и
+возвращает explicit incomplete; exact restoration допускается только из bounded
+pre-mutation journal, с проверкой после cleanup. [Гарантии и ограничения](apps/apollo-v4/docs/GENERATION_ROLLBACK_SAFETY.md).
+Статический CC Body → BG56 pilot: width1600/default подтверждены; обработчики
+не нужны. Current eventId protocol требует отдельного content-only режима.
+[Продуктовые поля и технические action points](apps/apollo-v4/docs/GENERATION_STATIC_PILOT_INPUT.md).
+
+NEXT-03 добавляет отдельный versioned **Draft static-content** schema/plan/fact-input
+для CC Body → BG56 без событий и обработчиков; old interactive v1 сохранён.
+Current producer/adapter execution остаётся blocked. Владелец задал «Сохранить» /
+«Назад», display order save/back, Size56, width1600/default; остальные product
+facts — null/proposal. [Protocol, current draft и exact future emit request](apps/apollo-v4/docs/GENERATION_STATIC_CONTENT_PROTOCOL.md).
+
+NEXT-03 имеет отдельный read-only **Draft source / producer review** route в v4:
+main/facts и штатная компиляция дают metadata/diagnostics, closed static producer
+JSON проверяется отдельно от execution plan. accepted=false/executionAllowed=false,
+BG59 Draft/nonExecutable9 и обычный SOURCE_COMPILE сохранены. После consumer edits
+старый producer snapshot исторический/stale; exact rebind требует отдельного
+Code Connect шага. [Реализованный API и границы проверки](apps/apollo-v4/docs/GENERATION_DRAFT_SOURCE_REVIEW.md).
+
+NEXT-03/07 adds a separate read-only static review action to Apollo v4 through
+server-pinned Proxy inputs. Missing product fields and Draft/source/coverage/stale
+producer are visible; Create stays blocked. UI/HTTP harness and real read-only Node
+probes passed; full Proxy gate retains seven catalog/crosswalk failures reproduced
+with the pre-stage service. [Route and limits](apps/apollo-v4/docs/GENERATION_STATIC_REVIEW_ROUTE.md).
+
+
+NEXT-03/07 consumer-binding stage1 adds a detached local receipt validator and
+closed additive v2 review transport. The panel displays original producer
+freshness separately from consumer binding; matching binding does not accept
+source/API coverage or permit generation. v1 remains unchanged. Standard v4
+build inputs now include actual UI and local review-reader inputs. C0 and all
+producer history remain immutable during preparation. Final V0 freeze follows
+Design Check UI integration and independent review of both tooling handoffs;
+there is no automatic rebind/repin loop. [Receipt contract and stage limits](apps/apollo-v4/docs/GENERATION_STATIC_REVIEW_ROUTE.md#detached-consumer-binding-stage1-preparation).
+
+Design Check chat compatibility repair (06.10.2026): session/UI correlation IDs
+work in the Figma iframe without `crypto.randomUUID`, with a fallback when Web Crypto
+is unavailable. The chat header is one row: Proxy version → Langflow/Codex →
+Generation/Question; each control is 40px high. Narrow windows scroll only this row,
+keeping Close accessible. Reload `apps/apollo-v4/manifest.json` after the local gates.
+Real agent connectivity and live Figma remain separate checks.
+
+Design Check chat/display update (06.10.2026): messages render the v3 Markdown
+grammar and styles: headings, lists, tables, quotes and code. HTML remains text;
+only HTTP(S) links are active, relative references keep their labels and paths.
+Closing chat keeps the free knowledge question running while selection and audit
+change independently. A red launcher badge marks the unread reply and clears on opening.
+
+Audit comparisons show token/style names from read-only Figma resource metadata
+and readable paint opacity percentages. Exact IDs, decimals, the previous diagnostic
+and complete JSON remain in the parameter disclosure. Metadata is a display
+sidecar outside snapshots, audit hashes, export and evaluation. Missing names
+remain explicit; colour equality never supplies an inferred resource binding.
+
+
+Declared native target identity uses an explicit opt-in in local shared core 0.1.11, Editor 0.2.92 and Apollo profile 0.4.1. Closed typed bindings and a freshly proved membership ledger preserve unmarked contracts and keep incomplete correspondence as human-review. Current UI03 features remain in place. Paired compatibility verification is tracked in CC-COMPAT-DECLARED-TARGET-IDENTITY-01; local source application does not grant normative/native/live/release acceptance.
+
+
+Apollo v4 source diagnostic reads a selected local COMPONENT through the existing
+Generation → «Снять диагностику выделения» → «Сохранить диагностику JSON» route.
+It retains the exact SLOT property definition/settings/references, source children
+and owner chain with before/after freshness guards. Variant definitions are read
+from their parent COMPONENT_SET; the report records the actual property owner.
+Missing fileKey remains unknown/incomplete: provide the original COMPONENT Copy
+link with the JSON for independent provenance verification. INSTANCE diagnostics
+remain compatible. This route performs no layout mutation and grants no canonical
+binding, native writer, product generation or Ready acceptance.
+
+
+Generation interruption preservation (owner decision 13.10.2026): errors,
+timeouts, cancel and the next run leave the partial Figma result on the canvas.
+The native preservation receipt is separate from successful artifact retain and
+Ready. UI offers “Показать сохранённый черновик” and a Figma link when the actual
+fileKey is available; no file key is guessed. Unwanted drafts are deleted
+manually by the user in Figma.
+
+### Figma generation: Amount and AmountStyles
+
+The owned generator supports Amount r5 and fourteen desktop AmountStyles r10 presets through declarative mappings and common typed property resolution. The planner and SDK use the same six-contract projection; existing button groups and retained roots keep their behavior. Instances preserve their published library typography. Text Style overrides, Addon swaps, contextual token changes and mobile presets return explicit capability gaps. Frontend mappings are unchanged. Synthetic checks and configured host checks do not establish native Figma or full normative acceptance; results remain Draft.
+
+Generic dependency pins preserve the declared source revision and use `sourceStatus: unverified` until independently verified. They follow the existing prompt reply contract, including plugin transport validation; adding a mapped component does not promote its verification status.

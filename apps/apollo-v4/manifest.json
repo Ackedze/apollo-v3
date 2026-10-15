@@ -1,0 +1,13 @@
+{
+  "name": "Apollo v4 · Contract pilot",
+  "id": "apollo-v4-contract-pilot-local",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "dist/ui.html",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["http://localhost:3001"],
+    "reasoning": "Load a local contract pilot and request an explanation through ApolloProxyControl."
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "analysis-artifact-seal.v1",
+  "root": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/docs/apollo-reviews/v3-noncontract-reuse-2026-10-07",
+  "recordedAt": "2026-10-07T15:16:15.141373+00:00",
+  "sourcePinsVerified": true,
+  "files": [
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/docs/apollo-reviews/v3-noncontract-reuse-2026-10-07/analysis.md",
+      "sha256": "3b0f6ddd598a247fd87ac17427c6d32b4a3c9c4f329022da14f5db58e195d79c",
+      "bytes": 19682
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/docs/apollo-reviews/v3-noncontract-reuse-2026-10-07/dependency-inspection.json",
+      "sha256": "ede13c3d1acabbd2431454bd9a36f9939579d0c115cf54f25209abbdc4473123",
+      "bytes": 117920
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/docs/apollo-reviews/v3-noncontract-reuse-2026-10-07/inspect-dependencies.cjs",
+      "sha256": "1a36dd43f7632fad4a1a228b21ee191a380fbe82c1384ce9c669adaf41fdbde6",
+      "bytes": 4171
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/docs/apollo-reviews/v3-noncontract-reuse-2026-10-07/source-pins.json",
+      "sha256": "16df63f5e263c900f40b49859e27f4ae97d0e888c668ea80956fbecb4fe2443e",
+      "bytes": 53228
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/docs/apollo-reviews/v3-noncontract-reuse-2026-10-07/verification/results.json",
+      "sha256": "f000c6f164c889dda2732101f8d9aeaa0ffc85848dc9d51268d184e2465888a4",
+      "bytes": 1940
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/docs/apollo-reviews/v3-noncontract-reuse-2026-10-07/verification/test-audit-policies.js.log",
+      "sha256": "ef7e4343087c6325492b53bee46dc6b601e7910cd8f7401ce189a78f30f2de16",
+      "bytes": 38
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/docs/apollo-reviews/v3-noncontract-reuse-2026-10-07/verification/test-audit-view-builder.js.log",
+      "sha256": "24f7900f3b224134c342ce455909b1863b22f7c5b1c315dd3ea9b60fce5a727f",
+      "bytes": 44
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/docs/apollo-reviews/v3-noncontract-reuse-2026-10-07/verification/test-deprecated-styles.js.log",
+      "sha256": "e35159aff2d5ccf1a6e09618538d84e8062bdc4fb3db6b5ea5b865d7917fb545",
+      "bytes": 48
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/docs/apollo-reviews/v3-noncontract-reuse-2026-10-07/verification/test-library-component-freshness.js.log",
+      "sha256": "229dc0df2d193b980725d43a9efc6bd80df02806657f4ae5901dfb033d40638f",
+      "bytes": 53
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/docs/apollo-reviews/v3-noncontract-reuse-2026-10-07/verification/test-local-component-dependency-audit.js.log",
+      "sha256": "e6baacf8595d3cc80645969bd675e8325e7c25c65f9460ecd57559027f666398",
+      "bytes": 668
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/docs/apollo-reviews/v3-noncontract-reuse-2026-10-07/verification/test-themization.js.log",
+      "sha256": "d45961e21600204446553e907cadec12e1068a3c43ccefdc79e0d4af4600d408",
+      "bytes": 233
+    }
+  ],
+  "selfExcluded": "seal.json"
+}

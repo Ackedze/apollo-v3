@@ -1,0 +1,1137 @@
+{
+  "schemaVersion": "apollo-v3-reuse-source-inspection.v1",
+  "recordedAt": "2026-10-07T15:16:15.139702+00:00",
+  "scope": "Inspected source, selected policy/UI/provider and six test scripts. Not a production or complete test dependency inventory. No private catalog/capture/norm contents copied.",
+  "files": [
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/AGENTS.md",
+      "sha256": "41c0814b7b026f170eb032933f0e1cfb26f98dced4d73dc340b4b30502442b11",
+      "bytes": 4766
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/manifest.json",
+      "sha256": "c1437bebf0caeb9e4743fd0bd7549129f340d264d38bdf58f7056111770d4fff",
+      "bytes": 394
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/package.json",
+      "sha256": "1d56406ad9850b4822e11b52a9ed8b573ea72c952be86577cbb092cd6bff72e9",
+      "bytes": 1131
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/area-ownership.ts",
+      "sha256": "46cd01e3bbc89ab7668269e4acde3fbebbcb3cfdb27faa27c90aedd9638fc8ed",
+      "bytes": 4543
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/area-result.js",
+      "sha256": "88ffbaf40e14dba0fea8211d51a485cf08b8f3a18870e3ac6b747c5908a2551a",
+      "bytes": 1886
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/area-scan.ts",
+      "sha256": "f19a9ab2aee071c1cc4b515d226e78e47fe3bbedab51d95604b2d9182695b7ef",
+      "bytes": 2529
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/audit-display-resources.js",
+      "sha256": "4474409b592b9844f212f1265584461fa0b4966faf75d07f5e100d58dd8fbec7",
+      "bytes": 3742
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/authoring-source.js",
+      "sha256": "f189e83795a3b7c5dc33c368186cf12065bc1069342506c9363f5598f84de454",
+      "bytes": 12851
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/code.ts",
+      "sha256": "da4ff3f640df982888e2ae6f44e39b6eca0a02bec703dcc67f11bd8bcae1c217",
+      "bytes": 23860
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/contract-profile.js",
+      "sha256": "7b653beca7bfb9a26b4648b8aa9531ee16ea5428132a518a0665b57a3669c072",
+      "bytes": 16717
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/MarkdownMessage.tsx",
+      "sha256": "d031badd99029277224115b6bf69beacfdbb09aef47f6ed87a9f52817866d650",
+      "bytes": 3689
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/controller.js",
+      "sha256": "3aa1015434701ac1d0e6cc749f9ae17df7d766f6655b92ee5882896ce15303dc",
+      "bytes": 14580
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/definitions.js",
+      "sha256": "0fb0e4f61812cfd981a9b7973271856c48200bb93ade77af05cc15237f3aaa1b",
+      "bytes": 1460
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/dialogue-port.js",
+      "sha256": "714f7daaeba04826686329e58d9bbc16c21cc8ca3939369eff828426e959c0fa",
+      "bytes": 3004
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/index.tsx",
+      "sha256": "3c904193f3371601d774ed78eda3a97de862310497cafe623b8efc92eeae4d02",
+      "bytes": 18932
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/integration.css",
+      "sha256": "40c3f7d79e782347a070a239562588d7f83242cc71c004d5475bef27ebad225f",
+      "bytes": 8494
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/legacy.css",
+      "sha256": "97a22818cf3fcb94941ad13b86d86d72d2a1e0fbd856c8ac81cc32f7a87fd4a1",
+      "bytes": 4262
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/markdown-inline.js",
+      "sha256": "9d7e53c0f92b64dbba86417c7cff21d3a65521da36f32ca2387bafcb9e1fe4b2",
+      "bytes": 1588
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/markdown.js",
+      "sha256": "76cf04cf39522f0374e7e88cea4378efb6b07a036b1cd2d50356ce681c362f23",
+      "bytes": 7315
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/opaque-id.js",
+      "sha256": "3dfd9ec278c0f2c0207815f3fb0136bcb46234c5c8b53cb7d9a03fc60fc705bc",
+      "bytes": 808
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/ui-client.js",
+      "sha256": "f208fbede2f081feb7bbea1ef966cf4e0c15aa347dd4db8b5972bea9dbcbb72e",
+      "bytes": 2798
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/ui-protocol.js",
+      "sha256": "263987e8df3405664acc34bb92ad47581664771c7ec451c77357931bbeef50c1",
+      "bytes": 3106
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/config/tabs.ts",
+      "sha256": "eb6659d5eebd82ce00e091ffd9f51234b8ac9220627f2ce325b97c6d1c9fabe9",
+      "bytes": 3021
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/shell.css",
+      "sha256": "13a12c60f62164b81bca259840e18942342083c335a73412603a0691c4e4029c",
+      "bytes": 33108
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/Button.module.css",
+      "sha256": "acf54ecd035c9417a90bc49123e0727219e11732a7baa6ffdc456bf197dca9ee",
+      "bytes": 2881
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/Button.tsx",
+      "sha256": "e3aa480f370eb31506b52e860634ac3b2a141b43bd55735f7472af0c0e84298b",
+      "bytes": 1492
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/CategoryCard.module.css",
+      "sha256": "450ef460b32c114d5a747f8f65a08f236a3175f819b8e314f8366384ac8a832d",
+      "bytes": 1126
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/CategoryCard.tsx",
+      "sha256": "95c37c70695beb888fc22e7233ee2e8de8855eb4c0e50c3efea8a45ad2520763",
+      "bytes": 1062
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/CounterBadge.module.css",
+      "sha256": "8f76fe10cea6bc62194edaf1efc6c7ddd339959f7c5e3d98318516a7d0988a66",
+      "bytes": 729
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/CounterBadge.tsx",
+      "sha256": "b7c518a4ee7bdd7f66b7c446b6cb0bfab74eb86430b8dc7ad7375040a6b3fb82",
+      "bytes": 521
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/Divider.module.css",
+      "sha256": "38e72f62354f1b54c2b3d71c417c48eb6e4e377474896248834f3d3fe1b80349",
+      "bytes": 259
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/Divider.tsx",
+      "sha256": "36842c1cbbc80b2ec59b92bf3c8dde4cb6a98b1036a253b392c42d8b8739459f",
+      "bytes": 238
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/GenerationExampleModal.module.css",
+      "sha256": "8d121c3a81717ee9c45a5de82fa53c3edf315f695c2f925e279452ab333950bb",
+      "bytes": 3022
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/GenerationExampleModal.tsx",
+      "sha256": "fea18d827134a670044dc300ca13cfc869ec813acff6724fb6136aa591b13092",
+      "bytes": 11482
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/IconSlot.module.css",
+      "sha256": "a8855d927dc2d7624a1cd743361f12b01a66b27f491484fe93ce1bf544ac52db",
+      "bytes": 343
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/IconSlot.tsx",
+      "sha256": "48bfd6bcc0c2e8385edd7e26a42d5678ca33f0a649fa9ac0b18ca278596d0840",
+      "bytes": 554
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/LeftSection.module.css",
+      "sha256": "8f5ab4369a59f021ff7d7104176f93d4388a394caef7d2ee04bb83c5c66158d2",
+      "bytes": 251
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/LeftSection.tsx",
+      "sha256": "abbdd7f167da5bc2e2bfeda75542100da77c49bde6b0e266a9565a182b6f8e29",
+      "bytes": 1555
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/OptionList.module.css",
+      "sha256": "90b7aa6f8273a279f9964704823d3e7e07f087c5aecf7d3ca025c83ba4590765",
+      "bytes": 449
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/OptionList.tsx",
+      "sha256": "7a0535b04f5d129804594d5bc6570b1864a439d9c1bf96807d00884af0ba30ac",
+      "bytes": 449
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/OptionListCell.module.css",
+      "sha256": "f503e47de1a4a4e942542917aee54cb77eff1034da792eda577bdedcfc81cc31",
+      "bytes": 773
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/OptionListCell.tsx",
+      "sha256": "6f7f75164958931f16bdc4d955cb639a6bc56877290aa04695653f5c01c3c516",
+      "bytes": 1380
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/OptionListHeader.module.css",
+      "sha256": "559405666b1e7aa399b0ed67985848fc8a3bdae25f52aa838dc6cbe848313fb3",
+      "bytes": 333
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/OptionListHeader.tsx",
+      "sha256": "1186e3a109668d057eafd65b299048e1534541251ca51195847abd04a2136395",
+      "bytes": 452
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/PickerButton.module.css",
+      "sha256": "097b1949bd61c6efd4ce499856758415556f6a655461b5c38174f3b01293ec09",
+      "bytes": 1110
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/PickerButton.tsx",
+      "sha256": "72bb5d091a3bc9f6785a195bc8d3c91e00842385836fbd0fba5d523ba7d43162",
+      "bytes": 1305
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/PickerIcons.tsx",
+      "sha256": "94491f755425ef27ec92e13e923d8c883d322c3b862400ad1898eb4895e22db0",
+      "bytes": 10502
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/TopSection.module.css",
+      "sha256": "4224a6754a05b0abb3ee7749b3b124e6c520d26d391ca60bab9e53a836ac448c",
+      "bytes": 3791
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/design-check/v3/ui-app/components/TopSection.tsx",
+      "sha256": "72d34e5700a5e688bbab327e485c40285499e06debbe957dca2b306973f5c6f9",
+      "bytes": 19661
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/finding-details.js",
+      "sha256": "227838c76d5b511be655beeedec49bc31e8b4c50c4b33a1290a44e5fbfd671b5",
+      "bytes": 12604
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/finding-display.js",
+      "sha256": "2ba29519ac7e58847b318ee80880dff2ecded78be254377ddf72c8ea561f7fea",
+      "bytes": 4453
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/generation-controller.ts",
+      "sha256": "1655e0bf275c356b85bff004e9fc8fba0387dc9f97fdffbf04665a8066cd3856",
+      "bytes": 7450
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/generation-figma-capture.ts",
+      "sha256": "b161bcb3c66ae20b2928de83c4f1eb9ce212c286179313c0a556e724663d328d",
+      "bytes": 5821
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/generation-figma-host.ts",
+      "sha256": "0edb2ab44fa24ff5a1f52190650e49fa5e7882da77147b0bf22463f0bf4d945c",
+      "bytes": 24533
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/generation-figma-rollback.ts",
+      "sha256": "28a0a1b8fc0010c236d4cc679a0fd6d9e2da467808a51acfa1e69b80fcf8c13b",
+      "bytes": 15704
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/generation-frontend-port.ts",
+      "sha256": "a8d536ebff48cb863a3b01340bbe5d644cd1ba31f4512ba3a24f7dc5c5732451",
+      "bytes": 2772
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/generation-frontend-ui.js",
+      "sha256": "776d6c47648b8927bd5ebbfe38b6ac42a1538abe00fc3000cb64d7c8bb4d19b2",
+      "bytes": 1948
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/generation-native-bindings.ts",
+      "sha256": "57ac9daf2a9e18c54d68411afd032866d290c0bc716d981a0bddfbb7285850c6",
+      "bytes": 3319
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/generation-native-diagnostic-bridge.ts",
+      "sha256": "dbe8350a6c69af6aa4590a3ae67d963fbd5e7898d57ca538db4c8c3b421cd8c2",
+      "bytes": 996
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/generation-native-diagnostic.ts",
+      "sha256": "9f13cb2046d665d7f813412a213fefcf8aceabfeda66521a10604d234f9ea898",
+      "bytes": 15597
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/generation-native-observer.ts",
+      "sha256": "47c27d7f876563936ab91ced6bd0d115694809f0f41c8d871b70b0b9ef1fc3c6",
+      "bytes": 2107
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/generation-native-properties.ts",
+      "sha256": "12ad5df26b55fdd4ab70bd2f1fb70762f1b1c52b4fb94fea95001a182083ebf6",
+      "bytes": 2964
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/generation-proxy-port.ts",
+      "sha256": "e7b2315afb44102c22441b331d8f8cc5c38bd885a0354a1580035cb325d5a67e",
+      "bytes": 2274
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/generation-proxy-ui.js",
+      "sha256": "5dd20933bfcfeb641e5ac3320b46a17f24af99a5847eec81655e180323b4efe8",
+      "bytes": 1487
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/generation-static-review-ui.js",
+      "sha256": "924cfaa21cd5dbf3d2bdc79e279b294439769b8b90d196636d69c42f96e01e5b",
+      "bytes": 2087
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/native-diagnostic-ui.js",
+      "sha256": "bf5cf887787418cf28930bcdba5d3a8c693eb06e1bc834a3616ca8d012e6d598",
+      "bytes": 1139
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/resource-identity.js",
+      "sha256": "18fd2645fba0ffd6a045e3fb29612c9c6e361c8b100d6fdcf2c8c5c73671efa7",
+      "bytes": 578
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/runtime.js",
+      "sha256": "be85cc3dcb7a5c97b1248fe489086ac8b1b23005902ac200d9dbd87e9a8c1435",
+      "bytes": 5673
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/apps/apollo-v4/src/ui.js",
+      "sha256": "ae425276aa49a5504d6a9d28f186eb2fd57bae962d748b1017676ea5770a92d0",
+      "bytes": 38465
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/package-lock.json",
+      "sha256": "5f65a788bf2ee2c3b66402677a0f57afd2c53465673d9d5bb73e9a10963b4c3c",
+      "bytes": 90588
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/package.json",
+      "sha256": "3c92b5d45eca05f4d16ce4a5b493835cb75be2e7e5329367dc6e7a02c72ea3da",
+      "bytes": 4447
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/adapter-figma/src/index.ts",
+      "sha256": "2ad763b2366535d948d5d5687fe7218617c7fc133f3899001f2ae1afd2d1c79b",
+      "bytes": 9246
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/adapter-frontend/src/index.ts",
+      "sha256": "b5d583bf21da6298c34ac8d3215d7603990b01bb0cb689370c184d6cddf344a0",
+      "bytes": 10739
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/adapter-frontend/src/profile.ts",
+      "sha256": "091c19079d383a7be528c038e15986e4d8bcc0886c2e5a4c0a21870c5e4ce4ec",
+      "bytes": 5502
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/capabilities.ts",
+      "sha256": "4333fafeee7fb087894b97fd8b42a7af9a617e59e489b8b90a14ee6e82b129c3",
+      "bytes": 1940
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/capture-facts.ts",
+      "sha256": "f9da03a8bcf5712e0cefbc2a906b424f5f0f22807afcb98eb17973bb8b56d313",
+      "bytes": 1774
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/capture-representation.ts",
+      "sha256": "665799acc055cf40b4b9034ac04d8605855314ff13adcd87ffca0deba0df516a",
+      "bytes": 1856
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/capture-topology.ts",
+      "sha256": "2cb69fb22f1745ef634025f1971facc2ea7fe0fbceed480b82f961a009abe8f9",
+      "bytes": 2854
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/component-dependencies.ts",
+      "sha256": "892363047e485e64f87fad8a20f7f05dd81c3542faacce21f55cea22388e4a9f",
+      "bytes": 24753
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/component-property-identity.ts",
+      "sha256": "dcfd2d20f27c6b6bbe3470683a69606d2968b4f15da2acaf9549b1a814371e74",
+      "bytes": 1727
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/declared-target-membership.ts",
+      "sha256": "d3e421a9b96d9a5f1399f658a3584405dd8e14cfdfcfea1c27e2592b03e2d96b",
+      "bytes": 633
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/dependency-capture-diagnostics.ts",
+      "sha256": "cf1cac3811972247a2be3ca3c0a35b0bdf76f5bb0cbd782c0ec7824e50e59fca",
+      "bytes": 2629
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/diagnostic-values.ts",
+      "sha256": "78299f10e5f724abf7dfde3afbc316739ffe127ce20d3e4ca7447cee4a757579",
+      "bytes": 1856
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/effect-facts.ts",
+      "sha256": "1eb5d2d143a45a3bf3a3df955cea1d0a4b6c2c568648563630c76c0c4d7ab7e7",
+      "bytes": 1081
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/figma-capture.ts",
+      "sha256": "d398366784bd606a4cfe30cf8a75192829923910f50895de3ec61b003fa978b9",
+      "bytes": 46082
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/gradient-paint-facts.ts",
+      "sha256": "11bc070bfc12df663bc6df9db2d075a2313de022c14392dd47ed9c90b28165e8",
+      "bytes": 4898
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/host-context-variable-modes.ts",
+      "sha256": "914e62c60dd6a784b0ba268dbb1bfe8df9ebab161cde6b870d125f072cde0b1b",
+      "bytes": 6219
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/instance-boundaries.ts",
+      "sha256": "9778eb4130dd0cf6a8efad535fd6f0c034b3b134c046621cde55e0650311198c",
+      "bytes": 7470
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/instance-content-reference.ts",
+      "sha256": "2e65aabc9a8c94dde7ac593637433ab7c95a3a563b24fde623b9d86a2cddabb2",
+      "bytes": 11284
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/instance-correspondence.ts",
+      "sha256": "2f93e21ab03d6dd75b8bdcaf7301b79407c76785512dfa2e2c289bdf91b2b3d1",
+      "bytes": 19152
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/instance-main-aliases.ts",
+      "sha256": "35a5976a2603865caf5125dbe25cadcc16efe4da6f36869c91ae3f615281d225",
+      "bytes": 1911
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/instance-source-identity.ts",
+      "sha256": "61d27ce4878bdd3ebf2ee225a7e6617d8ea49faadf08a88e307b383b1c49f61a",
+      "bytes": 4532
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/instance-validation.ts",
+      "sha256": "a5df89851ede504b1479797481c26d7802e5c0e116a7d06f4945c365cdfed9d0",
+      "bytes": 5984
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/native-slot-capture.ts",
+      "sha256": "480b142ca360cfa41887095bb1aad790b3969f11ec84bc32c69fb6b3df9d3db1",
+      "bytes": 7139
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/nested-instance-content-reference.ts",
+      "sha256": "1cd0efdd2e306b020d659fd05fba7d673a0d3bd904805f84b848a4e32a07326e",
+      "bytes": 10889
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/occurrence-address.ts",
+      "sha256": "7e0c3929293eee8ecf7b5c53c9175773ea0b8d404b89bd3d6800163550c00387",
+      "bytes": 3573
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/property-applicability.ts",
+      "sha256": "20199255442d6fcd8355bb7e6cf9557eb9e8d4f47a3b8082e4670ae32f8942b1",
+      "bytes": 3993
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/representation-evidence.ts",
+      "sha256": "6181c9107b5406776a6821203e9280e5ac97d27d7af0f87ee66ccbf0d25dbf11",
+      "bytes": 11721
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/root-target.ts",
+      "sha256": "d1d0049185b746398b8bdf04ae630ffdcdc003af80538506c403ee9386cad642",
+      "bytes": 1626
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/snapshot-topology.ts",
+      "sha256": "f42efb8e773c6b2d501aa5a4342a3b115d7933e4dd7e8f08fb0f59fe1307596f",
+      "bytes": 2659
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/stable.ts",
+      "sha256": "86d7e089757a0d4dedce71a3e71a58ffb785122370b4e6818e565ccd73ba1597",
+      "bytes": 1126
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/text-binding-identity.ts",
+      "sha256": "18f9077d73f08dd0338416c3ae9fbe43f26e54ec0705a91ec484367b7b773eca",
+      "bytes": 9219
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/text-decoration-facts.ts",
+      "sha256": "816580e5e78ea64cb5337e31f8a34a5387a7bbd190f5b94a694fe02ca609104f",
+      "bytes": 946
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/text-style-facts.ts",
+      "sha256": "7c8b1e91c999b72b89b8ae8e07116363e1019ce232ee953b9a675b941ee72140",
+      "bytes": 5858
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/transition-capture.ts",
+      "sha256": "f93050c1949ca0e4d12d1b018f08332145ac6d5007bf4a088ed5bf8e1867ead4",
+      "bytes": 2903
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/variable-mode-facts.ts",
+      "sha256": "f7304de0fff3e5dc8f17f91a10878da920ccfde12faa55e0e344423188b518d8",
+      "bytes": 1937
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/src/variant-facts.ts",
+      "sha256": "c5216a5e058a4ca4edabbb0fa1168d0ec6a5c6d0ef0d4b7c6c54ab379d632dfc",
+      "bytes": 25112
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/component-contract-core/vendor/sha256.ts",
+      "sha256": "788d3452d0fd460237a4214e49e858a539ee8afd7d07ed148bc5717ced7d335f",
+      "bytes": 4317
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/generation-core/src/planning/code-connect.ts",
+      "sha256": "0bebe46201fcb36fe1525a15d525c323320a031857e6aaf901a37a7b0f3cb33a",
+      "bytes": 25588
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/generation-core/src/planning/diagnostics.ts",
+      "sha256": "a5d6e4beaf58fa4c9a9373b78ecd68ba853e91f714b67d7c6fefe69898e44ea1",
+      "bytes": 488
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/generation-core/src/planning/index.ts",
+      "sha256": "13c10babc81d280a35a1d7c719caad2ce753a81ed7e234430b0a64778cce2d8a",
+      "bytes": 413
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/generation-core/src/planning/preflight.ts",
+      "sha256": "897d7a8ae632b91bf89ea3c3e59b646b0cf8867e5ee86c29aa8e93cf56b8ac1c",
+      "bytes": 20134
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/generation-core/src/planning/projection.ts",
+      "sha256": "ac65b1716d81cd57cf0712aca6355b59f8533a847e11adb48d060076e9fa7a62",
+      "bytes": 2597
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/generation-core/src/planning/representation-proof.ts",
+      "sha256": "bd73ee66e779976dc0b4025426c3624efd5b33ccc7ffa0e2b86416848ff6724c",
+      "bytes": 2344
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/generation-core/src/planning/schema.ts",
+      "sha256": "5a1a06948f309b35cf0505a4ef5280dac5f7baa0a5e0595f70250d1a5f5a031f",
+      "bytes": 6531
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/generation-core/src/planning/static-content-types.ts",
+      "sha256": "e98a293055f454d39f45ab87498cd7dae4f7defa365f36bbf42424b0736b6fd9",
+      "bytes": 3559
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/generation-core/src/planning/static-content.ts",
+      "sha256": "f73b2f0f03f36522a94a7607349c878beb07b52867ce3e5920af2b435b537d90",
+      "bytes": 19939
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/generation-core/src/planning/static-review-binding-transport.ts",
+      "sha256": "6fc83a30c7bb183ca4312ac51fa92069fa3ccdcec04aa0d17fc0636ae62ef350",
+      "bytes": 3789
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/generation-core/src/planning/static-review-transport.ts",
+      "sha256": "3e0095e08613502254d38391a3c68a47702aa6845cc2b59d4414e19b6f6e8dec",
+      "bytes": 10259
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/generation-core/src/planning/types.ts",
+      "sha256": "42a08952a2f28726480622f043ef4fb7160b3e28f39f08079cfbf7629f0b9ec1",
+      "bytes": 8961
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/packages/generation-core/src/planning/verification.ts",
+      "sha256": "6c7712fe804e70f4101737250957d02d7ca545accd255d3beb9d86f94145a8bf",
+      "bytes": 2085
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/scripts/test-audit-policies.js",
+      "sha256": "772a15829707f5654e1ff30a04bc59c3f9eb4ab6169edb723133d67859b52b8c",
+      "bytes": 2957
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/scripts/test-audit-view-builder.js",
+      "sha256": "071b622da394f074db7100c37d885d7f5e456a44aad4d8f17e140ef5147e922a",
+      "bytes": 6581
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/scripts/test-deprecated-styles.js",
+      "sha256": "93f8c185adae723372294aef497d6361e6f0abee3f5ddcf3250f558f9074e08d",
+      "bytes": 4310
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/scripts/test-library-component-freshness.js",
+      "sha256": "6dc417f4001abbec1f545c50c124685aae7635fe6a180a91e1927de9b8c1ff80",
+      "bytes": 4984
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/scripts/test-local-component-dependency-audit.js",
+      "sha256": "9fd24f4e0ab9669b0650251aa77c04f916158c78a78fa7392284135bfdad595c",
+      "bytes": 10299
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/scripts/test-themization.js",
+      "sha256": "c7bec75d59f9f734c459e9901888cf101ebd463fdad44cf128df6c709c3eb684",
+      "bytes": 8554
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/actions/corporateComponentAction.ts",
+      "sha256": "a9a0a359d174c2f0b20c624630c69b7981f2e96d569c25c096b933db9f130697",
+      "bytes": 16883
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/actions/customizationResetAction.ts",
+      "sha256": "631fca15d625d18e88048725d1b57a2a32d7f9ab45a688251f525ff37f04ab46",
+      "bytes": 12322
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/actions/customizationResetMutations.ts",
+      "sha256": "1995528fcec979295bd7a3ed5cc25f95998aa688bdd68c91ce4da2279cd22bcd",
+      "bytes": 31765
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/actions/findingAction.ts",
+      "sha256": "b285d9c9faa3290202369f0cb939a458ff8af3a274ef92d6da351dc7e2add932",
+      "bytes": 2306
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/actions/focusNode.ts",
+      "sha256": "81080b52c1c2710eb0b6f59ccca099d654e2d07b04a6b8f22aff6b636ced8eb5",
+      "bytes": 1408
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/actions/pageThemizationAction.ts",
+      "sha256": "cb09770899005cc7f275096fd002f14379a0ed4da8cf543f222cfc83159a9de8",
+      "bytes": 1835
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/actions/sceneNodeResolver.ts",
+      "sha256": "cd4b6c23010255ddf5be267f106f4f63233ab3f48a8ca77cb9636d18296e89e2",
+      "bytes": 1033
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/actions/styleBindingAction.ts",
+      "sha256": "303db2ef33d5f88ad41c5f144b9ddd1e486afa19e489291c334be35e924ef5cd",
+      "bytes": 11811
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/actions/variableBindingAction.ts",
+      "sha256": "43f81f2d03993d0cab9c65478cb9d40880e722cdc327caff8f7e8b3ed1ad3889",
+      "bytes": 4243
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/assessment/customizationAssessment.ts",
+      "sha256": "dd67981995b51181aecdd70f63a7475e840e7787c72d0d6bcd6e794164c87eee",
+      "bytes": 49247
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/assessment/patternRuleLoader.ts",
+      "sha256": "b543e47cdc013b8aed1d44e362565315601850ed751ebdb2059dbb5ccf1423d2",
+      "bytes": 605
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/assessment/patternRules.ts",
+      "sha256": "6236f02999b9933431bc4c6313f812edc644f24315dfcf29499cc34950699707",
+      "bytes": 8964
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/assessment/surfaceContext.ts",
+      "sha256": "695a40c82e551b87435bf236188ef71d963eecb40559d11bf867017b94da83ba",
+      "bytes": 4629
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/code.ts",
+      "sha256": "70fa0052fad6949597a59e0ac5f3b7c44042d3035002438661bbe523d2b3ee6c",
+      "bytes": 78149
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/config/deprecatedStyleSources.ts",
+      "sha256": "381b8c7e3a384247b78af233f515c63066881cf2d70ce09a318fa9c0fe2cd433",
+      "bytes": 371
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/config/tabs.ts",
+      "sha256": "eb6659d5eebd82ce00e091ffd9f51234b8ac9220627f2ce325b97c6d1c9fabe9",
+      "bytes": 3021
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/contracts/artifactContext.ts",
+      "sha256": "db3c39c3ec475b9abb999d26d8b9caf101478382a36c8484a060338ff107a9e0",
+      "bytes": 7462
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/contracts/componentApiContracts.ts",
+      "sha256": "251d56ae06712c59b5f19454edffffbb189726dd7b2bd945b1e07ce1bca470a1",
+      "bytes": 14306
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/contracts/componentRules.ts",
+      "sha256": "fc093e2893bcca27ca2a7bbc1d1b83aa53535198e5f0aeeb5742ba312824e1cd",
+      "bytes": 65286
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/contracts/compositionContractEngine.ts",
+      "sha256": "109908f0526ccc16bb6071529d452b94563a86e6e896c0f5706112febb53626f",
+      "bytes": 14535
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/contracts/compositionContractRegistry.ts",
+      "sha256": "514d4032fab495840682708f62a7f20aa15df3dd45df56c6a0dd586e4be46341",
+      "bytes": 9012
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/contracts/compositionContracts.ts",
+      "sha256": "4164f7e86fd683ef77ce0ce7ff33a8393768ffb5ac2ec812e98bc0683adbd6c3",
+      "bytes": 8195
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/contracts/contractArtifactCompiler.ts",
+      "sha256": "be3f81a3a4aeee5191bd333b4ba045b2597af7f76201f03fd402be3da3a36745",
+      "bytes": 3821
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/contracts/contractAwareDiffs.ts",
+      "sha256": "c7fffcac6a201ab8aab17b3dd490eec437482ca8670359e2a8828339bd257863",
+      "bytes": 23907
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/contracts/contractIndex.ts",
+      "sha256": "98f8f8f3c2078333867cbb85b527fd2a797ed2ddf51e8e2237bee6ea9cc461a8",
+      "bytes": 7824
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/contracts/contractIndexResolver.ts",
+      "sha256": "42c0869572c987504bae87cc1c1b9db822bba203bf43b0bc1453bdc612ff6b9f",
+      "bytes": 4141
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/contracts/contractTransport.ts",
+      "sha256": "5a21bda47b508c054ed4ea15f4470bf917d680e2c8a7692670d1992a31ff1e2a",
+      "bytes": 1163
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/contracts/experimentalContractV2Engine.ts",
+      "sha256": "7dbfea0a8b6a3f544454695baaee278c02dea171db0da871db4d3a5b841c5219",
+      "bytes": 110615
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/contracts/experimentalContractV2Registry.ts",
+      "sha256": "023a94cd3a9dc31982828400ac0e95e9fce7bc5f646c22ad0c86cf87809ab00e",
+      "bytes": 8924
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/contracts/publicArtifact.ts",
+      "sha256": "cdd1d61a4a679515235094d92b2124104f0a864caf0487fbc1a84d8a72c452d2",
+      "bytes": 13804
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/contracts/runtimeContractRegistry.ts",
+      "sha256": "041127ad665ee9345efb157728b2bef71c6798fd8c16ad15c7802b944f2e6ee1",
+      "bytes": 18019
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/create-check-state.ts",
+      "sha256": "bd2088880012765af8b308bc8d4cef40c0fa7ff5a19e8bd2e8beff70e77c0008",
+      "bytes": 1127
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/examples/generationExampleCandidate.ts",
+      "sha256": "ea71a66b966547ea7fb3deeb36e9022198f896fd7ef81b44d79f5fcfb0445a44",
+      "bytes": 25545
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/examples/generationExampleSource.ts",
+      "sha256": "23debfd449e6628f928051e86ea595a56d30cb71ebe662578b4c8bf6ca363a97",
+      "bytes": 1504
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/filters/allowedCustomizationRules.ts",
+      "sha256": "2fa5ddd6a72c5eafc7fc8b3cf2f3505d2ab7e086945dbecc14f7d7a1725cb3a0",
+      "bytes": 23548
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/filters/customStyleFilters.ts",
+      "sha256": "5497a39887fc1562d7b05cf536fd77df4b9a81a347f6c67bdd41f6463510dbfa",
+      "bytes": 5214
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/filters/customizationFilters.ts",
+      "sha256": "bb3c54be350dcd6f73dfb3e9f74da005355938fc356f7e1f4d86ecf3d7c8a4d7",
+      "bytes": 2154
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/filters/ignoredComponentFilters.ts",
+      "sha256": "16370dc3f0d796e4cb516cf5a5e9657d5ed458eb3dec5a8b57987b075a3ff805",
+      "bytes": 2550
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/filters/suppressionPolicy.ts",
+      "sha256": "d2045a7e0416f7f40d4769c4ca33fe12bc23fa71d301abaa89513c3d7f0eb033",
+      "bytes": 4235
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/generation/contracts.ts",
+      "sha256": "78ac3292830c2c4825b6e502da1d5d159e085399452c7af671aee65ac985d2c0",
+      "bytes": 14282
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/generation/executePlan.ts",
+      "sha256": "647cd991f90d2ca586519cdbbeac05b0a320e83665f7e7e888634ee844aa548d",
+      "bytes": 10841
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/generation/service.ts",
+      "sha256": "daae4993db9cb719c66bf76503de05341b035410ee76f3fec761b4111c4b5926",
+      "bytes": 7896
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/plugin/messageRouter.ts",
+      "sha256": "72a5369d82f41f5b87d50462f210fb70e64d022ceef97d47ff97f4161b1312f9",
+      "bytes": 7568
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/policies/auditPolicyConfig.ts",
+      "sha256": "9b25061b1158e3b587d30775545f387c5e2a6137728abb4a428860c346de102d",
+      "bytes": 5559
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/policies/componentAuditPolicy.ts",
+      "sha256": "a92edcf6192d9e737db493e199b268c4bbe9b5db971430e4ac75bc8ac437b9fa",
+      "bytes": 2080
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/policies/shellComponentAuditPolicy.ts",
+      "sha256": "1ad8cfbb3c97e91b93e648b309851e184a6d8079736a5d9c4af85e11f4aeb0e2",
+      "bytes": 6910
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/predicate/predicateValidation.ts",
+      "sha256": "a5243134724f7c5b1650b9a195df6ed28c8e472bdbc0a2c6721121e2faf24622",
+      "bytes": 18132
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/reference/library.ts",
+      "sha256": "685053a85fa5f0b6d032aff3eadd5a7d4d013b6032768e59c8ffe43cbf1d11c3",
+      "bytes": 81853
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/reference/libraryTypes.ts",
+      "sha256": "fd4b3934469b38ec1e7fb1d13f8053ec30099ad36f5f670e65f67de8bb868cd7",
+      "bytes": 5036
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/reference/nestedReferenceMerge.ts",
+      "sha256": "13a7bfdc3a326ed6c90270cdc1675be04783a57c94b78ea455b3b349dc5bd9cd",
+      "bytes": 32082
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/reference/referenceList.ts",
+      "sha256": "152d21c31aaf4b199ffff168ce5cc2eb3b368fb15a0803f0c14b3c221b4a4df8",
+      "bytes": 11471
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/remediation/findingActionRegistry.ts",
+      "sha256": "545c2f5b4ef43f535c27b35491b02892ae0238393e48cf8a62c7c7e36c733910",
+      "bytes": 1489
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/remediation/findingActionResolver.ts",
+      "sha256": "34665171575a3f302f5b87ab7e4d0838c95aba2cbb026674d27aba271979f0b1",
+      "bytes": 13116
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/remediation/remediationConfig.ts",
+      "sha256": "76e33e180b0345dbfaa0394bb8937fc88d4f7c53396f454fc9abf4c45c8eced4",
+      "bytes": 5386
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/remediation/types.ts",
+      "sha256": "ac78e47850fd2778323f11c0b9d1dc80b915a9845a6ff1f5407dc4d9ac5d5d2b",
+      "bytes": 2399
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/services/asyncResourceLifecycle.ts",
+      "sha256": "979aea49cbfb12f00c0e7eb1f776b5b627005321095bd1302f077089e0900735",
+      "bytes": 2123
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/services/auditLifecycle.ts",
+      "sha256": "d6797b9a64ee1eace3cde1b388f0856e0aaf084ec17279761bffe9b376c32a11",
+      "bytes": 1338
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/services/auditResults.ts",
+      "sha256": "4d091c4f0aab42d73e560ad6b6fa3012e617d3c9e776b8a29887acbad628f04a",
+      "bytes": 7281
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/services/auditTargetCollector.ts",
+      "sha256": "6a97de15665cf2ae09d1df1ddda84f21200d8176da99b8602247a3c02a24b248",
+      "bytes": 16046
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/services/auditTraversalContext.ts",
+      "sha256": "c3e87f9ce72066f6d60e196f2e7d4acf8dbc495e9e2348c1741a9c0b8a929138",
+      "bytes": 1713
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/services/auditTreeTraversal.ts",
+      "sha256": "81e8130f4104fce54942aa218fe3e3fffb95bc3e693c142e480e08fd163d4929",
+      "bytes": 960
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/services/auditViewBuilder.ts",
+      "sha256": "d4c1508b775f095b10d76750d852d09c2440c3b4c9269a01fec4c7dbd46420e9",
+      "bytes": 18066
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/services/channelAudit.ts",
+      "sha256": "9df3035c514722aec5a7e70a50e5f48600f2339d465cc1bdea4016b92f3d24ad",
+      "bytes": 2293
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/services/colorTokenValueIndex.ts",
+      "sha256": "7ed6fc38a824d7a5cf1107dfc3642355e31445905c2602a093ff3e7a5d2cb534",
+      "bytes": 7477
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/services/componentClassifier.ts",
+      "sha256": "eb073a94772cbc79890276feadf3543c7c88132908fbdbe333bc268a9b3f3e98",
+      "bytes": 70370
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/services/deprecatedStyleAudit.ts",
+      "sha256": "e7aa1b57b1972e2d0b586dacd6f70cd93a875e39abb7a753adf0f3970bf5ae01",
+      "bytes": 4228
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/services/detachedComponentSource.ts",
+      "sha256": "d16a3f1521518b4bf6ef919d61ae1085a18d98f27629e100b10cd4b4214376dc",
+      "bytes": 433
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/services/detachedContractV2Audit.ts",
+      "sha256": "338f9b044de00340834c7c5d570ee146c6023fdbc19ebd41316ce119a235c390",
+      "bytes": 2440
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/services/libraryComponentFreshness.ts",
+      "sha256": "189a6c0cf001c00869570688a16323e695789fcddd2435e087a8409b29334568",
+      "bytes": 5501
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/services/libraryUpdateResults.ts",
+      "sha256": "d3a12dddf423dffaf41aa0383c7965732b5d116a87903bdf6ce2592ebb730cb4",
+      "bytes": 5143
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/services/localComponentDependencyAudit.ts",
+      "sha256": "d7c8c65951ca388cdf8ebda3efcdf1f5c4a32199c5f637090d2f7e681a7560c4",
+      "bytes": 13746
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/services/nestedReferencePreparation.ts",
+      "sha256": "38967505972531d3d022a3901d80ccd3286a0bc63a6a9dbbc1e1f0d0d6bc4719",
+      "bytes": 10215
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/services/styleMetadata.ts",
+      "sha256": "d3c8c35a86421a54558c628c69eb6628f8d06451afded8b1e5968b73fa638e45",
+      "bytes": 18373
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/services/themeAudit.ts",
+      "sha256": "ce13d5616b97d9e74c6b1fbab13b1fd9b27eb4ee5abc36f36aba6ad2ffc617d7",
+      "bytes": 6102
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/stats/agentReport.ts",
+      "sha256": "e0ad97c23a526fa5c3e85994df7bd4dc5ba124594855fcef14f0c952bcf9c149",
+      "bytes": 17182
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/stats/collector.ts",
+      "sha256": "9cab276a02a8e1cc8ca93dd701022bcc18285befe3a390fcfb98b9019be51491",
+      "bytes": 5781
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/stats/delivery.ts",
+      "sha256": "9138e41152c35c5421b741f3ae516b51dcf7bf51a61db795162dd8b140da3cdf",
+      "bytes": 8523
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/stats/evidenceBundle.ts",
+      "sha256": "b47990ccefd26c1dc9e7ad2a0567baf6d0d7a4ac3242f6c73ca1a444f0e4b4b1",
+      "bytes": 29569
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/stats/layoutRelations.ts",
+      "sha256": "73e9656de65143a099f9ef0e418ddb512de70d31e897bbd7d9df6b557b9c5950",
+      "bytes": 6693
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/stats/patternReport.ts",
+      "sha256": "4ae658b0828d3d5ee744f259d0a75a75430382cba45092fa83bacab8a5108b75",
+      "bytes": 5075
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/stats/report.ts",
+      "sha256": "43af3f4970460691653b65eca2833364f46b155d28621f92f43dec1b797a2821",
+      "bytes": 20915
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/stats/textReport.ts",
+      "sha256": "449dfa0f864ac51cadaa313215e1907435d2faf7c6e97672541333a6f4a976c3",
+      "bytes": 3591
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/structure/diff.ts",
+      "sha256": "5f2d3850c0bd7f14877662ce0649aa7a13801cdaeb1126cb1e7f60b6016e076a",
+      "bytes": 75523
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/structure/layoutSizing.ts",
+      "sha256": "f982ca2b50596128bb147ff45f51aff03019cefdccfeb4d679bc3e393858d5d2",
+      "bytes": 1298
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/structure/occurrenceKeys.ts",
+      "sha256": "566c0d2f654214bb326d344f56ee83a5df4a31129e4830624154bfdf0c6f08bd",
+      "bytes": 1305
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/structure/snapshot.ts",
+      "sha256": "47200e1631a937952cd8e9c0f8491782230fcaa24195cd1a5d8a0b9ed3d0061e",
+      "bytes": 23458
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/structure/strokeAlignment.ts",
+      "sha256": "019b605ab70724f7bfc45e160f6cda1f8319ac1bfb72b0c437e191bba4cb96e4",
+      "bytes": 1115
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/types/pageContext.ts",
+      "sha256": "99c23a0ccd29e1a9a9e80c5238a672b3ae365f334812a9ad64ec66af88c97cb5",
+      "bytes": 475
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/ui-app/bridge/resultsBridge.tsx",
+      "sha256": "7a22e70ec662d223b510af6a032dd3af25bf0f9ff445f34bc9a7ac04db9daa2c",
+      "bytes": 4864
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/ui-app/components/ResultCardPresets.tsx",
+      "sha256": "244ee4a4561fac991ab9a57d0f33752d83d425f1c68dbfb9dfb506150d8c1244",
+      "bytes": 9087
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/utils/auditInstrumentation.ts",
+      "sha256": "9180084f9c239d28e41263185b74919a45e17537616e1a4124ccde92cfd6ea36",
+      "bytes": 976
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/utils/componentKeyCache.ts",
+      "sha256": "d8fcae18e068ada61d07a0b6492aa3725b73d8c01204536c0c6860841240b9f2",
+      "bytes": 569
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/utils/networkFetch.ts",
+      "sha256": "55ee758673ecf3e182f02ab40984e830c12d40ca93daf861234a395ce6a34d19",
+      "bytes": 562
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/utils/nodeHelpers.ts",
+      "sha256": "ee252974568494088dadf86e0e1cc23f79ec2f4fa3ed2a0137e915109eaf16e8",
+      "bytes": 1405
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/utils/promisePool.ts",
+      "sha256": "c6698eaa4eb0aa36fa4ddb8da48f7a6e95f14595eaca6bbec187f14046e7a29b",
+      "bytes": 670
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/utils/variableBindingReset.ts",
+      "sha256": "10558199e540f7cbe176e102b045ca1034449955549faa4fbe1e871f39fc5552",
+      "bytes": 691
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/utils/variableCollectionId.ts",
+      "sha256": "dcafa6fcb90eda7c1b092481ac6ee7c50391b65bf56ca8c2b023088b2336ae7b",
+      "bytes": 565
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3/src/utils/variantProperties.ts",
+      "sha256": "b48d8df5f2af133a206feb7ba78e2d69665a8360efe6c1f42ee8215099621efb",
+      "bytes": 2285
+    },
+    {
+      "path": "/Users/alexkukhta/Desktop/workplace/services/apollo-proxy/scripts/build-knowledge-package.js",
+      "sha256": "03945f92627ea5bedff693ecf3cc8a7c095bb4acdfb648fec3f79e58f6095ec4",
+      "bytes": 15888
+    }
+  ]
+}

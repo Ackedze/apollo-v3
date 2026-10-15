@@ -16,6 +16,15 @@ payload.text = text;
 
 ## Contribution Rules
 
+- Changes to ComponentContract Editor or the shared component-contract core that
+  affect contract reading must be recorded in the same task in
+  `docs/ARCHITECTURE_BACKLOG.md`, under “Apollo v4: совместимость с ComponentContract Editor”.
+  Reuse the relevant stable item; record the Editor/core version, consumer impact,
+  implementation or verification required, status and acceptance criteria. Shared
+  implementation and passing Editor tests do not imply Apollo integration/release
+  acceptance. Link the corresponding Editor backlog item; do not copy private
+  reports or catalogs into this repository. Owner instruction: 2026-10-01.
+
 - Follow `CONTRIBUTING.md`, `docs/REVIEW_POLICY.md` and `docs/TESTING.md` for every external contribution.
 - Keep one behavioral concern per pull request and add regression coverage for bug fixes.
 - Rebuild Apollo after every change; before review, run the full `npm run validate` gate.

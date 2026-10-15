@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "apollo-v3-reuse-test-run.v1",
+  "recordedAt": "2026-10-07T15:16:14.922Z",
+  "cwd": "/Users/alexkukhta/Desktop/workplace/projects/Apollo-v3",
+  "runtime": "/usr/local/bin/node",
+  "scope": "Six existing v3 synthetic/mocked regression suites; no production build, Figma, browser or v4 integration acceptance.",
+  "runs": [
+    {
+      "command": "/usr/local/bin/node scripts/test-themization.js",
+      "script": "scripts/test-themization.js",
+      "exitCode": 0,
+      "wallTimeSeconds": 0.158058417,
+      "log": "verification/test-themization.js.log"
+    },
+    {
+      "command": "/usr/local/bin/node scripts/test-library-component-freshness.js",
+      "script": "scripts/test-library-component-freshness.js",
+      "exitCode": 0,
+      "wallTimeSeconds": 0.163050416,
+      "log": "verification/test-library-component-freshness.js.log"
+    },
+    {
+      "command": "/usr/local/bin/node scripts/test-local-component-dependency-audit.js",
+      "script": "scripts/test-local-component-dependency-audit.js",
+      "exitCode": 0,
+      "wallTimeSeconds": 0.148722209,
+      "log": "verification/test-local-component-dependency-audit.js.log"
+    },
+    {
+      "command": "/usr/local/bin/node scripts/test-audit-view-builder.js",
+      "script": "scripts/test-audit-view-builder.js",
+      "exitCode": 0,
+      "wallTimeSeconds": 0.162702625,
+      "log": "verification/test-audit-view-builder.js.log"
+    },
+    {
+      "command": "/usr/local/bin/node scripts/test-deprecated-styles.js",
+      "script": "scripts/test-deprecated-styles.js",
+      "exitCode": 0,
+      "wallTimeSeconds": 0.149208208,
+      "log": "verification/test-deprecated-styles.js.log"
+    },
+    {
+      "command": "/usr/local/bin/node scripts/test-audit-policies.js",
+      "script": "scripts/test-audit-policies.js",
+      "exitCode": 0,
+      "wallTimeSeconds": 0.17368625,
+      "log": "verification/test-audit-policies.js.log"
+    }
+  ]
+}

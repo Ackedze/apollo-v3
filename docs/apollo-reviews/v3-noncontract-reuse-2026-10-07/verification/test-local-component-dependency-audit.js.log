@@ -1,0 +1,27 @@
+[Apollo][metrics] local-component-dependency-audit {
+  totalMs: 0.3,
+  registeredDefinitions: 1,
+  ownerDefinitions: 2,
+  visitedSourceNodes: 5,
+  remoteDependencies: 2,
+  uniqueDependencyKeys: 1,
+  updateFindings: 1,
+  concurrency: 2,
+  freshnessChecks: 0,
+  importCacheHits: 0,
+  importCacheMisses: 0
+}
+[Apollo][metrics] local-component-dependency-audit {
+  totalMs: 0.2,
+  registeredDefinitions: 1,
+  ownerDefinitions: 1,
+  visitedSourceNodes: 1,
+  remoteDependencies: 1,
+  uniqueDependencyKeys: 1,
+  updateFindings: 1,
+  concurrency: 2,
+  freshnessChecks: 0,
+  importCacheHits: 0,
+  importCacheMisses: 0
+}
+Local component dependency audit regression checks passed
